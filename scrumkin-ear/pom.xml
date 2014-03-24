@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>scrumkin</artifactId>
+        <groupId>com.scrumkin</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>scrumkin-ear</artifactId>
+
+    <packaging>ear</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-jpa</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-rs</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-web</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <modules>
+                        <ejbModule>
+                            <groupId>com.scrumkin</groupId>
+                            <artifactId>scrumkin-ejb</artifactId>
+                        </ejbModule>
+                        <jarModule>
+                            <groupId>com.scrumkin</groupId>
+                            <artifactId>scrumkin-api</artifactId>
+                            <bundleDir>lib</bundleDir>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>com.scrumkin</groupId>
+                            <artifactId>scrumkin-jpa</artifactId>
+                            <bundleDir>lib</bundleDir>
+                        </jarModule>
+                        <webModule>
+                            <groupId>com.scrumkin</groupId>
+                            <artifactId>scrumkin-rs</artifactId>
+                            <contextRoot>/api</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>com.scrumkin</groupId>
+                            <artifactId>scrumkin-web</artifactId>
+                            <contextRoot>/</contextRoot>
+                        </webModule>
+
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
