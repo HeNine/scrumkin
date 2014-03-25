@@ -1,6 +1,7 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Created by Matija on 25.3.2014.
@@ -11,6 +12,8 @@ public class GroupEntity {
     private int id;
     private String name;
     private ProjectEntity projects;
+    private Collection<PermissionEntity> permissions;
+    private Collection<UserEntity> users;
 
     @Id
     @Column(name = "id")
@@ -60,5 +63,27 @@ public class GroupEntity {
 
     public void setProjects(ProjectEntity projects) {
         this.projects = projects;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "group_permissions",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    public Collection<PermissionEntity> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Collection<PermissionEntity> permissions) {
+        this.permissions = permissions;
+    }
+
+    @ManyToMany(mappedBy = "groups")
+    public Collection<UserEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Collection<UserEntity> users) {
+        this.users = users;
     }
 }

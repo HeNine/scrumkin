@@ -15,7 +15,7 @@ public class TaskEntity {
     private BigDecimal workDone;
     private Boolean accepted;
     private UserStoryEntity userStory;
-    private UsersEntity assignee;
+    private UserEntity assignee;
 
     @Id
     @Column(name = "id")
@@ -106,11 +106,11 @@ public class TaskEntity {
 
     @ManyToOne
     @JoinColumn(name = "assignee_id", referencedColumnName = "id")
-    public UsersEntity getAssignee() {
+    public UserEntity getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(UsersEntity assignee) {
+    public void setAssignee(UserEntity assignee) {
         this.assignee = assignee;
     }
 }

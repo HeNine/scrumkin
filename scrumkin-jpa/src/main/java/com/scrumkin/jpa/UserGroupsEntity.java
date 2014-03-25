@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class UserGroupsEntity {
     private int id;
     private GroupEntity groupsByGroupId;
-    private UsersEntity usersByUserId;
+    private UserEntity usersByUserId;
 
     @Id
     @Column(name = "id")
@@ -51,11 +51,11 @@ public class UserGroupsEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    public UsersEntity getUsersByUserId() {
+    public UserEntity getUsersByUserId() {
         return usersByUserId;
     }
 
-    public void setUsersByUserId(UsersEntity usersByUserId) {
+    public void setUsersByUserId(UserEntity usersByUserId) {
         this.usersByUserId = usersByUserId;
     }
 }

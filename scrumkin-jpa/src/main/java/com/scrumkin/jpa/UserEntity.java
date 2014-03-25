@@ -8,13 +8,14 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "users", schema = "public", catalog = "scrumkin")
-public class UsersEntity {
+public class UserEntity {
     private int id;
     private String username;
     private String password;
     private String name;
     private String email;
     private Collection<TaskEntity> tasks;
+    private Collection<GroupEntity> groups;
 
     @Id
     @Column(name = "id")
@@ -71,7 +72,7 @@ public class UsersEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UsersEntity that = (UsersEntity) o;
+        UserEntity that = (UserEntity) o;
 
         if (id != that.id) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
@@ -99,5 +100,18 @@ public class UsersEntity {
 
     public void setTasks(Collection<TaskEntity> tasks) {
         this.tasks = tasks;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "user_groups",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    public Collection<GroupEntity> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Collection<GroupEntity> groups) {
+        this.groups = groups;
     }
 }

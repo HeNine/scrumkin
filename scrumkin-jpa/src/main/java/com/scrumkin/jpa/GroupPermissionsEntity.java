@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class GroupPermissionsEntity {
     private int id;
     private GroupEntity group;
-    private PermissionsEntity permission;
+    private PermissionEntity permission;
 
     @Id
     @Column(name = "id")
@@ -51,11 +51,11 @@ public class GroupPermissionsEntity {
 
     @ManyToOne
     @JoinColumn(name = "permission_id", referencedColumnName = "id", nullable = false)
-    public PermissionsEntity getPermission() {
+    public PermissionEntity getPermission() {
         return permission;
     }
 
-    public void setPermission(PermissionsEntity permission) {
+    public void setPermission(PermissionEntity permission) {
         this.permission = permission;
     }
 }
