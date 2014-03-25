@@ -12,4 +12,6 @@
     <artifactId>scrumkin-jpa</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+    </dependencies>
 </project>

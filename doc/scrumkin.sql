@@ -18,7 +18,8 @@ SET client_min_messages = warning;
 -- Name: scrumkin; Type: DATABASE; Schema: -; Owner: scrumkin_admin
 --
 
-CREATE DATABASE scrumkin WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+-- CREATE DATABASE scrumkin WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
+CREATE DATABASE scrumkin WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 
 ALTER DATABASE scrumkin OWNER TO scrumkin_admin;
