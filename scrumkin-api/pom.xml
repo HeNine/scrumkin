@@ -11,4 +11,12 @@
 
     <artifactId>scrumkin-api</artifactId>
     <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-jpa</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
