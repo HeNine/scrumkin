@@ -1,6 +1,8 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,7 +10,8 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "permissions", schema = "public", catalog = "scrumkin")
-public class PermissionEntity {
+public class PermissionEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private String name;
     private Collection<GroupEntity> groups;

@@ -1,6 +1,8 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,7 +10,8 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "users", schema = "public", catalog = "scrumkin")
-public class UserEntity {
+public class UserEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private String username;
     private String password;

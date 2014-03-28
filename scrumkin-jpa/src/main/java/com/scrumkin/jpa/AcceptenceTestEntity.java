@@ -1,5 +1,7 @@
 package com.scrumkin.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 /**
@@ -7,7 +9,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "acceptence_tests", schema = "public", catalog = "scrumkin")
-public class AcceptenceTestEntity {
+public class AcceptenceTestEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private String test;
     private Boolean accepted;

@@ -1,5 +1,7 @@
 package com.scrumkin.jpa;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 /**
@@ -7,8 +9,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "user_groups", schema = "public", catalog = "scrumkin")
-public class UserGroupsEntity {
-    private int id;
+public class UserGroupsEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private int id;
     private GroupEntity groupsByGroupId;
     private UserEntity usersByUserId;
 

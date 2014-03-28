@@ -1,6 +1,8 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Collection;
@@ -10,7 +12,8 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "sprints", schema = "public", catalog = "scrumkin")
-public class SprintEntity {
+public class SprintEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private Date startDate;
     private Date endDate;

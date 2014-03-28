@@ -1,6 +1,8 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -8,7 +10,8 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "priorities", schema = "public", catalog = "scrumkin")
-public class PriorityEntity {
+public class PriorityEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private int priority;
     private String name;

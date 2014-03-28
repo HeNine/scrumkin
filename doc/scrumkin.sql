@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -24,7 +24,7 @@ CREATE DATABASE scrumkin WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 ALTER DATABASE scrumkin OWNER TO scrumkin_admin;
 
-\connect scrumkin
+
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;

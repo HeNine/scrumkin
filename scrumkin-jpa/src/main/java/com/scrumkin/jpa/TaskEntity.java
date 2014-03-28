@@ -1,6 +1,8 @@
 package com.scrumkin.jpa;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -8,7 +10,8 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "tasks", schema = "public", catalog = "scrumkin")
-public class TaskEntity {
+public class TaskEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
     private int id;
     private String description;
     private BigDecimal estimatedTime;
