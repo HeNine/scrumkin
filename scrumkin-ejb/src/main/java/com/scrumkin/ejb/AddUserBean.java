@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.scrumkin.jpa.GroupEntity;
@@ -31,6 +32,7 @@ public class AddUserBean implements AddUserBeanLocal, AddUserBeanRemote {
 	String confirmEmail;
 	List<String> groups;
 
+	@PersistenceContext(unitName = "scrumkin_PU")
 	EntityManager em;
 
 	public AddUserBean() {
@@ -109,8 +111,6 @@ public class AddUserBean implements AddUserBeanLocal, AddUserBeanRemote {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void persistUser() throws InvalidGroupException {
-		// persistUser(this);
-
 		Collection<GroupEntity> userGroups = new ArrayList<>();
 		for (String userGroup : groups) {
 			GroupEntity group = (GroupEntity) em

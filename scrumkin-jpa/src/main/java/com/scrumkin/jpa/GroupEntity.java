@@ -10,8 +10,7 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "groups", schema = "public", catalog = "scrumkin")
-public class GroupEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class GroupEntity {
     private int id;
     private String name;
     private ProjectEntity projects;
@@ -20,6 +19,7 @@ public class GroupEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

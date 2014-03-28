@@ -12,8 +12,14 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "sprints", schema = "public", catalog = "scrumkin")
-public class SprintEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+@NamedQueries(
+        @NamedQuery(name = "isTimeSlotAvailable", query = "SELECT CASE WHEN (count(s) = 0) THEN true ELSE false END " +
+                "FROM SprintEntity s " +
+                "WHERE s.project = :project " +
+                "AND (:startDate >= s.startDate AND :startDate <= s.endDate " +
+                "OR :endDate >= s.startDate AND :endDate <= s.endDate)")
+)
+public class SprintEntity {
     private int id;
     private Date startDate;
     private Date endDate;
@@ -23,6 +29,7 @@ public class SprintEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

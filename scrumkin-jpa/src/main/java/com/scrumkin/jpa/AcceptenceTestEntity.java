@@ -9,8 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "acceptence_tests", schema = "public", catalog = "scrumkin")
-public class AcceptenceTestEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class AcceptenceTestEntity {
     private int id;
     private String test;
     private Boolean accepted;
@@ -18,6 +17,7 @@ public class AcceptenceTestEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

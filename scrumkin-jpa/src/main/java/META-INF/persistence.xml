@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
+
+    <persistence-unit name="scrumkin_PU">
+        <class>com.scrumkin.jpa.AcceptenceTestEntity</class>
+        <class>com.scrumkin.jpa.GroupPermissionsEntity</class>
+        <class>com.scrumkin.jpa.GroupEntity</class>
+        <class>com.scrumkin.jpa.PermissionEntity</class>
+        <class>com.scrumkin.jpa.PriorityEntity</class>
+        <class>com.scrumkin.jpa.ProjectEntity</class>
+        <class>com.scrumkin.jpa.SprintEntity</class>
+        <class>com.scrumkin.jpa.TaskEntity</class>
+        <class>com.scrumkin.jpa.UserGroupsEntity</class>
+        <class>com.scrumkin.jpa.UserStoryEntity</class>
+        <class>com.scrumkin.jpa.UserEntity</class>
+        <properties>
+            <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/scrumkin"/>
+            <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="eclipselink.jdbc.user" value="scrumkin_admin"/>
+            <property name="eclipselink.jdbc.password" value="scrumkin_password"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/scrumkin"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.username" value="scrumkin_admin"/>
+            <property name="hibernate.connection.password" value="scrumkin_password"/>
+            <property name="openjpa.ConnectionURL" value="jdbc:postgresql://localhost:5432/scrumkin"/>
+            <property name="openjpa.ConnectionDriverName" value="org.postgresql.Driver"/>
+            <property name="openjpa.ConnectionUserName" value="scrumkin_admin"/>
+            <property name="openjpa.ConnectionPassword" value="scrumkin_password"/>
+            <property name="toplink.jdbc.url" value="jdbc:postgresql://localhost:5432/scrumkin"/>
+            <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="toplink.jdbc.user" value="scrumkin_admin"/>
+            <property name="toplink.jdbc.password" value="scrumkin_password"/>
+        </properties>
+    </persistence-unit>
+</persistence>

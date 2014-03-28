@@ -12,4 +12,17 @@
     <artifactId>scrumkin-ejb</artifactId>
     <packaging>ejb</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-jpa</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
 </project>

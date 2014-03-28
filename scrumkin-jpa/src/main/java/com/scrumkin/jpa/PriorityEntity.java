@@ -10,8 +10,7 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "priorities", schema = "public", catalog = "scrumkin")
-public class PriorityEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class PriorityEntity {
     private int id;
     private int priority;
     private String name;
@@ -19,6 +18,7 @@ public class PriorityEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

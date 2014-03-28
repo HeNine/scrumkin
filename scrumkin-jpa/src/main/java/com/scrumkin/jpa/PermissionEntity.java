@@ -10,14 +10,14 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "permissions", schema = "public", catalog = "scrumkin")
-public class PermissionEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class PermissionEntity {
     private int id;
     private String name;
     private Collection<GroupEntity> groups;
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

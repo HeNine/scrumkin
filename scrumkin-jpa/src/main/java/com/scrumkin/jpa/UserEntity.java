@@ -1,17 +1,26 @@
 package com.scrumkin.jpa;
 
-import javax.persistence.*;
-
 import java.io.Serializable;
 import java.util.Collection;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Created by Matija on 25.3.2014.
  */
 @Entity
 @Table(name = "users", schema = "public", catalog = "scrumkin")
-public class UserEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class UserEntity {
     private int id;
     private String username;
     private String password;
@@ -22,6 +31,7 @@ public class UserEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

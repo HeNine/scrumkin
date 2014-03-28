@@ -9,14 +9,14 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "group_permissions", schema = "public", catalog = "scrumkin")
-public class GroupPermissionsEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class GroupPermissionsEntity {
     private int id;
     private GroupEntity group;
     private PermissionEntity permission;
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

@@ -10,8 +10,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "tasks", schema = "public", catalog = "scrumkin")
-public class TaskEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class TaskEntity {
     private int id;
     private String description;
     private BigDecimal estimatedTime;
@@ -22,6 +21,7 @@ public class TaskEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }

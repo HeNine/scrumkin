@@ -10,8 +10,11 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "projects", schema = "public", catalog = "scrumkin")
-public class ProjectEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+@NamedQueries(
+        @NamedQuery(name = "isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
+                "ProjectEntity p WHERE p.name = :name")
+)
+public class ProjectEntity {
     private int id;
     private String name;
     private Collection<GroupEntity> groups;
@@ -20,6 +23,7 @@ public class ProjectEntity implements Serializable {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
