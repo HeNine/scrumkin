@@ -10,10 +10,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.rmi.CORBA.Util;
 
 import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.PermissionEntity;
@@ -109,43 +107,39 @@ public class AddUserBean implements AddUserBeanLocal, AddUserBeanRemote {
 		return permissionNames;
 	}
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW) 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void persistUser() throws InvalidGroupException {
-//		persistUser(this);
+		// persistUser(this);
 
-
-		
 		Collection<GroupEntity> userGroups = new ArrayList<>();
-		for(String userGroup : groups) {
-			GroupEntity group = (GroupEntity)em.createQuery("SELECT * FROM groups g WHERE g.name = :name")
-	                .setParameter("name", userGroup).getSingleResult();
-			if(group == null) {
+		for (String userGroup : groups) {
+			GroupEntity group = (GroupEntity) em
+					.createQuery("SELECT * FROM groups g WHERE g.name = :name")
+					.setParameter("name", userGroup).getSingleResult();
+			if (group == null) {
 				throw new InvalidGroupException();
-			}
-			else {
+			} else {
 				userGroups.add(group);
-			}		
+			}
 		}
-		
+
 		UserEntity user = new UserEntity();
 		user.setUsername(this.username);
 		user.setPassword(hash(this.password));
 		user.setName(this.name);
 		user.setEmail(this.email);
 		user.setGroups(userGroups);
-		
+
 		em.persist(user);
 		em.flush();
-		
+
 	}
 
 	public String hash(String string) {
 		try {
-			// Create MessageDigest and encoding for input String
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] hash = digest.digest(string.getBytes("UTF-8"));
 
-			// Hash the Input String
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < hash.length; i++) {
 				sb.append(Integer.toString((hash[i] & 0xff) + 0x100, 16)
