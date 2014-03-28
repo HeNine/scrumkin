@@ -5,12 +5,14 @@ package com.scrumkin.api.exceptions;
  */
 public class ProjectNameNotUniqueException extends Exception {
 
-    public ProjectNameNotUniqueException() {
-        super();
-    }
+	private static final long serialVersionUID = 1L;
 
-    public ProjectNameNotUniqueException(String description) {
-        super(description);
-    }
+	public ProjectNameNotUniqueException() {
+		super();
+	}
+
+	public ProjectNameNotUniqueException(String description) {
+		super(description);
+	}
 
 }

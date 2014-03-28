@@ -18,7 +18,7 @@ import java.sql.Date;
 /**
  * Sprint management EJB.
  */
-@Stateless
+@Stateless(mappedName = "sprintManager")
 public class SprintManagerEJB implements SprintManager {
 
     @PersistenceContext(unitName = "scrumkin_PU")
