@@ -14,6 +14,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.3m</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-api</artifactId>
             <version>1.0-SNAPSHOT</version>
