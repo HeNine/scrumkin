@@ -15,7 +15,7 @@ import java.util.Collection;
 /**
  * Project manager EJB.
  */
-@Stateless
+@Stateless(mappedName = "projectManager")
 public class ProjectManagerEJB implements ProjectManager {
 
     @PersistenceContext(unitName = "scrumkin_PU")
