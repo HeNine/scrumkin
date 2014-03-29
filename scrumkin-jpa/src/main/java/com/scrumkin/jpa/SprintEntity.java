@@ -1,11 +1,21 @@
 package com.scrumkin.jpa;
 
-import javax.persistence.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Collection;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Created by Matija on 25.3.2014.
@@ -24,7 +34,7 @@ public class SprintEntity {
     private Date startDate;
     private Date endDate;
     private BigDecimal velocity;
-    private ProjectEntity project;s
+    private ProjectEntity project;
     private Collection<UserStoryEntity> userStories;
 
     @Id

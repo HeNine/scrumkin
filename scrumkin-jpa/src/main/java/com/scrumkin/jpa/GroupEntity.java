@@ -22,8 +22,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "groups", schema = "public", catalog = "scrumkin")
 @NamedQueries(
-		@NamedQuery(name = "invalidGroups", query = "SELECT name FROM dbo.SplitStringToTable(:groupIds) AS newTable "
-		        + "WHERE NOT EXISTS (SELECT 1 FROM groups g WHERE g.id = newTable.groupId)"))
+		@NamedQuery(name = "invalidGroups", query = "SELECT g.id FROM GroupEntity g WHERE g.id IN :groupIds"))
 public class GroupEntity {
 	private int id;
 	private String name;

@@ -3,6 +3,7 @@ package com.scrumkin.ejb;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,20 +58,17 @@ public class UserManagerEJB implements UserManager {
 			throw new UserNotUniqueException("User with name [" + name
 					+ "] and email [" + email + "] is not unique.");
 		}
-
-		String userGroupIDs = "";
+	
+		List<Integer> userGroupIDs = new ArrayList<Integer>(systemGroups.size());
 		for (GroupEntity userGroup : systemGroups) {
-			if (userGroupIDs.length() != 0) {
-				userGroupIDs.concat(",");
-			}
-			userGroupIDs.concat(Integer.toString(userGroup.getId()));
+			userGroupIDs.add(userGroup.getId());
 		}
 
-		TypedQuery<String> invalidGroupsQuery = em.createNamedQuery(
-				"invalidGroups", String.class);
+		TypedQuery<Integer> invalidGroupsQuery = em.createNamedQuery(
+				"invalidGroups", Integer.class);
 		invalidGroupsQuery.setParameter("groupIds", userGroupIDs);
 
-		List<String> invalidGroups = invalidGroupsQuery.getResultList();
+		List<Integer> invalidGroups = invalidGroupsQuery.getResultList();
 		if (invalidGroups != null) {
 			throw new UserInvalidGroupException("Groups "
 					+ invalidGroups.toString() + " are not valid.");
