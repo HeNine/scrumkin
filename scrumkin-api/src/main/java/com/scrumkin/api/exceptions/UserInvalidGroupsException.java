@@ -3,15 +3,15 @@ package com.scrumkin.api.exceptions;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class UserInvalidGroupException extends Exception {
+public class UserInvalidGroupsException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public UserInvalidGroupException() {
+	public UserInvalidGroupsException() {
 		super();
 	}
 
-	public UserInvalidGroupException(String description) {
+	public UserInvalidGroupsException(String description) {
 		super(description);
 	}
 }
