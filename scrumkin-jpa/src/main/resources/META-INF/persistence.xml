@@ -2,6 +2,7 @@
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
 
     <persistence-unit name="scrumkin_PU">
+        <jta-data-source>jdbc/scrumkin_DS</jta-data-source>
         <class>com.scrumkin.jpa.AcceptenceTestEntity</class>
         <class>com.scrumkin.jpa.GroupPermissionsEntity</class>
         <class>com.scrumkin.jpa.GroupEntity</class>

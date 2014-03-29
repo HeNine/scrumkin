@@ -24,7 +24,7 @@ public class SprintEntity {
     private Date startDate;
     private Date endDate;
     private BigDecimal velocity;
-    private ProjectEntity project;
+    private ProjectEntity project;s
     private Collection<UserStoryEntity> userStories;
 
     @Id

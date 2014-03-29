@@ -1,6 +1,7 @@
 package com.scrumkin.api;
 
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
+import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
 
 import javax.ejb.Local;
@@ -24,5 +25,12 @@ public interface ProjectManager {
      */
     public void addProject(@NotNull String name, UserEntity productOwner, UserEntity scrumMaster,
                            @NotNull Collection<UserEntity> developers) throws ProjectNameNotUniqueException;
+
+    /**
+     * Gets project entity by id.
+     *
+     * @param id Project id
+     */
+    public ProjectEntity getProject(int id);
 
 }

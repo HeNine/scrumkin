@@ -11,5 +11,20 @@
 
     <artifactId>scrumkin-rs</artifactId>
     <packaging>war</packaging>
-    
+
+    <dependencies>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.scrumkin</groupId>
+            <artifactId>scrumkin-ejb</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>

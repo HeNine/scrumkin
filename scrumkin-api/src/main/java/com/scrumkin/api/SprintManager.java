@@ -5,6 +5,7 @@ import com.scrumkin.api.exceptions.SprintStartDateInThePast;
 import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
 import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
+import com.scrumkin.jpa.SprintEntity;
 
 import javax.ejb.Local;
 import java.sql.Date;
@@ -31,4 +32,10 @@ public interface SprintManager {
             throws SprintDatesOutOfOrderException, SprintStartDateInThePast, SprintVelocityZeroOrNegative,
             SprintTimeSlotNotAvailable;
 
+    /**
+     * Get sprint by id.
+     *
+     * @param id Sprint id
+     */
+    public SprintEntity getSprint(int id);
 }

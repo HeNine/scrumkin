@@ -60,4 +60,11 @@ public class SprintManagerEJB implements SprintManager {
         em.persist(sprint);
     }
 
+    @Override
+    public SprintEntity getSprint(int id) {
+        SprintEntity sprint = em.find(SprintEntity.class, id);
+
+        return sprint;
+    }
+
 }

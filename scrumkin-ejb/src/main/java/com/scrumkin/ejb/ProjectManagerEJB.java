@@ -41,4 +41,11 @@ public class ProjectManagerEJB implements ProjectManager {
         em.persist(project);
     }
 
+    @Override
+    public ProjectEntity getProject(int id) {
+        ProjectEntity project = em.find(ProjectEntity.class, id);
+
+        return project;
+    }
+
 }
