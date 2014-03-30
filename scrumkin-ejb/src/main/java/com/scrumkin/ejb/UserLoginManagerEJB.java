@@ -1,35 +1,29 @@
 package com.scrumkin.ejb;
 
 
-import java.util.Random;
-
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
-import org.mindrot.jbcrypt.BCrypt;
-
 import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.jpa.LoginTokenEntity;
 import com.scrumkin.jpa.UserEntity;
+import org.mindrot.jbcrypt.BCrypt;
+
+import javax.ejb.Stateless;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Random;
 
 /**
  */
 @Stateless
 public class UserLoginManagerEJB implements UserLoginManager {
 
-    @PersistenceContext(unitName = "shtorya_main_PU")
+    @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
 
     private Random r = new Random();
 
     @Override
     public String getLoginToken(String username, String password) {
-        TypedQuery<UserEntity> getUserQuery = em.createNamedQuery("getUserByUsername", UserEntity.class);
+        TypedQuery<UserEntity> getUserQuery = em.createNamedQuery("UserEntity.getUserByUsername", UserEntity.class);
         getUserQuery.setParameter("username", username);
 
         UserEntity user = getUserQuery.getSingleResult();
@@ -73,21 +67,25 @@ public class UserLoginManagerEJB implements UserLoginManager {
         }
     }
 
+    private boolean isUniqueToken(String token) {
+        TypedQuery<LoginTokenEntity> getTokensQuery = em.createNamedQuery("LoginToken.getByToken",
+                LoginTokenEntity.class);
+        getTokensQuery.setParameter("token", token);
+
+        return getTokensQuery.getResultList().size() == 0;
+    }
+
     private String generateToken() {
-        TypedQuery<Boolean> uniqueCheckQuery = em.createNamedQuery("LoginToken.isUnique",
-                Boolean.class);
 
         StringBuilder token;
 
         do {
             token = new StringBuilder();
-            // 512b = 64B = 16 * 4B = 16 * int
             for (int i = 0; i < 16; i++) {
-                token.append(Integer.toHexString(r.nextInt()));
+                token.append(String.format("%08x", r.nextInt()));
             }
 
-            uniqueCheckQuery.setParameter("token", token.toString());
-        } while (!uniqueCheckQuery.getSingleResult());
+        } while (!isUniqueToken(token.toString()));
 
         return token.toString();
     }
