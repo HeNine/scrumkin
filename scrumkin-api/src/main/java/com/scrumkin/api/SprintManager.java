@@ -8,6 +8,7 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 
 import javax.ejb.Local;
+import java.math.BigDecimal;
 import java.sql.Date;
 
 /**
@@ -28,7 +29,7 @@ public interface SprintManager {
      * @throws SprintVelocityZeroOrNegative   if sprint velocity is invalid (zero or less)
      * @throws SprintTimeSlotNotAvailable     if sprint starts/ends before/after another sprint starts/ends
      */
-    public void addSprint(ProjectEntity project, Date startDate, Date endDate, int velocity)
+    public void addSprint(ProjectEntity project, Date startDate, Date endDate, BigDecimal velocity)
             throws SprintDatesOutOfOrderException, SprintStartDateInThePast, SprintVelocityZeroOrNegative,
             SprintTimeSlotNotAvailable;
 

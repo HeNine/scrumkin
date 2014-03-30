@@ -23,11 +23,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "sprints", schema = "public", catalog = "scrumkin")
 @NamedQueries(
-        @NamedQuery(name = "isTimeSlotAvailable", query = "SELECT CASE WHEN (count(s) = 0) THEN true ELSE false END " +
+        @NamedQuery(name = "SprintEntity.isTimeSlotAvailable", query = "SELECT s " +
                 "FROM SprintEntity s " +
                 "WHERE s.project = :project " +
                 "AND (:startDate >= s.startDate AND :startDate <= s.endDate " +
-                "OR :endDate >= s.startDate AND :endDate <= s.endDate)")
+                "OR :endDate >= s.startDate AND :endDate <= s.endDate " +
+                "OR :endDate >= s.endDate AND :startDate <= s.startDate)")
 )
 public class SprintEntity {
     private int id;

@@ -9,6 +9,7 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Typed;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -25,7 +26,7 @@ public class SprintManagerEJB implements SprintManager {
     private EntityManager em;
 
     @Override
-    public void addSprint(ProjectEntity project, Date startDate, Date endDate, int velocity)
+    public void addSprint(ProjectEntity project, Date startDate, Date endDate, BigDecimal velocity)
             throws SprintDatesOutOfOrderException, SprintStartDateInThePast, SprintVelocityZeroOrNegative,
             SprintTimeSlotNotAvailable {
 
@@ -37,16 +38,12 @@ public class SprintManagerEJB implements SprintManager {
             throw new SprintStartDateInThePast();
         }
 
-        if (velocity <= 0) {
+        if (velocity.compareTo(BigDecimal.ZERO) == -1) {
             throw new SprintVelocityZeroOrNegative();
         }
 
-        TypedQuery<Boolean> isTimeSlotAvailableQuery = em.createNamedQuery("isTimeSlotAvailable", Boolean.class);
-        isTimeSlotAvailableQuery.setParameter("project", project);
-        isTimeSlotAvailableQuery.setParameter("startDate", startDate);
-        isTimeSlotAvailableQuery.setParameter("endDate", endDate);
 
-        boolean isTimeSlotAvailable = isTimeSlotAvailableQuery.getSingleResult();
+        boolean isTimeSlotAvailable = isTimeSlotAvailable(project, startDate, endDate);
         if (!isTimeSlotAvailable) {
             throw new SprintTimeSlotNotAvailable();
         }
@@ -55,7 +52,7 @@ public class SprintManagerEJB implements SprintManager {
         sprint.setProject(project);
         sprint.setStartDate(startDate);
         sprint.setEndDate(endDate);
-        sprint.setVelocity(BigDecimal.valueOf(velocity));
+        sprint.setVelocity(velocity);
 
         em.persist(sprint);
     }
@@ -65,6 +62,16 @@ public class SprintManagerEJB implements SprintManager {
         SprintEntity sprint = em.find(SprintEntity.class, id);
 
         return sprint;
+    }
+
+    private boolean isTimeSlotAvailable(ProjectEntity project, Date startDate, Date endDate) {
+        TypedQuery<SprintEntity> isAvailableQuery = em.createNamedQuery("SprintEntity.isTimeSlotAvailable",
+                SprintEntity.class);
+        isAvailableQuery.setParameter("project", project);
+        isAvailableQuery.setParameter("startDate", startDate);
+        isAvailableQuery.setParameter("endDate", endDate);
+
+        return isAvailableQuery.getResultList().size() == 0;
     }
 
 }

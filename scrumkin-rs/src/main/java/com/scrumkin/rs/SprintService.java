@@ -34,14 +34,12 @@ public class SprintService {
     private SprintManager sm;
 
     @POST
-    public void createSprint(@FormParam("projectId") int projectId, @FormParam("startDate") Date startDate,
-                             @FormParam("endDate") Date endDate, @FormParam("velocity") int velocity,
-                             @Context HttpServletResponse response) {
+    public void createSprint(SprintJSON sprint, @Context HttpServletResponse response) {
 
-        ProjectEntity project = pm.getProject(projectId);
+        ProjectEntity project = pm.getProject(sprint.projectId);
 
         try {
-            sm.addSprint(project, startDate, endDate, velocity);
+            sm.addSprint(project, sprint.startDate, sprint.endDate, sprint.velocity);
         } catch (SprintDatesOutOfOrderException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             try {
