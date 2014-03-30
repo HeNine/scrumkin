@@ -10,6 +10,9 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "permissions", schema = "public", catalog = "scrumkin")
+@NamedQueries({
+        @NamedQuery(name = "PermissionEntity.findAll", query = "SELECT p FROM PermissionEntity p")
+})
 public class PermissionEntity {
     private int id;
     private String name;
