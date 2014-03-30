@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.scrumkin.api.UserManager;
-import com.scrumkin.api.exceptions.UserInvalidGroupException;
+import com.scrumkin.api.exceptions.UserInvalidGroupsException;
 import com.scrumkin.api.exceptions.UserNotUniqueException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
@@ -35,7 +35,7 @@ public class UserManagerEJB implements UserManager {
 	public void addUser(String username, String password,
 			String confirmPassword, String name, String email,
 			String confirmEmail, Collection<GroupEntity> systemGroups)
-			throws UserInvalidGroupException, UserUsernameNotUniqueException,
+			throws UserInvalidGroupsException, UserUsernameNotUniqueException,
 			UserNotUniqueException {
 
 		TypedQuery<Boolean> isUniqueUsernameQuery = em.createNamedQuery(
@@ -70,7 +70,7 @@ public class UserManagerEJB implements UserManager {
 
 		List<Integer> invalidGroups = invalidGroupsQuery.getResultList();
 		if (invalidGroups != null) {
-			throw new UserInvalidGroupException("Groups "
+			throw new UserInvalidGroupsException("Groups "
 					+ invalidGroups.toString() + " are not valid.");
 		}
 

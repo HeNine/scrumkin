@@ -4,8 +4,6 @@ package com.scrumkin.ejb;
 import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.jpa.LoginTokenEntity;
 import com.scrumkin.jpa.UserEntity;
-import org.eclipse.persistence.config.QueryHints;
-import org.eclipse.persistence.config.QueryType;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.ejb.Stateless;
