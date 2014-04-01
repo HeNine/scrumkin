@@ -9,9 +9,9 @@ import java.util.Collection;
 @Entity
 @Table(name = "users", schema = "public", catalog = "scrumkin")
 @NamedQueries({
-        @NamedQuery(name = "isUniqueUsername", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
+        @NamedQuery(name = "UserEntity.isUniqueUsername", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
                 + "UserEntity u WHERE u.username = :username"),
-        @NamedQuery(name = "isUniqueUser", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
+        @NamedQuery(name = "UserEntity.isUniqueUser", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
                 + "UserEntity u WHERE u.name = :name AND u.email = :email"),
         @NamedQuery(name = "UserEntity.getUserByUsername", query = "SELECT u FROM UserEntity u " +
                 "WHERE u.username = :username")

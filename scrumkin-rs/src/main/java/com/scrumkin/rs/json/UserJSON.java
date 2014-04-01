@@ -13,8 +13,12 @@ public class UserJSON {
     public String name;
     public String email;
 
-    public void init(UserEntity userEntity) {
-        this.username = userEntity.getUsername();
-        this.name = userEntity.getName();
+    public void init(UserEntity ue) {
+        this.id = ue.getId();
+        this.username = ue.getUsername();
+        this.password = ue.getPassword();
+        this.name = ue.getName();
+        this.email = ue.getEmail();
     }
+    
 }

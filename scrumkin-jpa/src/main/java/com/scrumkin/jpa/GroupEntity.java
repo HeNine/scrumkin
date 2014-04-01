@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "groups", schema = "public", catalog = "scrumkin")
 @NamedQueries(
-		@NamedQuery(name = "invalidGroups", query = "SELECT g.id FROM GroupEntity g WHERE g.id IN :groupIds"))
+		@NamedQuery(name = "GroupEntity.invalidGroups", query = "SELECT g.name FROM GroupEntity g WHERE g.id IN :groupIds"))
 public class GroupEntity {
 	private int id;
 	private String name;

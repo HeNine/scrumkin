@@ -1,5 +1,19 @@
 package com.scrumkin.rs;
 
+import java.io.IOException;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.exceptions.SprintDatesOutOfOrderException;
@@ -9,15 +23,6 @@ import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.rs.json.SprintJSON;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.sql.Date;
 
 /**
  * Created by Matija on 29.3.2014.

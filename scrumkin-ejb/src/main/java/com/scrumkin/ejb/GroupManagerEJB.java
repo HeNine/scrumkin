@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.exceptions.PermissionInvalidException;
+import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.PermissionEntity;
 
 /**
@@ -56,6 +57,12 @@ public class GroupManagerEJB implements GroupManager {
 			em.persist(p);
 		}
 		em.getTransaction().commit();
+	}
+	
+	public GroupEntity getGroup(int id) {
+		GroupEntity group = em.find(GroupEntity.class, id);
+
+        return group;
 	}
 
 }

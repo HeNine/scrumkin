@@ -4,10 +4,13 @@ import java.util.Collection;
 
 import javax.ejb.Local;
 
+import com.scrumkin.api.exceptions.UserEmailMismatchException;
 import com.scrumkin.api.exceptions.UserInvalidGroupsException;
 import com.scrumkin.api.exceptions.UserNotUniqueException;
+import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
+import com.scrumkin.jpa.UserEntity;
 
 /**
  * Used to manage users.
@@ -30,5 +33,12 @@ public interface UserManager {
      */
 	public void addUser(String username, String password, String confirmPassword, String name, String email,
 			String confirmEmail, Collection<GroupEntity> systemGroups) throws UserInvalidGroupsException, 
-			UserUsernameNotUniqueException, UserNotUniqueException;
+			UserUsernameNotUniqueException, UserNotUniqueException, UserPasswordMismatchException, UserEmailMismatchException;
+	
+    /**
+     * Gets user entity by id.
+     *
+     * @param id User id
+     */
+    public UserEntity getUser(int id);
 }

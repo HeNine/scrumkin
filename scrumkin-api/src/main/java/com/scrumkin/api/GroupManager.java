@@ -5,7 +5,9 @@ import java.util.Collection;
 import javax.ejb.Local;
 
 import com.scrumkin.api.exceptions.PermissionInvalidException;
+import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.PermissionEntity;
+import com.scrumkin.jpa.ProjectEntity;
 
 /**
  * Used to manage groups.
@@ -20,4 +22,11 @@ public interface GroupManager {
      * @throws PermissionInvalidException if some permissions don't exist
      */
 	public void addGroup(Collection<PermissionEntity> permissions) throws PermissionInvalidException;
+	
+    /**
+     * Gets group entity by id.
+     *
+     * @param id Group id
+     */
+    public GroupEntity getGroup(int id);
 }

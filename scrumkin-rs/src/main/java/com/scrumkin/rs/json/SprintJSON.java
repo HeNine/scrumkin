@@ -1,7 +1,5 @@
 package com.scrumkin.rs.json;
 
-import com.scrumkin.jpa.ProjectEntity;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 

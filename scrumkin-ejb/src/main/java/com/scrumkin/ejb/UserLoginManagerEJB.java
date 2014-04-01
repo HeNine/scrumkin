@@ -1,15 +1,21 @@
 package com.scrumkin.ejb;
 
 
+import java.util.Random;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.jpa.LoginTokenEntity;
 import com.scrumkin.jpa.UserEntity;
-import org.mindrot.jbcrypt.BCrypt;
-
-import javax.ejb.Stateless;
-import javax.persistence.*;
-import java.util.List;
-import java.util.Random;
 
 /**
  */
