@@ -1,8 +1,5 @@
 package com.scrumkin.ejb;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +20,6 @@ import com.scrumkin.api.exceptions.UserNotUniqueException;
 import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
-import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
 
 /**
@@ -43,6 +39,14 @@ public class UserManagerEJB implements UserManager {
 			throws UserInvalidGroupsException, UserUsernameNotUniqueException,
 			UserNotUniqueException, UserPasswordMismatchException, UserEmailMismatchException {
 
+		if(password != confirmPassword) {
+			throw new UserPasswordMismatchException("Passwords don't match.");
+		}
+		
+		if(email != confirmEmail) {
+			throw new UserEmailMismatchException("Emails don't match.");
+		}
+		
 		TypedQuery<Boolean> isUniqueUsernameQuery = em.createNamedQuery(
 				"UserEntity.isUniqueUsername", Boolean.class);
 		isUniqueUsernameQuery.setParameter("username", username);
@@ -62,14 +66,6 @@ public class UserManagerEJB implements UserManager {
 		if (!isUniqueUser) {
 			throw new UserNotUniqueException("User with name [" + name
 					+ "] and email [" + email + "] is not unique.");
-		}
-		
-		if(password != confirmPassword) {
-			throw new UserPasswordMismatchException("Passwords don't match.");
-		}
-		
-		if(email != confirmEmail) {
-			throw new UserEmailMismatchException("Emails don't match.");
 		}
 	
 		List<Integer> userGroupIDs = new ArrayList<Integer>(systemGroups.size());
@@ -98,8 +94,9 @@ public class UserManagerEJB implements UserManager {
 		em.persist(user);
 	}
 
-	
+	@Override
     public UserEntity getUser(int id) {
+		
     	UserEntity user = em.find(UserEntity.class, id);
 
         return user;

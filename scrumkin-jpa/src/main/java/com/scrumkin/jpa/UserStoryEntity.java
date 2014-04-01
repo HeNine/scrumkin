@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -19,6 +21,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "user_stories", schema = "public", catalog = "scrumkin")
+@NamedQueries({
+    @NamedQuery(name = "UserStoryEntity.isUniqueTitle", query = "SELECT CASE WHEN (count(us) = 0) THEN true ELSE false END FROM "
+            + "UserStoryEntity us WHERE us.title = :title")
+})
 public class UserStoryEntity {
     private int id;
     private String title;

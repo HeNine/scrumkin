@@ -25,7 +25,7 @@ public class ProjectManagerEJB implements ProjectManager {
     public void addProject(@NotNull String name, UserEntity productOwner, UserEntity scrumMaster,
                            @NotNull Collection<UserEntity> developers) throws ProjectNameNotUniqueException {
 
-        TypedQuery<Boolean> isUniqueQuery = em.createNamedQuery("isUnique", Boolean.class);
+        TypedQuery<Boolean> isUniqueQuery = em.createNamedQuery("ProjectEntity.isUnique", Boolean.class);
         isUniqueQuery.setParameter("name", name);
 
         boolean isUnique = isUniqueQuery.getSingleResult();

@@ -21,16 +21,20 @@ import com.scrumkin.jpa.PermissionEntity;
 @Stateless(mappedName = "groupManager")
 public class GroupManagerEJB implements GroupManager {
 
+	public static List<PermissionEntity> validPermissions;
+	
 	@PersistenceContext(unitName = "scrumkin_PU")
 	private EntityManager em;
-
-	public static List<PermissionEntity> validPermissions;
 
 	public GroupManagerEJB() {
 		validPermissions = getValidPermissions();
 	}
 
+	@Override
 	public List<PermissionEntity> getValidPermissions() {
+		
+		if(validPermissions != null) return validPermissions;
+		
 		TypedQuery<PermissionEntity> query = em.createNamedQuery(
 				"PermissionEntity.findAll", PermissionEntity.class);
 		List<PermissionEntity> permissions = query.getResultList();
@@ -41,6 +45,7 @@ public class GroupManagerEJB implements GroupManager {
 	@Override
 	public void addGroup(Collection<PermissionEntity> permissions)
 			throws PermissionInvalidException {
+		
 		List<PermissionEntity> invalidPermissions = new ArrayList<PermissionEntity>(
 				permissions.size());
 		Collections.copy(invalidPermissions,
@@ -59,7 +64,9 @@ public class GroupManagerEJB implements GroupManager {
 		em.getTransaction().commit();
 	}
 	
+	@Override
 	public GroupEntity getGroup(int id) {
+		
 		GroupEntity group = em.find(GroupEntity.class, id);
 
         return group;

@@ -1,5 +1,13 @@
 package com.scrumkin.ejb;
 
+import java.math.BigDecimal;
+import java.sql.Date;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.exceptions.SprintDatesOutOfOrderException;
 import com.scrumkin.api.exceptions.SprintStartDateInThePast;
@@ -7,14 +15,6 @@ import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
 import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
-
-import javax.ejb.Stateless;
-import javax.enterprise.inject.Typed;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.math.BigDecimal;
-import java.sql.Date;
 
 /**
  * Sprint management EJB.

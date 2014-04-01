@@ -1,19 +1,29 @@
 package com.scrumkin.jpa;
 
-import javax.persistence.*;
-
-import java.io.Serializable;
 import java.util.Collection;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Created by Matija on 25.3.2014.
  */
 @Entity
 @Table(name = "projects", schema = "public", catalog = "scrumkin")
-@NamedQueries(
-        @NamedQuery(name = "isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
-                "ProjectEntity p WHERE p.name = :name")
-)
+@NamedQueries({
+        @NamedQuery(name = "ProjectEntity.isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
+                "ProjectEntity p WHERE p.name = :name"),
+        @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN (count(p) <> 0) THEN true ELSE false END FROM " +
+                "ProjectEntity p WHERE p = :project")
+})
 public class ProjectEntity {
     private int id;
     private String name;
