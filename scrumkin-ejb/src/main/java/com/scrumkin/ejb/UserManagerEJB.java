@@ -20,7 +20,9 @@ import com.scrumkin.api.exceptions.UserNotUniqueException;
 import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
+import com.scrumkin.jpa.PriorityEntity;
 import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 
 /**
  * Session Bean implementation class AddUsersBean.
@@ -101,5 +103,15 @@ public class UserManagerEJB implements UserManager {
 
         return user;
     }
+	
+	@Override
+	public List<UserEntity> getUsers() {
+		
+		TypedQuery<UserEntity> query = em.createNamedQuery(
+				"UserEntity.findAll", UserEntity.class);
+		List<UserEntity> users = query.getResultList();
+		
+		return users;
+	}
 
 }

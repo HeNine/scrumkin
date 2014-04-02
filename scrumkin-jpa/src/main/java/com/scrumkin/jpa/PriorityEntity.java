@@ -1,15 +1,26 @@
 package com.scrumkin.jpa;
 
-import javax.persistence.*;
-
-import java.io.Serializable;
 import java.util.Collection;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * Created by Matija on 25.3.2014.
  */
 @Entity
 @Table(name = "priorities", schema = "public", catalog = "scrumkin")
+@NamedQueries({
+    @NamedQuery(name = "PriorityEntity.findAll", query = "SELECT p FROM PriorityEntity p")
+})
 public class PriorityEntity {
     private int id;
     private int priority;

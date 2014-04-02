@@ -15,8 +15,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.UserManager;
@@ -29,7 +29,7 @@ import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.rs.json.UserJSON;
 
-@Path("user")
+@Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Stateless
@@ -114,12 +114,34 @@ public class UserService {
     @GET
     @Path("/{id}")
     public UserJSON getUser(@PathParam("id") int id) {
+    	
         UserEntity user = um.getUser(id);
 
         UserJSON userJSON = new UserJSON();
         userJSON.init(user);
 
         return userJSON;
+    }
+    
+    public class UserJSONList extends ArrayList<UserJSON> {
+
+		private static final long serialVersionUID = 1L;
+    	
+    }
+    
+    @GET
+    public UserJSONList getUsers() {
+    	
+    	UserJSONList users = new UserJSONList();
+    	
+    	List<UserEntity> usersPOJO = um.getUsers();
+    	for(UserEntity ue : usersPOJO) {
+    		UserJSON userJSON = new UserJSON();
+    		userJSON.init(ue);
+    		users.add(userJSON);
+    	}
+    	
+    	return users;
     }
 
 }

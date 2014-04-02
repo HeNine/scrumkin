@@ -1,6 +1,7 @@
 package com.scrumkin.api;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -36,9 +37,14 @@ public interface UserManager {
 			UserUsernameNotUniqueException, UserNotUniqueException, UserPasswordMismatchException, UserEmailMismatchException;
 	
     /**
-     * Gets user entity by id.
+     * Gets user by id.
      *
      * @param id User id
      */
     public UserEntity getUser(int id);
+    
+    /**
+     * Gets all users.
+     */
+    public List<UserEntity> getUsers();
 }

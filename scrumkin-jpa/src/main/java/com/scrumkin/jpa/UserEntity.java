@@ -14,7 +14,8 @@ import java.util.Collection;
         @NamedQuery(name = "UserEntity.isUniqueUser", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
                 + "UserEntity u WHERE u.name = :name AND u.email = :email"),
         @NamedQuery(name = "UserEntity.getUserByUsername", query = "SELECT u FROM UserEntity u " +
-                "WHERE u.username = :username")
+                "WHERE u.username = :username"),
+        @NamedQuery(name = "UserEntity.findAll", query = "SELECT u FROM UserEntity u ")
 })
 public class UserEntity {
     private int id;
