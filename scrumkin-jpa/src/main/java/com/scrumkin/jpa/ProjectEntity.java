@@ -22,7 +22,9 @@ import javax.persistence.Table;
         @NamedQuery(name = "ProjectEntity.isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
                 "ProjectEntity p WHERE p.name = :name"),
         @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN (count(p) <> 0) THEN true ELSE false END FROM " +
-                "ProjectEntity p WHERE p = :project")
+                "ProjectEntity p WHERE p = :project"),
+        @NamedQuery(name = "ProjectEntity.getProjectByName", query = "SELECT p FROM ProjectEntity p " +
+                "WHERE p.name = :name")
 })
 public class ProjectEntity {
     private int id;
@@ -72,7 +74,7 @@ public class ProjectEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "projects")
+    @OneToMany(mappedBy = "project")
     public Collection<GroupEntity> getGroups() {
         return groups;
     }

@@ -34,23 +34,27 @@ import com.scrumkin.rs.json.UserJSON;
 @Produces(MediaType.APPLICATION_JSON)
 @Stateless
 public class UserService {
-	
-	@Inject
-	private UserManager um;
-	@Inject
-	private GroupManager gm;
-	
-	@POST
-	@Path("/add")
-	public void createUser(@FormParam("username") String username, @FormParam("password") String password, @FormParam("confirmPassword") String confirmPassword, @FormParam("name") String name, @FormParam("email") String email, @FormParam("confirmEmail") String confirmEmail, @FormParam("systemGroupIds") int[] systemGroupIds, @Context HttpServletResponse response) {
-		
-		List<GroupEntity> groups = new ArrayList<GroupEntity>(systemGroupIds.length);
-		for(int i = 0; i < systemGroupIds.length; i++) {
-			groups.add(gm.getGroup(systemGroupIds[i]));
-		}
-		
+
+    @Inject
+    private UserManager um;
+    @Inject
+    private GroupManager gm;
+
+    @POST
+    @Path("/add")
+//    public void createUser(@FormParam("username") String username, @FormParam("password") String password,
+//                           @FormParam("confirmPassword") String confirmPassword, @FormParam("name") String name,
+//                           @FormParam("email") String email, @FormParam("confirmEmail") String confirmEmail,
+//                           @FormParam("systemGroupIds") int[] systemGroupIds, @Context HttpServletResponse response) {
+    public void createUser(UserJSON user, @Context HttpServletResponse response) {
+
+        List<GroupEntity> groups = new ArrayList<GroupEntity>(user.groups.length);
+        for (int i = 0; i < user.groups.length; i++) {
+            groups.add(gm.getGroup(user.groups[i]));
+        }
+
         try {
-            um.addUser(username, password, confirmPassword, name, email, confirmEmail, groups);
+            um.addUser(user.username, user.password, user.password, user.name, user.email, user.email, groups);
         } catch (UserInvalidGroupsException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             try {
@@ -91,7 +95,7 @@ public class UserService {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             try {
                 response.getOutputStream().println("Unable to save user");
@@ -99,8 +103,8 @@ public class UserService {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-		}
-        
+        }
+
         response.setStatus(Response.Status.OK.getStatusCode());
         try {
             response.getOutputStream().println("User successfully saved");
@@ -108,9 +112,9 @@ public class UserService {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-     
-	}
-	
+
+    }
+
     @GET
     @Path("/{id}")
     public UserJSON getUser(@PathParam("id") int id) {

@@ -12,13 +12,14 @@ public class UserJSON {
     public String password;
     public String name;
     public String email;
+    public int[] groups;
 
     public void init(UserEntity ue) {
         this.id = ue.getId();
         this.username = ue.getUsername();
-        this.password = ue.getPassword();
+//        this.password = ue.getPassword(); Rajš ne, da ne gre password po nesreči ven po netu
         this.name = ue.getName();
         this.email = ue.getEmail();
     }
-    
+
 }
