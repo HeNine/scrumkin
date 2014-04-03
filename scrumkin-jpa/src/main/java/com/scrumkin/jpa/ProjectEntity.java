@@ -10,10 +10,12 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "projects", schema = "public", catalog = "scrumkin")
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(name = "isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
-                "ProjectEntity p WHERE p.name = :name")
-)
+                "ProjectEntity p WHERE p.name = :name"),
+        @NamedQuery(name = "ProjectEntity.getProjectByName", query = "SELECT p FROM ProjectEntity p " +
+                "WHERE p.name = :name")
+})
 public class ProjectEntity {
     private int id;
     private String name;
@@ -62,7 +64,7 @@ public class ProjectEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "projects")
+    @OneToMany(mappedBy = "project")
     public Collection<GroupEntity> getGroups() {
         return groups;
     }
