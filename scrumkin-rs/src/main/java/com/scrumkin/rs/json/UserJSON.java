@@ -17,7 +17,6 @@ public class UserJSON {
     public void init(UserEntity ue) {
         this.id = ue.getId();
         this.username = ue.getUsername();
-//        this.password = ue.getPassword(); Rajš ne, da ne gre password po nesreči ven po netu
         this.name = ue.getName();
         this.email = ue.getEmail();
     }

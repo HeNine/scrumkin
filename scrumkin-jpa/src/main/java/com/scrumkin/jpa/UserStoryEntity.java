@@ -13,7 +13,9 @@ import javax.persistence.*;
 @NamedQueries({
         @NamedQuery(name = "UserStoryEntity.isUniqueTitle", query = "SELECT CASE WHEN (count(us) = 0) THEN true ELSE " +
                 "false END FROM "
-                + "UserStoryEntity us WHERE us.title = :title")
+                + "UserStoryEntity us WHERE us.title = :title"),
+        @NamedQuery(name = "UserStoryEntity.findAll", query = "SELECT us FROM "
+                + "UserStoryEntity us")
 })
 public class UserStoryEntity {
     private int id;

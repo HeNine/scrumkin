@@ -21,7 +21,7 @@ public interface UserStoryManager {
     /**
      * Add new user story to project {@code project}.
      *
-     * @param project  		  Project user story belongs to
+     * @param project  		  Project to which the user story belongs to
      * @param title 	 	  Story title
      * @param story      	  User story description
      * @param priority 		  User story priority
@@ -42,12 +42,12 @@ public interface UserStoryManager {
      */
 	public void assignUserStoryToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException;
 	
-    /**
-     * Gets user story by id.
-     *
-     * @param id User story id
-     */
-    public UserStoryEntity getUserStory(int id);
+//    /**
+//     * Gets user story by id.
+//     *
+//     * @param id User story id
+//     */
+//    public UserStoryEntity getUserStory(int id);
     
     /**
      * Gets valid priorities.

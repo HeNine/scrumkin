@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,10 +42,6 @@ public class UserService {
 
     @POST
     @Path("/add")
-//    public void createUser(@FormParam("username") String username, @FormParam("password") String password,
-//                           @FormParam("confirmPassword") String confirmPassword, @FormParam("name") String name,
-//                           @FormParam("email") String email, @FormParam("confirmEmail") String confirmEmail,
-//                           @FormParam("systemGroupIds") int[] systemGroupIds, @Context HttpServletResponse response) {
     public void createUser(UserJSON user, @Context HttpServletResponse response) {
 
         List<GroupEntity> groups = new ArrayList<GroupEntity>(user.groups.length);
@@ -128,12 +123,6 @@ public class UserService {
         return userJSON;
     }
 
-//    public class UserJSONList extends ArrayList<UserJSON> {
-//
-//		private static final long serialVersionUID = 1L;
-//
-//    }
-
     @GET
     public UserJSON[] getUsers() {
 
@@ -145,7 +134,6 @@ public class UserService {
             users.add(userJSON);
         }
 
-        return users.toArray(new UserJSON[1]);
+        return users.toArray(new UserJSON[0]);
     }
-
 }

@@ -135,12 +135,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
 	}
 
-	@Override
-	public UserStoryEntity getUserStory(int id) {
-
-		UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
-
-		return userStory;
-	}
-
+//	@Override
+//	public UserStoryEntity getUserStory(int id) {
+//
+//		UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
+//
+//		return userStory;
+//	}
 }
