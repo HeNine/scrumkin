@@ -2,6 +2,7 @@ package com.scrumkin.ejb;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Collection;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,6 +16,7 @@ import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
 import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 
 /**
  * Sprint management EJB.
@@ -62,6 +64,11 @@ public class SprintManagerEJB implements SprintManager {
         SprintEntity sprint = em.find(SprintEntity.class, id);
 
         return sprint;
+    }
+
+    @Override
+    public Collection<UserStoryEntity> getSprintStories(int id) {
+        return getSprint(id).getUserStories();
     }
 
     private boolean isTimeSlotAvailable(ProjectEntity project, Date startDate, Date endDate) {

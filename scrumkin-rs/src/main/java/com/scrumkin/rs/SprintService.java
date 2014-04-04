@@ -1,6 +1,9 @@
 package com.scrumkin.rs;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,7 +25,9 @@ import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
 import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 import com.scrumkin.rs.json.SprintJSON;
+import com.scrumkin.rs.json.UserStoryJSON;
 
 /**
  * Created by Matija on 29.3.2014.
@@ -95,4 +100,18 @@ public class SprintService {
         return sprintJSON;
     }
 
+    @GET
+    @Path("/{id}/stories")
+    public UserStoryJSON[] getSprintStories(@PathParam("id") int id) {
+        Collection<UserStoryEntity> stories = sm.getSprintStories(id);
+
+        List<UserStoryJSON> storiesJSON = new LinkedList<>();
+        for (UserStoryEntity us : stories) {
+            UserStoryJSON story = new UserStoryJSON();
+            story.init(us);
+            storiesJSON.add(story);
+        }
+
+        return storiesJSON.toArray(new UserStoryJSON[0]);
+    }
 }

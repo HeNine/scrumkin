@@ -6,10 +6,12 @@ import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
 import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 
 import javax.ejb.Local;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Collection;
 
 /**
  * Used to manage sprints.
@@ -39,4 +41,12 @@ public interface SprintManager {
      * @param id Sprint id
      */
     public SprintEntity getSprint(int id);
+
+    /**
+     * Get list of stories in a sprint
+     *
+     * @param id Sprint id
+     * @return List of stories
+     */
+    public Collection<UserStoryEntity> getSprintStories(int id);
 }
