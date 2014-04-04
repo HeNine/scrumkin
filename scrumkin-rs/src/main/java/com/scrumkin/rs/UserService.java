@@ -2,6 +2,7 @@ package com.scrumkin.rs;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -118,7 +119,7 @@ public class UserService {
     @GET
     @Path("/{id}")
     public UserJSON getUser(@PathParam("id") int id) {
-    	
+
         UserEntity user = um.getUser(id);
 
         UserJSON userJSON = new UserJSON();
@@ -126,26 +127,25 @@ public class UserService {
 
         return userJSON;
     }
-    
-    public class UserJSONList extends ArrayList<UserJSON> {
 
-		private static final long serialVersionUID = 1L;
-    	
-    }
-    
+//    public class UserJSONList extends ArrayList<UserJSON> {
+//
+//		private static final long serialVersionUID = 1L;
+//
+//    }
+
     @GET
-    public UserJSONList getUsers() {
-    	
-    	UserJSONList users = new UserJSONList();
-    	
-    	List<UserEntity> usersPOJO = um.getUsers();
-    	for(UserEntity ue : usersPOJO) {
-    		UserJSON userJSON = new UserJSON();
-    		userJSON.init(ue);
-    		users.add(userJSON);
-    	}
-    	
-    	return users;
+    public UserJSON[] getUsers() {
+
+        List<UserJSON> users = new LinkedList<>();
+        List<UserEntity> usersPOJO = um.getUsers();
+        for (UserEntity ue : usersPOJO) {
+            UserJSON userJSON = new UserJSON();
+            userJSON.init(ue);
+            users.add(userJSON);
+        }
+
+        return users.toArray(new UserJSON[1]);
     }
 
 }

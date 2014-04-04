@@ -2,15 +2,7 @@ package com.scrumkin.jpa;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Matija on 25.3.2014.
@@ -28,7 +20,10 @@ public class TaskEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tasks_id_seq")
+    @SequenceGenerator(name = "tasks_id_seq",
+            sequenceName = "tasks_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

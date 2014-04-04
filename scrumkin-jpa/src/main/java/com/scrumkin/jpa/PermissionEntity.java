@@ -20,7 +20,10 @@ public class PermissionEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissions_id_seq")
+    @SequenceGenerator(name = "permissions_id_seq",
+            sequenceName = "permissions_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

@@ -7,7 +7,9 @@ import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 import com.scrumkin.rs.json.ProjectJSON;
+import com.scrumkin.rs.json.UserStoryJSON;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -89,4 +91,18 @@ public class ProjectService {
         return project;
     }
 
+    @GET
+    @Path("{id}/stories")
+    public UserStoryJSON[] getProjectStories(@PathParam("id") int id) {
+        Collection<UserStoryEntity> stories = pm.getProjectStories(id);
+
+        List<UserStoryJSON> storiesJSON = new LinkedList<>();
+        for (UserStoryEntity us : stories) {
+            UserStoryJSON story = new UserStoryJSON();
+            story.init(us);
+            storiesJSON.add(story);
+        }
+
+        return storiesJSON.toArray(new UserStoryJSON[0]);
+    }
 }

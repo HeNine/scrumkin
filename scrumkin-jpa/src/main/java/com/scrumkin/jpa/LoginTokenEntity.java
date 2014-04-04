@@ -20,6 +20,10 @@ public class LoginTokenEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "login_tokens_id_seq")
+    @SequenceGenerator(name = "login_tokens_id_seq",
+            sequenceName = "login_tokens_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

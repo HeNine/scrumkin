@@ -6,10 +6,7 @@ import com.scrumkin.api.exceptions.PermissionInvalidException;
 import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
-import com.scrumkin.jpa.GroupEntity;
-import com.scrumkin.jpa.PermissionEntity;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,7 +16,6 @@ import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 /**
  * Project manager EJB.
@@ -150,6 +146,11 @@ public class ProjectManagerEJB implements ProjectManager {
         return group.getUsers();
     }
 
+    @Override
+    public Collection<UserStoryEntity> getProjectStories(int id) {
+        return getProject(id).getUserStories();
+    }
+
     private boolean projectNameIsUnique(String name) {
         TypedQuery<ProjectEntity> projectsQuery = em.createNamedQuery("ProjectEntity.getProjectByName",
                 ProjectEntity.class);
@@ -158,4 +159,5 @@ public class ProjectManagerEJB implements ProjectManager {
 
         return projectsQuery.getResultList().size() == 0;
     }
+
 }

@@ -9,9 +9,11 @@ import java.util.Collection;
 @Entity
 @Table(name = "users", schema = "public", catalog = "scrumkin")
 @NamedQueries({
-        @NamedQuery(name = "UserEntity.isUniqueUsername", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
+        @NamedQuery(name = "UserEntity.isUniqueUsername", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE " +
+                "false END FROM "
                 + "UserEntity u WHERE u.username = :username"),
-        @NamedQuery(name = "UserEntity.isUniqueUser", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false END FROM "
+        @NamedQuery(name = "UserEntity.isUniqueUser", query = "SELECT CASE WHEN (count(u) = 0) THEN true ELSE false " +
+                "END FROM "
                 + "UserEntity u WHERE u.name = :name AND u.email = :email"),
         @NamedQuery(name = "UserEntity.getUserByUsername", query = "SELECT u FROM UserEntity u " +
                 "WHERE u.username = :username"),
@@ -28,7 +30,10 @@ public class UserEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq")
+    @SequenceGenerator(name = "users_id_seq",
+            sequenceName = "users_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

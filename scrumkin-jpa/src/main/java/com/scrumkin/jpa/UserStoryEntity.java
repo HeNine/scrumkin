@@ -3,18 +3,7 @@ package com.scrumkin.jpa;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Matija on 25.3.2014.
@@ -22,8 +11,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user_stories", schema = "public", catalog = "scrumkin")
 @NamedQueries({
-    @NamedQuery(name = "UserStoryEntity.isUniqueTitle", query = "SELECT CASE WHEN (count(us) = 0) THEN true ELSE false END FROM "
-            + "UserStoryEntity us WHERE us.title = :title")
+        @NamedQuery(name = "UserStoryEntity.isUniqueTitle", query = "SELECT CASE WHEN (count(us) = 0) THEN true ELSE " +
+                "false END FROM "
+                + "UserStoryEntity us WHERE us.title = :title")
 })
 public class UserStoryEntity {
     private int id;
@@ -39,7 +29,10 @@ public class UserStoryEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_stories_id_seq")
+    @SequenceGenerator(name = "user_stories_id_seq",
+            sequenceName = "user_stories_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

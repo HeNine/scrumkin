@@ -16,7 +16,10 @@ public class GroupPermissionsEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_permissions_id_seq")
+    @SequenceGenerator(name = "group_permissions_id_seq",
+            sequenceName = "group_permissions_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

@@ -21,7 +21,10 @@ public class GroupEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groups_id_seq")
+    @SequenceGenerator(name = "groups_id_seq",
+            sequenceName = "groups_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

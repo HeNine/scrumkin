@@ -17,7 +17,10 @@ public class AcceptenceTestEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acceptence_tests_id_seq")
+    @SequenceGenerator(name = "acceptence_tests_id_seq",
+            sequenceName = "acceptence_tests_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

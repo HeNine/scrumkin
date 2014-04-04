@@ -5,10 +5,12 @@ import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Used to manage projects.
@@ -58,4 +60,12 @@ public interface ProjectManager {
      * @return List of developers
      */
     public Collection<UserEntity> getDevelopers(ProjectEntity project);
+
+    /**
+     * Get all user stories in a project.
+     *
+     * @param id Project id
+     * @return List of user stories
+     */
+    public Collection<UserStoryEntity> getProjectStories(int id);
 }
