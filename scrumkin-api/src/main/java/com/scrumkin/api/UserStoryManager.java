@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.scrumkin.api.exceptions.ProjectInvalidException;
 import com.scrumkin.api.exceptions.UserStoryBusinessValueZeroOrNegative;
+import com.scrumkin.api.exceptions.UserStoryEstimatedTimeNotSetException;
+import com.scrumkin.api.exceptions.UserStoryInAnotherSprintException;
 import com.scrumkin.api.exceptions.UserStoryInvalidPriorityException;
+import com.scrumkin.api.exceptions.UserStoryRealizedException;
 import com.scrumkin.api.exceptions.UserStoryTitleNotUniqueException;
 import com.scrumkin.jpa.AcceptenceTestEntity;
 import com.scrumkin.jpa.PriorityEntity;
@@ -37,7 +40,7 @@ public interface UserStoryManager {
      * @param sprint  	  Sprint to which user stories belongs to
      * @param userStories User stories to be added to sprint
      */
-	public void assignUserStoryToSprint(SprintEntity sprint, List<UserStoryEntity> userStories);
+	public void assignUserStoryToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException;
 	
     /**
      * Gets user story by id.
