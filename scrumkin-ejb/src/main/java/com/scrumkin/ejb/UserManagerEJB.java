@@ -30,88 +30,102 @@ import com.scrumkin.jpa.UserStoryEntity;
 @Stateless(mappedName = "userManager")
 public class UserManagerEJB implements UserManager {
 
-	@PersistenceContext(unitName = "scrumkin_PU")
-	private EntityManager em;
+    @PersistenceContext(unitName = "scrumkin_PU")
+    private EntityManager em;
 
-	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void addUser(String username, String password,
-			String confirmPassword, String name, String email,
-			String confirmEmail, Collection<GroupEntity> systemGroups)
-			throws UserInvalidGroupsException, UserUsernameNotUniqueException,
-			UserNotUniqueException, UserPasswordMismatchException, UserEmailMismatchException {
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addUser(String username, String password,
+                        String confirmPassword, String name, String email,
+                        String confirmEmail, Collection<GroupEntity> systemGroups)
+            throws UserInvalidGroupsException, UserUsernameNotUniqueException,
+            UserNotUniqueException, UserPasswordMismatchException, UserEmailMismatchException {
 
-		if(password != confirmPassword) {
-			throw new UserPasswordMismatchException("Passwords don't match.");
-		}
-		
-		if(email != confirmEmail) {
-			throw new UserEmailMismatchException("Emails don't match.");
-		}
-		
-		TypedQuery<Boolean> isUniqueUsernameQuery = em.createNamedQuery(
-				"UserEntity.isUniqueUsername", Boolean.class);
-		isUniqueUsernameQuery.setParameter("username", username);
+        if (!password.equals(confirmPassword)) {
+            throw new UserPasswordMismatchException("Passwords don't match.");
+        }
 
-		boolean isUniqueUsername = isUniqueUsernameQuery.getSingleResult();
-		if (!isUniqueUsername) {
-			throw new UserUsernameNotUniqueException("Username [" + username
-					+ "] is not unique.");
-		}
+        if (!email.equals(confirmEmail)) {
+            throw new UserEmailMismatchException("Emails don't match.");
+        }
+//
+//        TypedQuery<Boolean> isUniqueUsernameQuery = em.createNamedQuery(
+//                "UserEntity.isUniqueUsername", Boolean.class);
+//        isUniqueUsernameQuery.setParameter("username", username);
 
-		TypedQuery<Boolean> isUniqueUserQuery = em.createNamedQuery(
-				"UserEntity.isUniqueUser", Boolean.class);
-		isUniqueUserQuery.setParameter("name", name);
-		isUniqueUserQuery.setParameter("email", email);
+//        boolean isUniqueUsername = isUniqueUsernameQuery.getSingleResult();
+        if (!isUniqueUsername(username)) {
+            throw new UserUsernameNotUniqueException("Username [" + username
+                    + "] is not unique.");
+        }
 
-		boolean isUniqueUser = isUniqueUserQuery.getSingleResult();
-		if (!isUniqueUser) {
-			throw new UserNotUniqueException("User with name [" + name
-					+ "] and email [" + email + "] is not unique.");
-		}
-	
-		List<Integer> userGroupIDs = new ArrayList<Integer>(systemGroups.size());
-		for (GroupEntity userGroup : systemGroups) {
-			userGroupIDs.add(userGroup.getId());
-		}
+//        TypedQuery<Boolean> isUniqueUserQuery = em.createNamedQuery(
+//                "UserEntity.isUniqueUser", Boolean.class);
+//        isUniqueUserQuery.setParameter("name", name);
+//        isUniqueUserQuery.setParameter("email", email);
 
-		TypedQuery<String> invalidGroupsQuery = em.createNamedQuery(
-				"GroupEntity.invalidGroups", String.class);
-		invalidGroupsQuery.setParameter("groupIds", userGroupIDs);
+//        boolean isUniqueUser = isUniqueUserQuery.getSingleResult();
+        if (!isUniqueEmail(email)) {
+            throw new UserNotUniqueException("User with name [" + name
+                    + "] and email [" + email + "] is not unique.");
+        }
 
-		List<String> invalidGroups = invalidGroupsQuery.getResultList();
-		if (invalidGroups != null) {
-			throw new UserInvalidGroupsException("Groups "
-					+ invalidGroups.toString() + " are not valid.");
-		}
+//        List<Integer> userGroupIDs = new ArrayList<Integer>(systemGroups.size());
+//        for (GroupEntity userGroup : systemGroups) {
+//            userGroupIDs.add(userGroup.getId());
+//        }
 
-		UserEntity user = new UserEntity();
-		user.setUsername(username);
-		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-		user.setPassword(hashedPassword);
-		user.setName(name);
-		user.setEmail(email);
-		user.setGroups(systemGroups);
+//        TypedQuery<String> invalidGroupsQuery = em.createNamedQuery(
+//                "GroupEntity.invalidGroups", String.class);
+//        invalidGroupsQuery.setParameter("groupIds", userGroupIDs);
+//
+//        List<String> invalidGroups = invalidGroupsQuery.getResultList();
+//        if (invalidGroups != null) {
+//            throw new UserInvalidGroupsException("Groups "
+//                    + invalidGroups.toString() + " are not valid.");
+//        }
 
-		em.persist(user);
-	}
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+        user.setName(name);
+        user.setEmail(email);
+        user.setGroups(systemGroups);
 
-	@Override
+        em.persist(user);
+    }
+
+    @Override
     public UserEntity getUser(int id) {
-		
-    	UserEntity user = em.find(UserEntity.class, id);
+
+        UserEntity user = em.find(UserEntity.class, id);
 
         return user;
     }
-	
-	@Override
-	public List<UserEntity> getUsers() {
-		
-		TypedQuery<UserEntity> query = em.createNamedQuery(
-				"UserEntity.findAll", UserEntity.class);
-		List<UserEntity> users = query.getResultList();
-		
-		return users;
-	}
 
+    @Override
+    public List<UserEntity> getUsers() {
+
+        TypedQuery<UserEntity> query = em.createNamedQuery(
+                "UserEntity.findAll", UserEntity.class);
+        List<UserEntity> users = query.getResultList();
+
+        return users;
+    }
+
+
+    private boolean isUniqueUsername(String username) {
+        TypedQuery<UserEntity> isUniqueQuery = em.createNamedQuery("UserEntity.getUserByUsername", UserEntity.class);
+        isUniqueQuery.setParameter("username", username);
+
+        return isUniqueQuery.getResultList().size() == 0;
+    }
+
+    private boolean isUniqueEmail(String email) {
+        TypedQuery<UserEntity> isUniqueQuery = em.createNamedQuery("UserEntity.getUserByEmail", UserEntity.class);
+        isUniqueQuery.setParameter("email", email);
+
+        return isUniqueQuery.getResultList().size() == 0;
+    }
 }
