@@ -86,7 +86,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
 	}
 
 	@Override
-	public void assignUserStoryToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
+	public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
 			throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException {
 
 		List<String> userStoriesNoTime = new ArrayList<String>();
@@ -130,16 +130,20 @@ public class UserStoryManagerEJB implements UserStoryManager {
 					+ " is/were already assigned to other sprint/s.");
 		}
 
+		List<UserStoryEntity> currentStories = (List<UserStoryEntity>)sprint.getUserStories();
+		if(currentStories != null) {
+			userStories.addAll(currentStories);
+		}
 		sprint.setUserStories(userStories);
 		em.persist(sprint);
 
 	}
 
-//	@Override
-//	public UserStoryEntity getUserStory(int id) {
-//
-//		UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
-//
-//		return userStory;
-//	}
+	@Override
+	public UserStoryEntity getUserStory(int id) {
+
+		UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
+
+		return userStory;
+	}
 }

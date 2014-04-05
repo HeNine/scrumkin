@@ -35,19 +35,19 @@ public interface UserStoryManager {
 	public void addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority, int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws ProjectInvalidException, UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative;
 	
     /**
-     * Assign new user story to sprint {@code sprint}.
+     * Assign new user stories to existing ones in sprint {@code sprint}.
      *
      * @param sprint  	  Sprint to which user stories belongs to
      * @param userStories User stories to be added to sprint
      */
-	public void assignUserStoryToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException;
+	public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException;
 	
-//    /**
-//     * Gets user story by id.
-//     *
-//     * @param id User story id
-//     */
-//    public UserStoryEntity getUserStory(int id);
+    /**
+     * Gets user story by id.
+     *
+     * @param id User story id
+     */
+    public UserStoryEntity getUserStory(int id);
     
     /**
      * Gets valid priorities.
