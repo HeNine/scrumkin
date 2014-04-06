@@ -60,6 +60,11 @@ public class SprintManagerEJB implements SprintManager {
     }
 
     @Override
+    public Collection<SprintEntity> getAllSprints() {
+        return em.createNamedQuery("SprintEntity.getAllSprints", SprintEntity.class).getResultList();
+    }
+
+    @Override
     public SprintEntity getSprint(int id) {
         SprintEntity sprint = em.find(SprintEntity.class, id);
 

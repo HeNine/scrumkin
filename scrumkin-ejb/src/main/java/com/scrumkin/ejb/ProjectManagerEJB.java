@@ -157,6 +157,11 @@ public class ProjectManagerEJB implements ProjectManager {
         return getProject(id).getUserStories();
     }
 
+    @Override
+    public Collection<SprintEntity> getProjectSprints(int id) {
+        return getProject(id).getSprints();
+    }
+
     private boolean projectNameIsUnique(String name) {
         TypedQuery<ProjectEntity> projectsQuery = em.createNamedQuery("ProjectEntity.getProjectByName",
                 ProjectEntity.class);

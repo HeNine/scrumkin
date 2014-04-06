@@ -4,6 +4,7 @@ import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
 import com.scrumkin.jpa.ProjectEntity;
+import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 
@@ -75,4 +76,12 @@ public interface ProjectManager {
      * @return List of user stories
      */
     public Collection<UserStoryEntity> getProjectStories(int id);
+
+    /**
+     * Returns sprints in project.
+     *
+     * @param id Project id
+     * @return Collection of sprints
+     */
+    public Collection<SprintEntity> getProjectSprints(int id);
 }

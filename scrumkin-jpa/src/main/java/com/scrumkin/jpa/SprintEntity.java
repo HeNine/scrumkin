@@ -11,14 +11,15 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "sprints", schema = "public", catalog = "scrumkin")
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(name = "SprintEntity.isTimeSlotAvailable", query = "SELECT s " +
                 "FROM SprintEntity s " +
                 "WHERE s.project = :project " +
                 "AND (:startDate >= s.startDate AND :startDate <= s.endDate " +
                 "OR :endDate >= s.startDate AND :endDate <= s.endDate " +
-                "OR :endDate >= s.endDate AND :startDate <= s.startDate)")
-)
+                "OR :endDate >= s.endDate AND :startDate <= s.startDate)"),
+        @NamedQuery(name = "SprintEntity.getAllSprints", query = "SELECT s FROM SprintEntity s")
+})
 public class SprintEntity {
     private int id;
     private Date startDate;

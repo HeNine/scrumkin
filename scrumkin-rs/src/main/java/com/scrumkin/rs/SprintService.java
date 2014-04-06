@@ -2,6 +2,7 @@ package com.scrumkin.rs;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,6 +85,21 @@ public class SprintService {
             }
         }
 
+    }
+
+    @GET
+    public SprintJSON[] getAllSprints() {
+        Collection<SprintEntity> sprintEntities = sm.getAllSprints();
+        Iterator<SprintEntity> sIt = sprintEntities.iterator();
+        SprintJSON[] sprintJSONs = new SprintJSON[sprintEntities.size()];
+
+        for (int i = 0; i < sprintJSONs.length; i++) {
+            SprintJSON sprintJSON = new SprintJSON();
+            sprintJSON.init(sIt.next());
+            sprintJSONs[i] = sprintJSON;
+        }
+
+        return sprintJSONs;
     }
 
     @GET

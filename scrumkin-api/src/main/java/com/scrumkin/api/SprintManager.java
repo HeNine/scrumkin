@@ -36,6 +36,13 @@ public interface SprintManager {
             SprintTimeSlotNotAvailable;
 
     /**
+     * Gets all sprints.
+     *
+     * @return Collection of all sprints
+     */
+    public Collection<SprintEntity> getAllSprints();
+
+    /**
      * Get sprint by id.
      *
      * @param id Sprint id

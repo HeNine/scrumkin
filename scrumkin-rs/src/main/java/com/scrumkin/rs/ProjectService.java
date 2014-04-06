@@ -6,9 +6,11 @@ import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
 import com.scrumkin.jpa.ProjectEntity;
+import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 import com.scrumkin.rs.json.ProjectJSON;
+import com.scrumkin.rs.json.SprintJSON;
 import com.scrumkin.rs.json.UserStoryJSON;
 
 import javax.ejb.Stateless;
@@ -139,5 +141,21 @@ public class ProjectService {
         }
 
         return storiesJSON.toArray(new UserStoryJSON[0]);
+    }
+
+    @GET
+    @Path("{id}/sprints")
+    public SprintJSON[] getProjectSprints(@PathParam("id") int id) {
+        Collection<SprintEntity> sprintEntities = pm.getProjectSprints(id);
+        Iterator<SprintEntity> sIt = sprintEntities.iterator();
+        SprintJSON[] sprintJSONs = new SprintJSON[sprintEntities.size()];
+
+        for (int i = 0; i < sprintJSONs.length; i++) {
+            SprintJSON sprintJSON = new SprintJSON();
+            sprintJSON.init(sIt.next());
+            sprintJSONs[i] = sprintJSON;
+        }
+
+        return sprintJSONs;
     }
 }
