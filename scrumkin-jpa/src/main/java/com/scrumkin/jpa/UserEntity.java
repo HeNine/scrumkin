@@ -17,6 +17,8 @@ import java.util.Collection;
                 + "UserEntity u WHERE u.name = :name AND u.email = :email"),
         @NamedQuery(name = "UserEntity.getUserByUsername", query = "SELECT u FROM UserEntity u " +
                 "WHERE u.username = :username"),
+        @NamedQuery(name = "UserEntity.getUserByEmail", query = "SELECT u FROM UserEntity u " +
+                "WHERE u.email = :email"),
         @NamedQuery(name = "UserEntity.findAll", query = "SELECT u FROM UserEntity u ")
 })
 public class UserEntity {

@@ -10,12 +10,15 @@ import javax.persistence.*;
 @Entity
 @Table(name = "projects", schema = "public", catalog = "scrumkin")
 @NamedQueries({
-        @NamedQuery(name = "ProjectEntity.isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false END FROM " +
+        @NamedQuery(name = "ProjectEntity.isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false " +
+                "END FROM " +
                 "ProjectEntity p WHERE p.name = :name"),
-        @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN (count(p) <> 0) THEN true ELSE false END FROM " +
+        @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN (count(p) <> 0) THEN true ELSE false END" +
+                " FROM " +
                 "ProjectEntity p WHERE p = :project"),
         @NamedQuery(name = "ProjectEntity.getProjectByName", query = "SELECT p FROM ProjectEntity p " +
-                "WHERE p.name = :name")
+                "WHERE p.name = :name"),
+        @NamedQuery(name = "ProjectEntity.getAllProjects", query = "SELECT p FROM ProjectEntity p")
 })
 public class ProjectEntity {
     private int id;

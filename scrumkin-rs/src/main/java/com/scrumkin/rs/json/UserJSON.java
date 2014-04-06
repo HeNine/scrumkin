@@ -1,6 +1,9 @@
 package com.scrumkin.rs.json;
 
+import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.UserEntity;
+
+import java.util.Iterator;
 
 /**
  * Created by Matija on 28.3.2014.
@@ -19,6 +22,12 @@ public class UserJSON {
         this.username = ue.getUsername();
         this.name = ue.getName();
         this.email = ue.getEmail();
+
+        Iterator<GroupEntity> gIt /* hehe */ = ue.getGroups().iterator();
+        this.groups = new int[ue.getGroups().size()];
+        for (int i = 0; i < groups.length; i++) {
+            groups[i] = gIt.next().getId();
+        }
     }
 
 }
