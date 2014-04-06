@@ -16,6 +16,9 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 
+import javax.ejb.Local;
+
+@Local
 public interface UserStoryManager {
 	
     /**

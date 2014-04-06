@@ -2,6 +2,9 @@ package com.scrumkin.api;
 
 import com.scrumkin.jpa.PriorityEntity;
 
+import javax.ejb.Local;
+
+@Local
 public interface PriorityManager {
 
     /**

@@ -1,11 +1,13 @@
 package com.scrumkin.ejb;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.scrumkin.api.AcceptanceTestManager;
 import com.scrumkin.jpa.AcceptenceTestEntity;
 
+@Stateless
 public class AcceptanceTestManagerEJB implements AcceptanceTestManager {
 
     @PersistenceContext(unitName = "scrumkin_PU")

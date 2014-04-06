@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -22,128 +23,131 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 
+@Stateless
 public class UserStoryManagerEJB implements UserStoryManager {
 
-	public static List<PriorityEntity> validPriorities;
+    public static List<PriorityEntity> validPriorities;
 
-	@PersistenceContext(unitName = "scrumkin_PU")
-	private EntityManager em;
+    @PersistenceContext(unitName = "scrumkin_PU")
+    private EntityManager em;
 
-	public UserStoryManagerEJB() {
-		validPriorities = getValidPriorities();
-	}
+    public UserStoryManagerEJB() {
+        validPriorities = getValidPriorities();
+    }
 
-	@Override
-	public List<PriorityEntity> getValidPriorities() {
+    @Override
+    public List<PriorityEntity> getValidPriorities() {
 
-		if (validPriorities != null)
-			return validPriorities;
+        if (validPriorities != null)
+            return validPriorities;
 
-		TypedQuery<PriorityEntity> query = em.createNamedQuery("PriorityEntity.findAll", PriorityEntity.class);
-		List<PriorityEntity> priorities = query.getResultList();
+        TypedQuery<PriorityEntity> query = em.createNamedQuery("PriorityEntity.findAll", PriorityEntity.class);
+        List<PriorityEntity> priorities = query.getResultList();
 
-		return priorities;
-	}
+        return priorities;
+    }
 
-	@Override
-	public void addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
-			int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws ProjectInvalidException,
-			UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative {
+    @Override
+    public void addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
+                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
+            ProjectInvalidException,
+            UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative {
 
-		if (!validPriorities.contains(priority)) {
-			throw new UserStoryInvalidPriorityException("Priority name [" + priority.getName() + "] is not valid.");
-		}
+        if (!validPriorities.contains(priority)) {
+            throw new UserStoryInvalidPriorityException("Priority name [" + priority.getName() + "] is not valid.");
+        }
 
-		TypedQuery<Boolean> projectExistsQuery = em.createNamedQuery("ProjectEntity.exists", Boolean.class);
-		projectExistsQuery.setParameter("project", project);
+        TypedQuery<Boolean> projectExistsQuery = em.createNamedQuery("ProjectEntity.exists", Boolean.class);
+        projectExistsQuery.setParameter("project", project);
 
-		boolean projectExists = projectExistsQuery.getSingleResult();
-		if (projectExists) {
-			throw new ProjectInvalidException("Project named  [" + project.getName() + "] does not exist.");
-		}
+        boolean projectExists = projectExistsQuery.getSingleResult();
+        if (projectExists) {
+            throw new ProjectInvalidException("Project named  [" + project.getName() + "] does not exist.");
+        }
 
-		TypedQuery<Boolean> isUniqueTitleQuery = em.createNamedQuery("UserStoryEntity.isUniqueTitle", Boolean.class);
-		isUniqueTitleQuery.setParameter("title", title);
+        TypedQuery<Boolean> isUniqueTitleQuery = em.createNamedQuery("UserStoryEntity.isUniqueTitle", Boolean.class);
+        isUniqueTitleQuery.setParameter("title", title);
 
-		boolean isUniqueTitle = isUniqueTitleQuery.getSingleResult();
-		if (!isUniqueTitle) {
-			throw new UserStoryTitleNotUniqueException("User story title [" + title + "] is not unique.");
-		}
+        boolean isUniqueTitle = isUniqueTitleQuery.getSingleResult();
+        if (!isUniqueTitle) {
+            throw new UserStoryTitleNotUniqueException("User story title [" + title + "] is not unique.");
+        }
 
-		if (businessValue <= 0) {
-			throw new UserStoryBusinessValueZeroOrNegative();
-		}
+        if (businessValue <= 0) {
+            throw new UserStoryBusinessValueZeroOrNegative();
+        }
 
-		UserStoryEntity userStory = new UserStoryEntity();
-		userStory.setProject(project);
-		userStory.setTitle(title);
-		userStory.setStory(story);
-		userStory.setPriority(priority);
-		userStory.setBussinessValue(businessValue);
-		userStory.setAcceptenceTests(acceptanceTests);
+        UserStoryEntity userStory = new UserStoryEntity();
+        userStory.setProject(project);
+        userStory.setTitle(title);
+        userStory.setStory(story);
+        userStory.setPriority(priority);
+        userStory.setBussinessValue(businessValue);
+        userStory.setAcceptenceTests(acceptanceTests);
 
-		em.persist(userStory);
-	}
+        em.persist(userStory);
+    }
 
-	@Override
-	public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
-			throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException {
+    @Override
+    public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
+            throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException,
+            UserStoryInAnotherSprintException {
 
-		List<String> userStoriesNoTime = new ArrayList<String>();
-		List<String> userStoriesRealized = new ArrayList<String>();
-		List<String> userStoriesInAnotherSprint = new ArrayList<String>();
-		for (UserStoryEntity use : userStories) {
-			String userStoryTitle = use.getTitle();
+        List<String> userStoriesNoTime = new ArrayList<String>();
+        List<String> userStoriesRealized = new ArrayList<String>();
+        List<String> userStoriesInAnotherSprint = new ArrayList<String>();
+        for (UserStoryEntity use : userStories) {
+            String userStoryTitle = use.getTitle();
 
-			if (use.getEstimatedTime() == null) {
-				userStoriesNoTime.add(userStoryTitle);
-			}
+            if (use.getEstimatedTime() == null) {
+                userStoriesNoTime.add(userStoryTitle);
+            }
 
-			boolean userStoryAccepted = true;
-			for (AcceptenceTestEntity at : use.getAcceptenceTests()) {
-				if (!at.getAccepted()) {
-					userStoryAccepted = false;
-					break;
-				}
-			}
-			if (userStoryAccepted) {
-				userStoriesRealized.add(userStoryTitle);
-			}
+            boolean userStoryAccepted = true;
+            for (AcceptenceTestEntity at : use.getAcceptenceTests()) {
+                if (!at.getAccepted()) {
+                    userStoryAccepted = false;
+                    break;
+                }
+            }
+            if (userStoryAccepted) {
+                userStoriesRealized.add(userStoryTitle);
+            }
 
-			if (use.getSprint() == null) {
-				userStoriesInAnotherSprint.add(userStoryTitle);
-			}
-		}
+            if (use.getSprint() == null) {
+                userStoriesInAnotherSprint.add(userStoryTitle);
+            }
+        }
 
-		if (userStoriesNoTime.size() > 0) {
-			throw new UserStoryEstimatedTimeNotSetException("User storie/s " + userStoriesNoTime.toString()
-					+ " doesn't/don't specify estimated time.");
-		}
+        if (userStoriesNoTime.size() > 0) {
+            throw new UserStoryEstimatedTimeNotSetException("User storie/s " + userStoriesNoTime.toString()
+                    + " doesn't/don't specify estimated time.");
+        }
 
-		if (userStoriesRealized.size() > 0) {
-			throw new UserStoryRealizedException("User storie/s " + userStoriesRealized.toString()
-					+ " is/were already realized.");
-		}
+        if (userStoriesRealized.size() > 0) {
+            throw new UserStoryRealizedException("User storie/s " + userStoriesRealized.toString()
+                    + " is/were already realized.");
+        }
 
-		if (userStoriesInAnotherSprint.size() > 0) {
-			throw new UserStoryInAnotherSprintException("User storie/s " + userStoriesRealized.toString()
-					+ " is/were already assigned to other sprint/s.");
-		}
+        if (userStoriesInAnotherSprint.size() > 0) {
+            throw new UserStoryInAnotherSprintException("User storie/s " + userStoriesRealized.toString()
+                    + " is/were already assigned to other sprint/s.");
+        }
 
-		List<UserStoryEntity> currentStories = (List<UserStoryEntity>)sprint.getUserStories();
-		if(currentStories != null) {
-			userStories.addAll(currentStories);
-		}
-		sprint.setUserStories(userStories);
-		em.persist(sprint);
+        List<UserStoryEntity> currentStories = (List<UserStoryEntity>) sprint.getUserStories();
+        if (currentStories != null) {
+            userStories.addAll(currentStories);
+        }
+        sprint.setUserStories(userStories);
+        em.persist(sprint);
 
-	}
+    }
 
-	@Override
-	public UserStoryEntity getUserStory(int id) {
+    @Override
+    public UserStoryEntity getUserStory(int id) {
 
-		UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
+        UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
 
-		return userStory;
-	}
+        return userStory;
+    }
 }
