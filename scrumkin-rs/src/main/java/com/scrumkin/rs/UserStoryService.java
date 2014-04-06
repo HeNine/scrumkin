@@ -1,7 +1,6 @@
 package com.scrumkin.rs;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,6 @@ import com.scrumkin.api.AcceptanceTestManager;
 import com.scrumkin.api.PriorityManager;
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.SprintManager;
-import com.scrumkin.api.TaskManager;
 import com.scrumkin.api.UserStoryManager;
 import com.scrumkin.api.exceptions.ProjectInvalidException;
 import com.scrumkin.api.exceptions.UserStoryBusinessValueZeroOrNegative;
@@ -36,7 +34,6 @@ import com.scrumkin.jpa.AcceptenceTestEntity;
 import com.scrumkin.jpa.PriorityEntity;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.TaskEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 import com.scrumkin.rs.json.UserStoryJSON;
 
@@ -56,21 +53,20 @@ public class UserStoryService {
 	private AcceptanceTestManager atm;
 	@Inject
 	private SprintManager sm;
-	@Inject
-	private TaskManager tm;
 
 	@POST
 	@Path("/add/backlog")
-	public void createUserStory(UserStoryJSON userStory, @Context HttpServletResponse response) {
+	public void createUserStory(UserStoryJSON userStory, @FormParam("acceptanceTest") String[] acceptanceTests,
+			@FormParam("acceptanceTestAccepted") boolean[] acceptanceTestsAccepted,
+			@Context HttpServletResponse response) {
 
 		ProjectEntity project = pm.getProject(userStory.project);
 		PriorityEntity priority = prm.getPriority(userStory.priority);
-		List<AcceptenceTestEntity> acceptenceTests = new ArrayList<AcceptenceTestEntity>();
-		for (int i = 0; i < userStory.acceptenceTests.length; i++) {
-			int acceptanceTestID = userStory.acceptenceTests[i];
-			AcceptenceTestEntity ate = atm.getAcceptanceTest(acceptanceTestID);
-			acceptenceTests.add(ate);
-		}
+
+		int userStoryID = userStory.id;
+		UserStoryEntity use = usm.getUserStory(userStoryID);
+		List<AcceptenceTestEntity> acceptenceTests = atm.addAcceptanceTests(use, acceptanceTests,
+				acceptanceTestsAccepted);
 
 		try {
 			usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
@@ -120,41 +116,16 @@ public class UserStoryService {
 
 	@POST
 	@Path("/add/sprint")
-	public void assignUserStory(@FormParam("sprintID") int sprintID, UserStoryJSON[] userStory,
+	public void assignUserStory(@FormParam("sprintID") int sprintID, int[] userStoryIDs,
 			@Context HttpServletResponse response) {
 
 		SprintEntity sprint = sm.getSprint(sprintID);
 
 		List<UserStoryEntity> userStories = new ArrayList<UserStoryEntity>();
-		for (int i = 0; i < userStory.length; i++) {
-			UserStoryJSON currUS = userStory[i];
-			UserStoryEntity use = new UserStoryEntity();
-			use.setBussinessValue(currUS.bussinessValue);
-			use.setEstimatedTime(new BigDecimal(currUS.estimatedTime));
-			use.setId(currUS.id);
-			use.setStory(currUS.story);
-			use.setTitle(currUS.title);
-			use.setPriority(prm.getPriority(currUS.priority));
-			use.setProject(pm.getProject(currUS.project));
-			use.setSprint(sm.getSprint(currUS.sprint));
+		for (int i = 0; i < userStoryIDs.length; i++) {
+			UserStoryEntity userStory = usm.getUserStory(userStoryIDs[i]);
 
-			List<AcceptenceTestEntity> ates = new ArrayList<AcceptenceTestEntity>();
-			for (int j = 0; j < currUS.acceptenceTests.length; i++) {
-				int acceptanceTestID = currUS.acceptenceTests[j];
-				AcceptenceTestEntity ate = atm.getAcceptanceTest(acceptanceTestID);
-				ates.add(ate);
-			}
-			use.setAcceptenceTests(ates);
-
-			List<TaskEntity> tes = new ArrayList<TaskEntity>();
-			for (int j = 0; j < currUS.tasks.length; i++) {
-				int taskEntityID = currUS.tasks[j];
-				TaskEntity te = tm.getTask(taskEntityID);
-				tes.add(te);
-			}
-			use.setTasks(tes);
-
-			userStories.add(use);
+			userStories.add(userStory);
 		}
 
 		try {
@@ -196,7 +167,7 @@ public class UserStoryService {
 
 	@GET
 	@Path("/{id}")
-	public UserStoryJSON getUser(@PathParam("id") int id) {
+	public UserStoryJSON getUserStory(@PathParam("id") int id) {
 
 		UserStoryEntity use = usm.getUserStory(id);
 

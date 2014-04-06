@@ -1,5 +1,10 @@
 package com.scrumkin.api;
 
+import java.util.Collection;
+
+import javax.ejb.Local;
+import javax.validation.constraints.NotNull;
+
 import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
@@ -7,11 +12,6 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.jpa.UserStoryEntity;
-
-import javax.ejb.Local;
-import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Used to manage projects.
