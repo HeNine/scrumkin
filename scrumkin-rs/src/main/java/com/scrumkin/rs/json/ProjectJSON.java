@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
  */
 public class ProjectJSON {
 
+    public int id;
     public String name;
     public int productOwner;
     public int scrumMaster;

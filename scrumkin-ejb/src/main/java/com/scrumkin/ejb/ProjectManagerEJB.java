@@ -92,6 +92,12 @@ public class ProjectManagerEJB implements ProjectManager {
     }
 
     @Override
+    public Collection<ProjectEntity> getAllProjects() {
+
+        return em.createNamedQuery("ProjectEntity.getAllProjects", ProjectEntity.class).getResultList();
+    }
+
+    @Override
     public ProjectEntity getProject(int id) {
         ProjectEntity project = em.find(ProjectEntity.class, id);
 

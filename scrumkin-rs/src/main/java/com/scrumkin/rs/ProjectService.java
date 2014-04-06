@@ -18,10 +18,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Matija on 2.4.2014.
@@ -63,10 +60,48 @@ public class ProjectService {
     }
 
     @GET
+    public ProjectJSON[] getAllProjects() {
+        Collection<ProjectEntity> projectEntities = pm.getAllProjects();
+
+        List<ProjectJSON> projectJSONs = new LinkedList<>();
+
+        for (ProjectEntity p : projectEntities) {
+            ProjectJSON projectJSON = new ProjectJSON();
+
+            projectJSON.id = p.getId();
+            projectJSON.name = p.getName();
+            try {
+                projectJSON.productOwner = pm.getProductOwner(p).getId();
+            } catch (ProjectHasNoProductOwnerException e) {
+                projectJSON.productOwner = 0;
+            }
+            try {
+                projectJSON.scrumMaster = pm.getScrumMaster(p).getId();
+            } catch (ProjectHasNoScrumMasterException e) {
+                projectJSON.scrumMaster = 0;
+            }
+
+            Collection<UserEntity> developers = pm.getDevelopers(p);
+            projectJSON.developers = new Integer[developers.size()];
+            Iterator<UserEntity> dIt = developers.iterator();
+
+            for (int i = 0; i < projectJSON.developers.length; i++) {
+                projectJSON.developers[i] = dIt.next().getId();
+            }
+
+            projectJSONs.add(projectJSON);
+        }
+
+        return projectJSONs.toArray(new ProjectJSON[0]);
+    }
+
+    @GET
     @Path("{id}")
     public ProjectJSON getProject(@PathParam("id") int id) {
         ProjectJSON project = new ProjectJSON();
         ProjectEntity projectEntity = pm.getProject(id);
+
+        project.id = projectEntity.getId();
 
         project.name = projectEntity.getName();
         try {
