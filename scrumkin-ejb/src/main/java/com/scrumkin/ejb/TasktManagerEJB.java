@@ -11,6 +11,7 @@ public class TasktManagerEJB implements TaskManager {
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
     
+    @Override
     public TaskEntity getTask(int id) {
     	TaskEntity task = em.find(TaskEntity.class, id);
 

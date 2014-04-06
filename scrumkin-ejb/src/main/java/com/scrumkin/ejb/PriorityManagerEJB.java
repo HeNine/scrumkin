@@ -11,6 +11,7 @@ public class PriorityManagerEJB implements PriorityManager {
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
     
+    @Override
     public PriorityEntity getPriority(int id) {
     	PriorityEntity priority = em.find(PriorityEntity.class, id);
 

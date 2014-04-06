@@ -38,6 +38,7 @@ public class GroupManagerEJB implements GroupManager {
         validPermissions = getValidPermissions();
     }
 
+    @Override
     public List<PermissionEntity> getValidPermissions() {
         TypedQuery<PermissionEntity> query = em.createNamedQuery(
                 "PermissionEntity.findAll", PermissionEntity.class);
@@ -107,6 +108,7 @@ public class GroupManagerEJB implements GroupManager {
         em.persist(user);
     }
 
+    @Override
     public GroupEntity getGroup(int id) {
         GroupEntity group = em.find(GroupEntity.class, id);
 

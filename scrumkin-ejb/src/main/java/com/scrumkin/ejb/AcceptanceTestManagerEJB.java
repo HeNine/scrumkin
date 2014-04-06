@@ -11,6 +11,7 @@ public class AcceptanceTestManagerEJB implements AcceptanceTestManager {
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
     
+    @Override
     public AcceptenceTestEntity getAcceptanceTest(int id) {
     	AcceptenceTestEntity acceptanceTest = em.find(AcceptenceTestEntity.class, id);
 

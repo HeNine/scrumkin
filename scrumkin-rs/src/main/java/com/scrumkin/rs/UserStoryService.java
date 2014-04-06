@@ -147,8 +147,9 @@ public class UserStoryService {
 			use.setAcceptenceTests(ates);
 
 			List<TaskEntity> tes = new ArrayList<TaskEntity>();
-			for (int j = 0; j < userStory[i].tasks.length; i++) {
-				TaskEntity te = tm.getTask(userStory[i].tasks[j]);
+			for (int j = 0; j < currUS.tasks.length; i++) {
+				int taskEntityID = currUS.tasks[j];
+				TaskEntity te = tm.getTask(taskEntityID);
 				tes.add(te);
 			}
 			use.setTasks(tes);
