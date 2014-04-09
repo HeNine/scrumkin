@@ -1,9 +1,7 @@
 package com.scrumkin.rs;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -19,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.scrumkin.api.GroupManager;
+import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.exceptions.UserEmailMismatchException;
 import com.scrumkin.api.exceptions.UserInvalidGroupsException;
@@ -26,7 +25,9 @@ import com.scrumkin.api.exceptions.UserNotUniqueException;
 import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
+import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.rs.json.ProjectJSON;
 import com.scrumkin.rs.json.UserJSON;
 
 @Path("users")
@@ -39,6 +40,8 @@ public class UserService {
     private UserManager um;
     @Inject
     private GroupManager gm;
+    @Inject
+    private ProjectManager pm;
 
     @POST
     @Path("/add")
@@ -135,5 +138,23 @@ public class UserService {
         }
 
         return users.toArray(new UserJSON[0]);
+    }
+
+    @GET
+    @Path("{id}/projects")
+    public ProjectJSON[] getUserProjects(@PathParam("id") int id) {
+        Collection<ProjectEntity> projectEntities = um.getUserProject(id);
+
+        ProjectJSON[] projectJSONs = new ProjectJSON[projectEntities.size()];
+
+        Iterator<ProjectEntity> pIt = projectEntities.iterator();
+
+        for (int i = 0; i < projectJSONs.length; i++) {
+            ProjectJSON projectJSON = new ProjectJSON();
+            projectJSON.init(pIt.next(), pm);
+            projectJSONs[i] = projectJSON;
+        }
+
+        return projectJSONs;
     }
 }

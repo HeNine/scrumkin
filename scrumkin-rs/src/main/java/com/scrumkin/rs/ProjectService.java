@@ -1,6 +1,7 @@
 package com.scrumkin.rs;
 
 import com.scrumkin.api.ProjectManager;
+import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
@@ -35,6 +36,8 @@ public class ProjectService {
     private UserManager um;
     @Inject
     private ProjectManager pm;
+    @Inject
+    private UserLoginManager ulm;
 
     @POST
     public void createProject(ProjectJSON project, @Context HttpServletResponse response) {

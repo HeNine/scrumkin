@@ -10,6 +10,9 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.xml.ws.spi.http.HttpContext;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -24,6 +27,9 @@ public class UserLoginManagerEJB implements UserLoginManager {
 
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
+
+    @Context
+    private HttpHeaders httpHeaders;
 
     private Random r = new Random();
 

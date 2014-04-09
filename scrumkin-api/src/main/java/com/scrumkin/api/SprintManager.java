@@ -36,6 +36,24 @@ public interface SprintManager {
             SprintTimeSlotNotAvailable;
 
     /**
+     * Update an existing sprint
+     *
+     * @param id        sprint ID
+     * @param startDate Sprint start date
+     * @param endDate   Sprint end date
+     * @param velocity  Sprint velocity
+     * @param stories   List of story ids
+     * @throws SprintDatesOutOfOrderException
+     * @throws SprintStartDateInThePast
+     * @throws SprintVelocityZeroOrNegative
+     * @throws SprintTimeSlotNotAvailable
+     */
+    public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
+                             int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
+            SprintVelocityZeroOrNegative,
+            SprintTimeSlotNotAvailable;
+
+    /**
      * Gets all sprints.
      *
      * @return Collection of all sprints

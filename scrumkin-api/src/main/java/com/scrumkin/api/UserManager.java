@@ -11,6 +11,7 @@ import com.scrumkin.api.exceptions.UserNotUniqueException;
 import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
+import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
 
 /**
@@ -22,7 +23,6 @@ public interface UserManager {
     /**
      * Add new user to project {@code project}.
      *
-     * @param project  		  Project name
      * @param password 	 	  User password
      * @param confirmPassword User confirmed password
      * @param name 			  User name
@@ -47,4 +47,12 @@ public interface UserManager {
      * Gets all users.
      */
     public List<UserEntity> getUsers();
+
+    /**
+     * Gets all projects user is on.
+     *
+     * @param id User id
+     * @return Collection of projects
+     */
+    public Collection<ProjectEntity> getUserProject(int id);
 }

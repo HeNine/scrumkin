@@ -1,8 +1,6 @@
 package com.scrumkin.ejb;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import com.scrumkin.jpa.ProjectEntity;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.scrumkin.api.UserManager;
@@ -110,6 +109,19 @@ public class UserManagerEJB implements UserManager {
         List<UserEntity> users = query.getResultList();
 
         return users;
+    }
+
+    @Override
+    public Collection<ProjectEntity> getUserProject(int id) {
+        Set<ProjectEntity> projects = new HashSet<>();
+
+        for(GroupEntity g : getUser(id).getGroups()){
+            if(g.getProject()!= null){
+                projects.add(g.getProject());
+            }
+        }
+
+        return projects;
     }
 
 

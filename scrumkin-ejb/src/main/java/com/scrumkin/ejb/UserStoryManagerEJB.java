@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -32,6 +33,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
     private EntityManager em;
 
     public UserStoryManagerEJB() {
+
+    }
+
+    @PostConstruct
+    public void init() {
         validPriorities = getValidPriorities();
     }
 

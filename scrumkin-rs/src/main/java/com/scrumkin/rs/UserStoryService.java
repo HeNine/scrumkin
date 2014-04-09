@@ -56,8 +56,8 @@ public class UserStoryService {
 
 	@POST
 	@Path("/add/backlog")
-	public void createUserStory(UserStoryJSON userStory, @FormParam("acceptanceTest") String[] acceptanceTests,
-			@FormParam("acceptanceTestAccepted") boolean[] acceptanceTestsAccepted,
+	public void createUserStory(UserStoryJSON userStory, /*@FormParam("acceptanceTest") String[] acceptanceTests,
+			@FormParam("acceptanceTestAccepted") boolean[] acceptanceTestsAccepted,*/
 			@Context HttpServletResponse response) {
 
 		ProjectEntity project = pm.getProject(userStory.project);
@@ -65,12 +65,14 @@ public class UserStoryService {
 
 		int userStoryID = userStory.id;
 		UserStoryEntity use = usm.getUserStory(userStoryID);
-		List<AcceptenceTestEntity> acceptenceTests = atm.addAcceptanceTests(use, acceptanceTests,
-				acceptanceTestsAccepted);
+//		List<AcceptenceTestEntity> acceptenceTests = atm.addAcceptanceTests(use, acceptanceTests,
+//				acceptanceTestsAccepted);
 
 		try {
-			usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
-					acceptenceTests);
+//			usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
+//					acceptenceTests);
+            usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
+                    null);
 		} catch (ProjectInvalidException e) {
 			response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
 			try {

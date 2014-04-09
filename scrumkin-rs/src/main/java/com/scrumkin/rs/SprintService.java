@@ -9,12 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -114,6 +109,48 @@ public class SprintService {
         sprintJSON.velocity = sprint.getVelocity();
 
         return sprintJSON;
+    }
+
+    @PUT
+    @Path("/{id}")
+    public void updateSprint(SprintJSON sprint, @PathParam("id") int id, @Context HttpServletResponse response) {
+        try {
+            sm.updateSprint(sprint.id == 0 ? sm.getSprint(id).getId() : sprint.id, sprint.startDate, sprint.endDate,
+                    sprint.velocity, sprint.stories);
+        } catch (SprintDatesOutOfOrderException e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("Sprint dates out of order");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (SprintStartDateInThePast sprintStartDateInThePast) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("Sprint start date is in the past");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (SprintVelocityZeroOrNegative sprintVelocityZeroOrNegative) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("Sprint velocity is zero or negative");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (SprintTimeSlotNotAvailable sprintTimeSlotNotAvailable) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("Sprint date is not available");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+
     }
 
     @GET
