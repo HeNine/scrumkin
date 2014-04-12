@@ -1,28 +1,17 @@
 package com.scrumkin.ejb;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.scrumkin.api.UserStoryManager;
+import com.scrumkin.api.exceptions.*;
+import com.scrumkin.jpa.*;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import com.scrumkin.api.UserStoryManager;
-import com.scrumkin.api.exceptions.ProjectInvalidException;
-import com.scrumkin.api.exceptions.UserStoryBusinessValueZeroOrNegative;
-import com.scrumkin.api.exceptions.UserStoryEstimatedTimeNotSetException;
-import com.scrumkin.api.exceptions.UserStoryInAnotherSprintException;
-import com.scrumkin.api.exceptions.UserStoryInvalidPriorityException;
-import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.api.exceptions.UserStoryTitleNotUniqueException;
-import com.scrumkin.jpa.AcceptenceTestEntity;
-import com.scrumkin.jpa.PriorityEntity;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.UserStoryEntity;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Stateless
 public class UserStoryManagerEJB implements UserStoryManager {
@@ -54,8 +43,13 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
-    public void addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
-                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
+    public void addTestToStory(AcceptenceTestEntity acceptenceTestEntity) {
+        em.persist(acceptenceTestEntity);
+    }
+
+    @Override
+    public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
+                                     int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             ProjectInvalidException,
             UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative {
 
@@ -63,19 +57,19 @@ public class UserStoryManagerEJB implements UserStoryManager {
             throw new UserStoryInvalidPriorityException("Priority name [" + priority.getName() + "] is not valid.");
         }
 
-        TypedQuery<Boolean> projectExistsQuery = em.createNamedQuery("ProjectEntity.exists", Boolean.class);
-        projectExistsQuery.setParameter("project", project);
+//        TypedQuery<Boolean> projectExistsQuery = em.createNamedQuery("ProjectEntity.exists", Boolean.class);
+//        projectExistsQuery.setParameter("project", project);
+//
+//        boolean projectExists = projectExistsQuery.getSingleResult();
+//        if (projectExists) {
+//            throw new ProjectInvalidException("Project named  [" + project.getName() + "] does not exist.");
+//        }
 
-        boolean projectExists = projectExistsQuery.getSingleResult();
-        if (projectExists) {
-            throw new ProjectInvalidException("Project named  [" + project.getName() + "] does not exist.");
-        }
-
-        TypedQuery<Boolean> isUniqueTitleQuery = em.createNamedQuery("UserStoryEntity.isUniqueTitle", Boolean.class);
-        isUniqueTitleQuery.setParameter("title", title);
-
-        boolean isUniqueTitle = isUniqueTitleQuery.getSingleResult();
-        if (!isUniqueTitle) {
+//        TypedQuery<Boolean> isUniqueTitleQuery = em.createNamedQuery("UserStoryEntity.isUniqueTitle", Boolean.class);
+//        isUniqueTitleQuery.setParameter("title", title);
+//
+//        boolean isUniqueTitle = isUniqueTitleQuery.getSingleResult();
+        if (!isUniqueTitle(title)) {
             throw new UserStoryTitleNotUniqueException("User story title [" + title + "] is not unique.");
         }
 
@@ -92,6 +86,8 @@ public class UserStoryManagerEJB implements UserStoryManager {
         userStory.setAcceptenceTests(acceptanceTests);
 
         em.persist(userStory);
+
+        return userStory.getId();
     }
 
     @Override
@@ -155,5 +151,13 @@ public class UserStoryManagerEJB implements UserStoryManager {
         UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
 
         return userStory;
+    }
+
+    private boolean isUniqueTitle(String title) {
+        TypedQuery<UserStoryEntity> titleQuery = em.createQuery("SELECT s FROM UserStoryEntity s WHERE s" +
+                ".title=:title", UserStoryEntity.class);
+        titleQuery.setParameter("title", title);
+
+        return titleQuery.getResultList().size() == 0;
     }
 }

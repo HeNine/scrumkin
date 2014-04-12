@@ -24,10 +24,10 @@ public interface UserStoryManager {
     /**
      * Add new user story to project {@code project}.
      *
-     * @param project  		  Project to which the user story belongs to
-     * @param title 	 	  Story title
-     * @param story      	  User story description
-     * @param priority 		  User story priority
+     * @param project          Project to which the user story belongs to
+     * @param title          Story title
+     * @param story          User story description
+     * @param priority          User story priority
      * @param businessValue   User story business value
      * @param acceptanceTests Acceptance tests for user story
      * @throws ProjectInvalidException              if project doesn't exist
@@ -35,7 +35,8 @@ public interface UserStoryManager {
      * @throws UserStoryTitleNotUniqueException     if user story with same title already exists
      * @throws UserStoryBusinessValueZeroOrNegative if user story business value is invalid (zero or less)
      */
-	public void addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority, int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws ProjectInvalidException, UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative;
+	public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
+                                     int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws ProjectInvalidException, UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative;
 	
     /**
      * Assign new user stories to existing ones in sprint {@code sprint}.
@@ -56,4 +57,11 @@ public interface UserStoryManager {
      * Gets valid priorities.
      */
     public List<PriorityEntity> getValidPriorities();
+
+    /**
+     * Add acceptance test to story.
+     *
+     * @param acceptenceTestEntity Test to be added
+     */
+    public void addTestToStory(AcceptenceTestEntity acceptenceTestEntity);
 }

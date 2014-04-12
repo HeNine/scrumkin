@@ -22,27 +22,37 @@
             <!-- NAVIGATION -->
             <div class="row">
                 <div class="row">
-                    <div class="col-sm-10">
+                    <div class="col-sm-3">
                         <img alt="scrumkin" src="img/title.png" width="150" height="90" />
                     </div>
-                    
-                    <div class="col-sm-2">
-                        <span ng-show="userLogged">Logged in as: <label> {{userLogged.name}} </label></span>
-                        <ul class="navbar nav nav-justified">
-                            <li ng-show="userLogged"><a href="#Login">Log out</a></li>
-                            <li ng-hide="userLogged"><a href="#Login">Log in</a></li>
-                        </ul>
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <div class="col-sm-4" ng-show="userLogged">
+                                <span>Current project: {{currentProjectName}} (ID: {{currentProjectID}}) </span>
+                                <br/><a href="#ChooseProject">Change current project</a>
+                                <br/><span>Your role: {{currentProjectRole}} </span>                                
+                            </div>
+                            <div class="col-sm-4">
+                                <span ng-show="userLogged">Logged in as: <label> {{userUname}}  </label></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span ng-show="userLogged">Usertype: <label> {{usertypeDesc}}  </label></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-sm btn-default" ng-show="userLogged" ng-controller="Logout" ng-click="processLogout()">Log out</button>
                     </div>
                 </div>
                 <div class="row">                    
-                    <ul class="navbar nav nav-justified">
+                    <ul class="navbar nav nav-justified" ng-show="userLogged">
                         <li><a href="#ProjWall">Project wall</a></li>
-                        <li><a href="#">Product backlog</a></li>
-                        <li><a href="#">Sprint backlog</a></li>
-                        <li><a href="#">My tasks</a></li>
-                        <li><a href="#">Progress report</a></li>
-                        <li><a href="#AdminConsole" >Administration</a></li>                        
-                        <li><a href="#ScrumMasterConsole">Manage projects</a></li>
+                        <li><a href="#PBacklog">Product backlog</a></li>
+                        <li><a href="#SBacklog">Sprint backlog</a></li>
+                        <li><a href="#Tasks">My tasks</a></li>
+                        <li><a href="#Progress">Progress report</a></li>
+                        <li ng-show="isAdmin"><a href="#AdminConsole" >Administration</a></li>                        
+                        <li ng-show="isScrumMaster"><a href="#ScrumMasterConsole">Manage project</a></li>
                     </ul>
                 </div>
             </div>
@@ -76,6 +86,10 @@
         <script src="app/controllers/Login.js" type="text/javascript"></script>
         <script src="app/controllers/AdminConsole.js" type="text/javascript"></script>
         <script src="app/controllers/ScrumMasterConsole.js" type="text/javascript"></script>
-
+        <script src="app/controllers/Logout.js" type="text/javascript"></script>
+        <script src="app/controllers/ChooseProject.js" type="text/javascript"></script>
+        <script src="app/controllers/PBacklog.js" type="text/javascript"></script>
+        <script src="app/controllers/SBacklog.js" type="text/javascript"></script>
+        
     </body>
 </html>
