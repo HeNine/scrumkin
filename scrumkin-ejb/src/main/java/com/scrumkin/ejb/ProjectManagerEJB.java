@@ -84,7 +84,6 @@ public class ProjectManagerEJB implements ProjectManager {
             for (UserEntity user : developers) {
                 gm.addUserToGroup(user, gm.getGroup(groupId));
             }
-            gm.addUserToGroup(scrumMaster, gm.getGroup(groupId));
         } catch (PermissionInvalidException e) {
         }
 
