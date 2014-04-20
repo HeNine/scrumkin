@@ -86,6 +86,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
         userStory.setAcceptenceTests(acceptanceTests);
 
         em.persist(userStory);
+        em.persist(project);
 
         return userStory.getId();
     }
