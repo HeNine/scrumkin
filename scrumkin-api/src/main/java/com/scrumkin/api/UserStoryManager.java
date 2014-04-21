@@ -3,13 +3,7 @@ package com.scrumkin.api;
 import java.util.Collection;
 import java.util.List;
 
-import com.scrumkin.api.exceptions.ProjectInvalidException;
-import com.scrumkin.api.exceptions.UserStoryBusinessValueZeroOrNegative;
-import com.scrumkin.api.exceptions.UserStoryEstimatedTimeNotSetException;
-import com.scrumkin.api.exceptions.UserStoryInAnotherSprintException;
-import com.scrumkin.api.exceptions.UserStoryInvalidPriorityException;
-import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.api.exceptions.UserStoryTitleNotUniqueException;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.AcceptenceTestEntity;
 import com.scrumkin.jpa.PriorityEntity;
 import com.scrumkin.jpa.ProjectEntity;
@@ -74,5 +68,5 @@ public interface UserStoryManager {
      * @param id   Story id
      * @param time Estimated time
      */
-    public void setStoryTime(int id, int time);
+    public void setStoryTime(int id, int time) throws UserStoryEstimatedTimeMustBePositive;
 }

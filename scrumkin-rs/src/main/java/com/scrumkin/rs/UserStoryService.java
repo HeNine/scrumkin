@@ -7,13 +7,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,13 +17,7 @@ import com.scrumkin.api.PriorityManager;
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.UserStoryManager;
-import com.scrumkin.api.exceptions.ProjectInvalidException;
-import com.scrumkin.api.exceptions.UserStoryBusinessValueZeroOrNegative;
-import com.scrumkin.api.exceptions.UserStoryEstimatedTimeNotSetException;
-import com.scrumkin.api.exceptions.UserStoryInAnotherSprintException;
-import com.scrumkin.api.exceptions.UserStoryInvalidPriorityException;
-import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.api.exceptions.UserStoryTitleNotUniqueException;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.AcceptenceTestEntity;
 import com.scrumkin.jpa.PriorityEntity;
 import com.scrumkin.jpa.ProjectEntity;
@@ -180,6 +168,23 @@ public class UserStoryService {
         userStoryJSON.init(use);
 
         return userStoryJSON;
+    }
+
+    @PUT
+    @Path("/{id}")
+    public void updateUserStory(UserStoryJSON userStoryJSON, @PathParam("id") int id,
+                                @Context HttpServletResponse response) {
+        try {
+            usm.setStoryTime(id, userStoryJSON.estimatedTime);
+        } catch (UserStoryEstimatedTimeMustBePositive userStoryEstimatedTimeMustBePositive) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("User story estimated time must be positive");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     @GET
