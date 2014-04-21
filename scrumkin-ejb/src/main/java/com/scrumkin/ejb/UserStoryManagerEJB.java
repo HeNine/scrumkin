@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +46,15 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public void addTestToStory(AcceptenceTestEntity acceptenceTestEntity) {
         em.persist(acceptenceTestEntity);
+    }
+
+    @Override
+    public void setStoryTime(int id, int time) {
+        UserStoryEntity userStoryEntity = getUserStory(id);
+
+        userStoryEntity.setEstimatedTime(BigDecimal.valueOf(time));
+
+        em.persist(userStoryEntity);
     }
 
     @Override
