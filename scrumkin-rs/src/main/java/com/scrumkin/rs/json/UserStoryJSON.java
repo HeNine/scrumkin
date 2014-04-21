@@ -14,7 +14,7 @@ public class UserStoryJSON {
     public String title;
     public String story;
     public int bussinessValue;
-    public int estimatedTime;
+    public double estimatedTime;
     public int[] acceptenceTests;
     public int[] tasks;
     public int priority;
@@ -28,7 +28,7 @@ public class UserStoryJSON {
         bussinessValue = userStory.getBussinessValue();
 
         try {
-            estimatedTime = userStory.getEstimatedTime().intValue();
+            estimatedTime = userStory.getEstimatedTime().doubleValue();
         } catch (NullPointerException e) {
             estimatedTime = 0;
         }
