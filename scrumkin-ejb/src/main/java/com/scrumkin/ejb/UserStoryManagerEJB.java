@@ -143,7 +143,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
         }
 
         if (userStoriesNoTime.size() > 0) {
-            throw new UserStoryEstimatedTimeNotSetException("User storie/s " + userStoriesNoTime.toString()
+            throw new UserStoryEstimatedTimeNotSetException("User story/ies " + userStoriesNoTime.toString()
                     + " doesn't/don't specify estimated time.");
         }
 

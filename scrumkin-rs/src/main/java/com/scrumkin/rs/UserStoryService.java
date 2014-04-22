@@ -46,66 +46,31 @@ public class UserStoryService {
 
     @POST
     @Path("/add/backlog")
-    public void createUserStory(UserStoryJSON userStory, /*@FormParam("acceptanceTest") String[] acceptanceTests,
-            @FormParam("acceptanceTestAccepted") boolean[] acceptanceTestsAccepted,*/
-                                @Context HttpServletResponse response) {
+    public void createUserStory(UserStoryJSON userStory, @Context HttpServletResponse response) {
 
         ProjectEntity project = pm.getProject(userStory.project);
         PriorityEntity priority = prm.getPriority(userStory.priority);
 
-        int userStoryID = userStory.id;
-        UserStoryEntity use = usm.getUserStory(userStoryID);
-//		List<AcceptenceTestEntity> acceptenceTests = atm.addAcceptanceTests(use, acceptanceTests,
-//				acceptanceTestsAccepted);
-
         try {
-//			usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
-//					acceptenceTests);
-            userStoryID = usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority,
-                    userStory.bussinessValue,
+            usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
                     null);
         } catch (ProjectInvalidException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Project doesn't exist");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryInvalidPriorityException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Priority name " + priority.getName() + " is invalid");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryTitleNotUniqueException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("User story with name " + userStory.title + " already exists");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryBusinessValueZeroOrNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Business value must be positive");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, "Business value must be positive");
         }
 
         response.setStatus(Response.Status.OK.getStatusCode());
-        try {
-            response.getOutputStream().println(Integer.toString(userStoryID));
-            response.getOutputStream().close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
+        HelperClass.exceptionHandler(response, "User story " + userStory.title + " successfully added to project " +
+                project.getName() + " backlog");
     }
 
     @PUT
@@ -127,45 +92,20 @@ public class UserStoryService {
             usm.assignUserStoriesToSprint(sprint, userStoryEntities);
         } catch (UserStoryEstimatedTimeNotSetException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Estimated time not set");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryRealizedException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Some use stories are already realized");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryInThisSprintException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Some user stories are already assigned to this sprint");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryInAnotherSprintException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Some user stories are already assigned to some other sprints");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, e.getMessage());
         }
 
         response.setStatus(Response.Status.OK.getStatusCode());
-        try {
-            response.getOutputStream().println("User stories successfully assigned to a sprint");
-            response.getOutputStream().close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        HelperClass.exceptionHandler(response, "User stories successfully assigned to sprint " + sprintId);
     }
 
     @GET
