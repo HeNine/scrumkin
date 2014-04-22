@@ -138,7 +138,7 @@ public class UserStoryEntity {
         this.priority = priority;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     public ProjectEntity getProject() {
         return project;

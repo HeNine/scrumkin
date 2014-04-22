@@ -49,7 +49,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
-    public void setStoryTime(int id, int time) throws UserStoryEstimatedTimeMustBePositive {
+    public void setStoryTime(int id, double time) throws UserStoryEstimatedTimeMustBePositive {
         if (time < 0) {
             throw new UserStoryEstimatedTimeMustBePositive();
         }

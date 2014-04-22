@@ -68,5 +68,5 @@ public interface UserStoryManager {
      * @param id   Story id
      * @param time Estimated time
      */
-    public void setStoryTime(int id, int time) throws UserStoryEstimatedTimeMustBePositive;
+    public void setStoryTime(int id, double time) throws UserStoryEstimatedTimeMustBePositive;
 }
