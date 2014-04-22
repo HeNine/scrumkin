@@ -41,7 +41,7 @@ public interface UserStoryManager {
      * @param userStories User stories to be added to sprint
      */
     public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws
-            UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInAnotherSprintException;
+            UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInThisSprintException, UserStoryInAnotherSprintException;
 
     /**
      * Gets user story by id.

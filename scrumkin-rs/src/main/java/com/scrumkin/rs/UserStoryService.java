@@ -2,6 +2,7 @@ package com.scrumkin.rs;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -107,22 +108,23 @@ public class UserStoryService {
 
     }
 
-    @POST
-    @Path("/add/sprint")
-    public void assignUserStory(@FormParam("sprintID") int sprintID, int[] userStoryIDs,
+    @PUT
+    @Path("/add/sprint/{id}")
+    public void assignUserStories(@PathParam("id") int sprintId, List<UserStoryJSON> userStoriesJSON,
                                 @Context HttpServletResponse response) {
 
-        SprintEntity sprint = sm.getSprint(sprintID);
+        if(userStoriesJSON.get(0).sprint != 0)
+            sprintId = userStoriesJSON.get(0).sprint;
+        SprintEntity sprint = sm.getSprint(sprintId);
 
-        List<UserStoryEntity> userStories = new ArrayList<UserStoryEntity>();
-        for (int i = 0; i < userStoryIDs.length; i++) {
-            UserStoryEntity userStory = usm.getUserStory(userStoryIDs[i]);
-
-            userStories.add(userStory);
+        List<UserStoryEntity> userStoryEntities = new LinkedList<>();
+        for(int i = 0; i < userStoriesJSON.size(); i++) {
+            UserStoryEntity userStory = usm.getUserStory(userStoriesJSON.get(0).id);
+            userStoryEntities.add(userStory);
         }
 
         try {
-            usm.assignUserStoriesToSprint(sprint, userStories);
+            usm.assignUserStoriesToSprint(sprint, userStoryEntities);
         } catch (UserStoryEstimatedTimeNotSetException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             try {
@@ -135,6 +137,14 @@ public class UserStoryService {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             try {
                 response.getOutputStream().println("Some use stories are already realized");
+                response.getOutputStream().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } catch (UserStoryInThisSprintException e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            try {
+                response.getOutputStream().println("Some user stories are already assigned to this sprint");
                 response.getOutputStream().close();
             } catch (IOException e1) {
                 e1.printStackTrace();

@@ -100,7 +100,6 @@ public class UserStoryManagerEJB implements UserStoryManager {
         userStory.setAcceptenceTests(acceptanceTests);
 
         em.persist(userStory);
-        em.persist(project);
 
         return userStory.getId();
     }
@@ -108,10 +107,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
             throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException,
-            UserStoryInAnotherSprintException {
+            UserStoryInThisSprintException, UserStoryInAnotherSprintException {
 
         List<String> userStoriesNoTime = new ArrayList<String>();
         List<String> userStoriesRealized = new ArrayList<String>();
+        List<String> userStoriesInThisSprint = new ArrayList<String>();
         List<String> userStoriesInAnotherSprint = new ArrayList<String>();
         for (UserStoryEntity use : userStories) {
             String userStoryTitle = use.getTitle();
@@ -120,19 +120,25 @@ public class UserStoryManagerEJB implements UserStoryManager {
                 userStoriesNoTime.add(userStoryTitle);
             }
 
-            boolean userStoryAccepted = true;
-            for (AcceptenceTestEntity at : use.getAcceptenceTests()) {
-                if (!at.getAccepted()) {
-                    userStoryAccepted = false;
-                    break;
+            Collection<AcceptenceTestEntity> acceptanceTests = use.getAcceptenceTests();
+            if(acceptanceTests.size() > 0) {
+                boolean userStoryAccepted = true;
+                for (AcceptenceTestEntity acceptanceTest : acceptanceTests) {
+                    if (!acceptanceTest.getAccepted()) {
+                        userStoryAccepted = false;
+                        break;
+                    }
+                }
+                if (userStoryAccepted) {
+                    userStoriesRealized.add(userStoryTitle);
                 }
             }
-            if (userStoryAccepted) {
-                userStoriesRealized.add(userStoryTitle);
-            }
 
-            if (use.getSprint() == null) {
-                userStoriesInAnotherSprint.add(userStoryTitle);
+            if (use.getSprint() != null) {
+                if(use.getSprint().equals(sprint))
+                    userStoriesInThisSprint.add(userStoryTitle);
+                else
+                    userStoriesInAnotherSprint.add(userStoryTitle);
             }
         }
 
@@ -146,8 +152,13 @@ public class UserStoryManagerEJB implements UserStoryManager {
                     + " is/were already realized.");
         }
 
+        if (userStoriesInThisSprint.size() > 0) {
+            throw new UserStoryInThisSprintException("User storie/s " + userStoriesInThisSprint.toString()
+                    + " is/were already assigned to this sprint.");
+        }
+
         if (userStoriesInAnotherSprint.size() > 0) {
-            throw new UserStoryInAnotherSprintException("User storie/s " + userStoriesRealized.toString()
+            throw new UserStoryInAnotherSprintException("User storie/s " + userStoriesInAnotherSprint.toString()
                     + " is/were already assigned to other sprint/s.");
         }
 
@@ -155,9 +166,13 @@ public class UserStoryManagerEJB implements UserStoryManager {
         if (currentStories != null) {
             userStories.addAll(currentStories);
         }
-        sprint.setUserStories(userStories);
-        em.persist(sprint);
 
+//      sprint.setUserStories(userStories);
+//      em.persist(sprint);
+        for(UserStoryEntity userStory : userStories) {
+            userStory.setSprint(sprint);
+            em.persist(userStory);
+        }
     }
 
     @Override

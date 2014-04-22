@@ -114,4 +114,8 @@ public class SprintEntity {
     public void setUserStories(Collection<UserStoryEntity> userStories) {
         this.userStories = userStories;
     }
+
+    public void addUserStorie(UserStoryEntity userStorie) {
+        this.userStories.add(userStorie);
+    }
 }

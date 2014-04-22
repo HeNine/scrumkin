@@ -96,6 +96,7 @@ public class SprintManagerEJB implements SprintManager {
             usm.assignUserStoriesToSprint(sprint, storyEntityList);
         } catch (UserStoryEstimatedTimeNotSetException e) {
         } catch (UserStoryRealizedException e) {
+        } catch (UserStoryInThisSprintException e) {
         } catch (UserStoryInAnotherSprintException e) {
         }
 
