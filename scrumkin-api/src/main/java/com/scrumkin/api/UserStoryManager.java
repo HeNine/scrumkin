@@ -95,5 +95,12 @@ public interface UserStoryManager {
      * @param accepted Test completion status
      */
     public void updateTestCompletion(int id, Boolean accepted);
+
+    /**
+     * Delete the story
+     *
+     * @param id Story id
+     */
+    public void deleteStory(int id);
 }
 

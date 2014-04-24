@@ -110,7 +110,7 @@ public class UserStoryEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "userStory")
+    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE})
     public Collection<AcceptenceTestEntity> getAcceptenceTests() {
         return acceptenceTests;
     }
@@ -119,7 +119,7 @@ public class UserStoryEntity {
         this.acceptenceTests = acceptenceTests;
     }
 
-    @OneToMany(mappedBy = "userStory")
+    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE})
     public Collection<TaskEntity> getTasks() {
         return tasks;
     }
