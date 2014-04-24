@@ -76,14 +76,14 @@ public class UserStoryService {
     @PUT
     @Path("/add/sprint/{id}")
     public void assignUserStories(@PathParam("id") int sprintId, List<UserStoryJSON> userStoriesJSON,
-                                @Context HttpServletResponse response) {
+                                  @Context HttpServletResponse response) {
 
-        if(userStoriesJSON.get(0).sprint != 0)
+        if (userStoriesJSON.get(0).sprint != 0)
             sprintId = userStoriesJSON.get(0).sprint;
         SprintEntity sprint = sm.getSprint(sprintId);
 
         List<UserStoryEntity> userStoryEntities = new LinkedList<>();
-        for(int i = 0; i < userStoriesJSON.size(); i++) {
+        for (int i = 0; i < userStoriesJSON.size(); i++) {
             UserStoryEntity userStory = usm.getUserStory(userStoriesJSON.get(0).id);
             userStoryEntities.add(userStory);
         }
@@ -151,6 +151,13 @@ public class UserStoryService {
         }
 
         return null;
+    }
+
+    @PUT
+    @Path("/{id}/tests/{test_id}")
+    public void updateAcceptanceTest(@PathParam("id") int id, @PathParam("test_id") int testId,
+                                     AcceptanceTestJSON test) {
+        usm.updateTestCompletion(testId, test.accepted);
     }
 
     @POST
