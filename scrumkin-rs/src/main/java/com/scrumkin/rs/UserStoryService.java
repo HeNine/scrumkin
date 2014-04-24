@@ -137,6 +137,12 @@ public class UserStoryService {
         }
     }
 
+    @DELETE
+    @Path("/{id}")
+    public void deleteStory(@PathParam("id") int id) {
+        usm.deleteStory(id);
+    }
+
     @GET
     @Path("/{id}/tests/{test_id}")
     public AcceptanceTestJSON getStoryTest(@PathParam("id") int id, @PathParam("test_id") int testId) {
