@@ -105,6 +105,22 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
+    public boolean isUserStoryRealized(UserStoryEntity userStory) {
+        Collection<AcceptenceTestEntity> acceptanceTests = userStory.getAcceptenceTests();
+        if(acceptanceTests.size() == 0) {
+            return false;
+        }
+
+        for (AcceptenceTestEntity acceptanceTest : acceptanceTests) {
+            if (!acceptanceTest.getAccepted()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories)
             throws UserStoryEstimatedTimeNotSetException, UserStoryRealizedException,
             UserStoryInThisSprintException, UserStoryInAnotherSprintException {
@@ -120,18 +136,9 @@ public class UserStoryManagerEJB implements UserStoryManager {
                 userStoriesNoTime.add(userStoryTitle);
             }
 
-            Collection<AcceptenceTestEntity> acceptanceTests = use.getAcceptenceTests();
-            if(acceptanceTests.size() > 0) {
-                boolean userStoryAccepted = true;
-                for (AcceptenceTestEntity acceptanceTest : acceptanceTests) {
-                    if (!acceptanceTest.getAccepted()) {
-                        userStoryAccepted = false;
-                        break;
-                    }
-                }
-                if (userStoryAccepted) {
-                    userStoriesRealized.add(userStoryTitle);
-                }
+            boolean userStoryRealized = isUserStoryRealized(use);
+            if (userStoryRealized) {
+                userStoriesRealized.add(userStoryTitle);
             }
 
             if (use.getSprint() != null) {

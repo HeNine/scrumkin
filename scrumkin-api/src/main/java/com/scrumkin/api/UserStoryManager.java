@@ -35,6 +35,14 @@ public interface UserStoryManager {
             UserStoryBusinessValueZeroOrNegative;
 
     /**
+     * Check is user story is realized.
+     *
+     * @param userStory User story to be checked
+     * @return True if user story is realized, otherwise false
+     */
+    public boolean isUserStoryRealized(UserStoryEntity userStory);
+
+    /**
      * Assign new user stories to existing ones in sprint {@code sprint}.
      *
      * @param sprint      Sprint to which user stories belongs to
