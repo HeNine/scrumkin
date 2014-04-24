@@ -62,6 +62,23 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
+    public void updateTest(int id, String test, Boolean accepted) {
+        AcceptenceTestEntity acceptenceTestEntity = em.find(AcceptenceTestEntity.class, id);
+        acceptenceTestEntity.setAccepted(accepted);
+        acceptenceTestEntity.setTest(test);
+
+        em.persist(acceptenceTestEntity);
+    }
+
+    @Override
+    public void updateTestCompletion(int id, Boolean accepted) {
+        AcceptenceTestEntity acceptenceTestEntity = em.find(AcceptenceTestEntity.class, id);
+        acceptenceTestEntity.setAccepted(accepted);
+
+        em.persist(acceptenceTestEntity);
+    }
+
+    @Override
     public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             ProjectInvalidException,
@@ -107,7 +124,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public boolean isUserStoryRealized(UserStoryEntity userStory) {
         Collection<AcceptenceTestEntity> acceptanceTests = userStory.getAcceptenceTests();
-        if(acceptanceTests.size() == 0) {
+        if (acceptanceTests.size() == 0) {
             return false;
         }
 
@@ -142,7 +159,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
             }
 
             if (use.getSprint() != null) {
-                if(use.getSprint().equals(sprint))
+                if (use.getSprint().equals(sprint))
                     userStoriesInThisSprint.add(userStoryTitle);
                 else
                     userStoriesInAnotherSprint.add(userStoryTitle);
@@ -176,7 +193,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
 //      sprint.setUserStories(userStories);
 //      em.persist(sprint);
-        for(UserStoryEntity userStory : userStories) {
+        for (UserStoryEntity userStory : userStories) {
             userStory.setSprint(sprint);
             em.persist(userStory);
         }

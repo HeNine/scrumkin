@@ -49,7 +49,8 @@ public interface UserStoryManager {
      * @param userStories User stories to be added to sprint
      */
     public void assignUserStoriesToSprint(SprintEntity sprint, List<UserStoryEntity> userStories) throws
-            UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInThisSprintException, UserStoryInAnotherSprintException;
+            UserStoryEstimatedTimeNotSetException, UserStoryRealizedException, UserStoryInThisSprintException,
+            UserStoryInAnotherSprintException;
 
     /**
      * Gets user story by id.
@@ -77,4 +78,22 @@ public interface UserStoryManager {
      * @param time Estimated time
      */
     public void setStoryTime(int id, double time) throws UserStoryEstimatedTimeMustBePositive;
+
+    /**
+     * Update a story test
+     *
+     * @param id       Test id
+     * @param test     Test text
+     * @param accepted Test completion status
+     */
+    public void updateTest(int id, String test, Boolean accepted);
+
+    /**
+     * Change test completions status.
+     *
+     * @param id       Test id
+     * @param accepted Test completion status
+     */
+    public void updateTestCompletion(int id, Boolean accepted);
 }
+
