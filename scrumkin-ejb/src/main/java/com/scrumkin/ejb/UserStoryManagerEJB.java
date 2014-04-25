@@ -137,7 +137,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
         }
 
         for (AcceptenceTestEntity acceptanceTest : acceptanceTests) {
-            if (!acceptanceTest.getAccepted()) {
+            if (acceptanceTest.getAccepted() == null || !acceptanceTest.getAccepted()) {
                 return false;
             }
         }
