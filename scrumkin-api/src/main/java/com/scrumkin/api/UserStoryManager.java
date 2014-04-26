@@ -15,6 +15,7 @@ import javax.ejb.Local;
 @Local
 public interface UserStoryManager {
 
+
     /**
      * Add new user story to project {@code project}.
      *
@@ -102,5 +103,24 @@ public interface UserStoryManager {
      * @param id Story id
      */
     public void deleteStory(int id);
+
+    /**
+     * Updates a story with new information. Any argument can be null to signify no change.
+     *
+     * @param id              Story id
+     * @param title           Story title
+     * @param story           User story description
+     * @param priority        User story priority
+     * @param businessValue   Business value of the story
+     * @param acceptanceTests Collection of acceptance tests
+     * @throws ProjectInvalidException
+     * @throws UserStoryInvalidPriorityException
+     * @throws UserStoryTitleNotUniqueException
+     * @throws UserStoryBusinessValueZeroOrNegative
+     */
+    public void updateStory(int id, String title, String story, PriorityEntity priority,
+                            Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
+            UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
+            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist;
 }
 

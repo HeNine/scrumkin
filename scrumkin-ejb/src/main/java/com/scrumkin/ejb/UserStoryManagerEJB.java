@@ -87,6 +87,45 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
+    public void updateStory(int id, String title, String story, PriorityEntity priority,
+                            Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
+            UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
+            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist {
+
+        UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
+        if (userStory == null) {
+            throw new UserStoryDoesNotExist();
+        }
+
+        if (title != null) {
+            if (!isUniqueTitle(title)) {
+                throw new UserStoryTitleNotUniqueException("User story title [" + title + "] is not unique.");
+            }
+            userStory.setTitle(title);
+        }
+
+        if (story != null) {
+            userStory.setStory(story);
+        }
+
+        if (priority != null) {
+            userStory.setPriority(priority);
+        }
+
+        if (businessValue != null) {
+            if (businessValue <= 0) {
+                throw new UserStoryBusinessValueZeroOrNegative();
+            }
+        }
+
+        if (acceptanceTests != null) {
+            userStory.setAcceptenceTests(acceptanceTests);
+        }
+
+        em.persist(userStory);
+    }
+
+    @Override
     public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             ProjectInvalidException,
