@@ -124,6 +124,21 @@ public class UserStoryService {
     @Path("/{id}")
     public void updateUserStory(UserStoryJSON userStoryJSON, @PathParam("id") int id,
                                 @Context HttpServletResponse response) {
+
+        List<AcceptenceTestEntity> acceptanceTests = new LinkedList<>();
+        for (int i : userStoryJSON.acceptenceTests) {
+            acceptanceTests.add(usm.getAcceptanceTest(i));
+        }
+
+        try {
+            usm.updateStory(id, userStoryJSON.title, userStoryJSON.story, prm.getPriority(userStoryJSON.priority),
+                    userStoryJSON.bussinessValue, acceptanceTests);
+        } catch (UserStoryInvalidPriorityException | UserStoryTitleNotUniqueException |
+                UserStoryBusinessValueZeroOrNegative | UserStoryDoesNotExist e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+
         try {
             usm.setStoryTime(id, userStoryJSON.estimatedTime);
         } catch (UserStoryEstimatedTimeMustBePositive userStoryEstimatedTimeMustBePositive) {

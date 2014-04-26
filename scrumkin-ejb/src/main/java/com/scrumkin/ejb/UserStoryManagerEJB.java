@@ -126,6 +126,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
+    public AcceptenceTestEntity getAcceptanceTest(int id) {
+        return em.find(AcceptenceTestEntity.class, id);
+    }
+
+    @Override
     public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             ProjectInvalidException,

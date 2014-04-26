@@ -122,5 +122,8 @@ public interface UserStoryManager {
                             Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
             UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist;
+
+
+    public AcceptenceTestEntity getAcceptanceTest(int id);
 }
 

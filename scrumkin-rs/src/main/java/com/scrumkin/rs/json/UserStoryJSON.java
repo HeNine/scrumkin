@@ -13,7 +13,7 @@ public class UserStoryJSON {
     public int id;
     public String title;
     public String story;
-    public int bussinessValue;
+    public Integer bussinessValue;
     public double estimatedTime;
     public int[] acceptenceTests;
     public int[] tasks;
