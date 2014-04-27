@@ -5,9 +5,9 @@ import com.scrumkin.jpa.TaskEntity;
 public class TaskJSON {
     public int id;
     public String description;
-    public double estimatedTime;
-    public double workDone;
-    public boolean accepted;
+    public Double estimatedTime;
+    public Double workDone;
+    public Boolean accepted;
     public int userStoryID;
     public int assigneeID;
 
@@ -17,7 +17,7 @@ public class TaskJSON {
         try {
             estimatedTime = task.getEstimatedTime().doubleValue();
         } catch (NullPointerException e) {
-            estimatedTime = 0;
+            estimatedTime = 0.;
         }
 
         workDone = task.getWorkDone().doubleValue();
