@@ -10,6 +10,7 @@ import com.scrumkin.api.TaskManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.UserStoryManager;
 import com.scrumkin.api.exceptions.SprintNotActiveException;
+import com.scrumkin.api.exceptions.TaskDoesNotExist;
 import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
 import com.scrumkin.api.exceptions.UserStoryRealizedException;
 import com.scrumkin.jpa.SprintEntity;
@@ -34,10 +35,10 @@ public class TaskManagerEJB implements TaskManager {
     private UserStoryManager usm;
     @Inject
     private UserManager um;
-    
+
     @Override
     public TaskEntity getTask(int id) {
-    	TaskEntity task = em.find(TaskEntity.class, id);
+        TaskEntity task = em.find(TaskEntity.class, id);
 
         return task;
     }
@@ -59,11 +60,11 @@ public class TaskManagerEJB implements TaskManager {
 
         UserStoryEntity userStory = usm.getUserStory(userStoryID);
         boolean userStoryRealized = usm.isUserStoryRealized(userStory);
-        if(userStoryRealized) {
+        if (userStoryRealized) {
             throw new UserStoryRealizedException("User story " + userStory.getTitle() + " is already realized!");
         }
 
-        if(estimated_time < 0) {
+        if (estimated_time < 0) {
             throw new TaskEstimatedTimeMustBePositive("Task \"" + description + "\" must have positive estimated " +
                     "time!");
         }
@@ -74,12 +75,44 @@ public class TaskManagerEJB implements TaskManager {
         task.setUserStory(userStory);
         task.setWorkDone(BigDecimal.ZERO);
 
-        if(userID != null) {
+        if (userID != null) {
             UserEntity user = um.getUser(userID);
             task.setAssignee(user);
         }
 
         em.persist(task);
         em.flush();
+    }
+
+    @Override
+    public void updateTask(int id, String description, Double estimatedTime, Integer userId,
+                           Boolean accepted) throws TaskDoesNotExist {
+
+        TaskEntity task = em.find(TaskEntity.class, id);
+        if (task == null) {
+            throw new TaskDoesNotExist();
+        }
+
+        if (description != null) {
+            task.setDescription(description);
+        }
+
+        if (estimatedTime != null) {
+            if (estimatedTime < 0) {
+                task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
+            }
+        }
+
+        if (userId != null) {
+            task.setAssignee(um.getUser(userId));
+
+            task.setAccepted(false);
+        }
+
+        if (accepted != null) {
+            task.setAccepted(true);
+        }
+
+        em.persist(task);
     }
 }
