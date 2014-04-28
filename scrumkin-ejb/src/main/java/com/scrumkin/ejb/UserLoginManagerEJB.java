@@ -28,9 +28,6 @@ public class UserLoginManagerEJB implements UserLoginManager {
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
 
-    @Context
-    private HttpHeaders httpHeaders;
-
     private Random r = new Random();
 
     @Override

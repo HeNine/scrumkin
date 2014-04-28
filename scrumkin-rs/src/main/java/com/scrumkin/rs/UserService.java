@@ -3,8 +3,10 @@ package com.scrumkin.rs;
 import java.io.IOException;
 import java.util.*;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,6 +20,7 @@ import javax.ws.rs.core.Response;
 
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.ProjectManager;
+import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.exceptions.UserEmailMismatchException;
 import com.scrumkin.api.exceptions.UserInvalidGroupsException;
@@ -27,6 +30,7 @@ import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.rs.annotations.Authenticated;
 import com.scrumkin.rs.json.ProjectJSON;
 import com.scrumkin.rs.json.UserJSON;
 
@@ -34,7 +38,9 @@ import com.scrumkin.rs.json.UserJSON;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Stateless
-public class UserService {
+@Authenticated
+@LocalBean
+public class UserService implements AuthenticatedRESTService {
 
     @Inject
     private UserManager um;
@@ -42,6 +48,10 @@ public class UserService {
     private GroupManager gm;
     @Inject
     private ProjectManager pm;
+    @Inject
+    private UserLoginManager ulm;
+
+    private UserEntity authenticatedUser;
 
     @POST
     @Path("/add")
@@ -156,5 +166,15 @@ public class UserService {
         }
 
         return projectJSONs;
+    }
+
+    //    @Override
+    public UserEntity getAuthenticatedUser() {
+        return authenticatedUser;
+    }
+
+    //    @Override
+    public void setAuthenticatedUser(UserEntity user) {
+        this.authenticatedUser = user;
     }
 }
