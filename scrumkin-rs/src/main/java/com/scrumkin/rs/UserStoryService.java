@@ -52,25 +52,17 @@ public class UserStoryService {
         PriorityEntity priority = prm.getPriority(userStory.priority);
 
         try {
-            usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority, userStory.bussinessValue,
-                    null);
-        } catch (ProjectInvalidException e) {
-            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            HelperClass.exceptionHandler(response, e.getMessage());
-        } catch (UserStoryInvalidPriorityException e) {
-            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            HelperClass.exceptionHandler(response, e.getMessage());
-        } catch (UserStoryTitleNotUniqueException e) {
+            int userStoryId = usm.addUserStoryToBacklog(project, userStory.title, userStory.story, priority,
+                    userStory.bussinessValue, null);
+            response.setStatus(Response.Status.OK.getStatusCode());
+            HelperClass.exceptionHandler(response, Integer.toString(userStoryId));
+        } catch (ProjectInvalidException | UserStoryInvalidPriorityException | UserStoryTitleNotUniqueException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         } catch (UserStoryBusinessValueZeroOrNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, "Business value must be positive");
         }
-
-        response.setStatus(Response.Status.OK.getStatusCode());
-        HelperClass.exceptionHandler(response, "User story " + userStory.title + " successfully added to project " +
-                project.getName() + " backlog");
     }
 
     @PUT
