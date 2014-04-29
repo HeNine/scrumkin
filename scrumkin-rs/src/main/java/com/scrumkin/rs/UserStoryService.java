@@ -19,12 +19,9 @@ import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.UserStoryManager;
 import com.scrumkin.api.exceptions.*;
-import com.scrumkin.jpa.AcceptenceTestEntity;
-import com.scrumkin.jpa.PriorityEntity;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.UserStoryEntity;
+import com.scrumkin.jpa.*;
 import com.scrumkin.rs.json.AcceptanceTestJSON;
+import com.scrumkin.rs.json.StoryCommentJSON;
 import com.scrumkin.rs.json.UserStoryJSON;
 
 @Path("userStories")
@@ -59,7 +56,7 @@ public class UserStoryService {
         } catch (ProjectInvalidException | UserStoryInvalidPriorityException | UserStoryTitleNotUniqueException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
-        }   catch (UserStoryBusinessValueZeroOrNegative e) {
+        } catch (UserStoryBusinessValueZeroOrNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, "Business value must be positive");
         }
@@ -183,4 +180,25 @@ public class UserStoryService {
 
         usm.addTestToStory(acceptenceTestEntity);
     }
+
+    @GET
+    @Path("/{id}/comments")
+    public StoryCommentJSON[] getStoryComments(@PathParam("id") int id) {
+        List<StoryCommentEntity> storyCommentEntities = usm.getStoryComments(id);
+        StoryCommentJSON[] storyCommentJSONs = new StoryCommentJSON[storyCommentEntities.size()];
+
+        for (int i = 0; i < storyCommentEntities.size(); i++) {
+            storyCommentJSONs[i] = new StoryCommentJSON();
+            storyCommentJSONs[i].init(storyCommentEntities.get(i));
+        }
+
+        return storyCommentJSONs;
+    }
+
+    @POST
+    @Path("/{id}/comments")
+    public void addStoryComment(@PathParam("id") int id, StoryCommentJSON storyCommentJSON) {
+        usm.addStoryComment(id, storyCommentJSON.comment);
+    }
 }
+

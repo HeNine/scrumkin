@@ -143,6 +143,15 @@ public class UserStoryManagerEJB implements UserStoryManager {
     }
 
     @Override
+    public List<StoryCommentEntity> getStoryComments(int id) {
+        TypedQuery<StoryCommentEntity> query = em.createNamedQuery("StoryCommentEntity.getAllStoryComments",
+                StoryCommentEntity.class);
+        query.setParameter("story_id", id);
+
+        return query.getResultList();
+    }
+
+    @Override
     public int addUserStoryToBacklog(ProjectEntity project, String title, String story, PriorityEntity priority,
                                      int businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             ProjectInvalidException,

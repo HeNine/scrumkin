@@ -4,11 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.scrumkin.api.exceptions.*;
-import com.scrumkin.jpa.AcceptenceTestEntity;
-import com.scrumkin.jpa.PriorityEntity;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.UserStoryEntity;
+import com.scrumkin.jpa.*;
 
 import javax.ejb.Local;
 
@@ -133,5 +129,13 @@ public interface UserStoryManager {
      * @param comment Comment text
      */
     public void addStoryComment(int id, String comment);
+
+    /**
+     * Returns all comments of a story in temporal order.
+     *
+     * @param id Story id
+     * @return Ordered list of comments
+     */
+    public List<StoryCommentEntity> getStoryComments(int id);
 }
 

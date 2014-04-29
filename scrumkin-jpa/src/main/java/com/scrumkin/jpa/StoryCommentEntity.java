@@ -8,6 +8,10 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "story_comment", schema = "public", catalog = "scrumkin")
+@NamedQueries({@NamedQuery(name = "StoryCommentEntity.getAllStoryComments", query = "SELECT c FROM " +
+        "StoryCommentEntity c INNER JOIN UserEntity s " +
+        "WHERE s.id = :story_id " +
+        "ORDER BY c.date ASC")})
 public class StoryCommentEntity {
     private int id;
     private String comment;
@@ -16,6 +20,10 @@ public class StoryCommentEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "story_comment_id_seq")
+    @SequenceGenerator(name = "story_comment_id_seq",
+            sequenceName = "story_comment_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }
