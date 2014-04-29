@@ -12,6 +12,7 @@ import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.jpa.UserStoryEntity;
 import com.scrumkin.rs.json.ProjectJSON;
 import com.scrumkin.rs.json.SprintJSON;
+import com.scrumkin.rs.json.UserJSON;
 import com.scrumkin.rs.json.UserStoryJSON;
 
 import javax.ejb.Stateless;
@@ -160,5 +161,22 @@ public class ProjectService {
         }
 
         return sprintJSONs;
+    }
+
+    @GET
+    @Path("{id}/developers")
+    public UserJSON[] getProjectDevelopers(@PathParam("id") int id) {
+        Collection<UserEntity> developers = pm.getDevelopers(pm.getProject(id));
+        UserJSON[] developersJSON = new UserJSON[developers.size()];
+
+        int i = 0;
+        for (UserEntity u : developers) {
+            developersJSON[i] = new UserJSON();
+            developersJSON[i].init(u);
+
+            i++;
+        }
+
+        return developersJSON;
     }
 }
