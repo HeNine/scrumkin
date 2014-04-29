@@ -142,7 +142,7 @@ public class ProjectManagerEJB implements ProjectManager {
     public Collection<UserEntity> getDevelopers(ProjectEntity project) {
         GroupEntity group = null;
         for (GroupEntity g : project.getGroups()) {
-            if (g.getName().endsWith("Scrum Master")) {
+            if (g.getName().endsWith("Team Member")) {
                 group = g;
                 break;
             }
