@@ -59,7 +59,7 @@ public class UserStoryService {
         } catch (ProjectInvalidException | UserStoryInvalidPriorityException | UserStoryTitleNotUniqueException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
-        } catch (UserStoryBusinessValueZeroOrNegative e) {
+        }   catch (UserStoryBusinessValueZeroOrNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, "Business value must be positive");
         }
