@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -128,6 +130,16 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public AcceptenceTestEntity getAcceptanceTest(int id) {
         return em.find(AcceptenceTestEntity.class, id);
+    }
+
+    @Override
+    public void addStoryComment(int id, String comment) {
+        StoryCommentEntity storyCommentEntity = new StoryCommentEntity();
+        storyCommentEntity.setStory(getUserStory(id));
+        storyCommentEntity.setComment(comment);
+        storyCommentEntity.setDate(Timestamp.from(Instant.now()));
+
+        em.persist(storyCommentEntity);
     }
 
     @Override

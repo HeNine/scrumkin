@@ -125,5 +125,13 @@ public interface UserStoryManager {
 
 
     public AcceptenceTestEntity getAcceptanceTest(int id);
+
+    /**
+     * Add a comment to a story
+     *
+     * @param id      Story id
+     * @param comment Comment text
+     */
+    public void addStoryComment(int id, String comment);
 }
 

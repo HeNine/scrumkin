@@ -25,6 +25,7 @@ public class UserStoryEntity {
     private BigDecimal estimatedTime;
     private Collection<AcceptenceTestEntity> acceptenceTests;
     private Collection<TaskEntity> tasks;
+    private Collection<StoryCommentEntity> comments;
     private PriorityEntity priority;
     private ProjectEntity project;
     private SprintEntity sprint;
@@ -156,5 +157,14 @@ public class UserStoryEntity {
 
     public void setSprint(SprintEntity sprint) {
         this.sprint = sprint;
+    }
+
+    @OneToMany(mappedBy = "story", cascade = {CascadeType.REMOVE})
+    public Collection<StoryCommentEntity> getComments() {
+        return comments;
+    }
+
+    public void setComments(Collection<StoryCommentEntity> comments) {
+        this.comments = comments;
     }
 }
