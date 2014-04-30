@@ -110,7 +110,7 @@ public class UserEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "assignee")
+    @OneToMany(mappedBy = "assignee", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     public Collection<TaskEntity> getTasks() {
         return tasks;
     }

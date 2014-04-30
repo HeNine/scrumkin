@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.TaskManager;
@@ -20,6 +21,7 @@ import com.scrumkin.jpa.UserStoryEntity;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,6 +75,7 @@ public class TaskManagerEJB implements TaskManager {
         task.setDescription(description);
         task.setEstimatedTime(BigDecimal.valueOf(estimated_time));
         task.setUserStory(userStory);
+        userStory.getTasks().add(task);
         task.setWorkDone(BigDecimal.ZERO);
 
         if (userID != null) {
@@ -80,7 +83,9 @@ public class TaskManagerEJB implements TaskManager {
             task.setAssignee(user);
         }
 
-        em.persist(task);
+//        em.persist(task);
+//        em.persist(task.getAssignee());
+        em.persist(userStory);
         em.flush();
     }
 
@@ -114,5 +119,13 @@ public class TaskManagerEJB implements TaskManager {
         }
 
         em.persist(task);
+    }
+
+    @Override
+    public Collection<TaskEntity> getUserTasks(int id) {
+        TypedQuery<TaskEntity> query = em.createNamedQuery("TaskEntity.getUserTasks", TaskEntity.class);
+        query.setParameter("user_id", id);
+
+        return query.getResultList();
     }
 }

@@ -7,6 +7,7 @@ import com.scrumkin.api.exceptions.UserStoryRealizedException;
 import com.scrumkin.jpa.TaskEntity;
 
 import javax.ejb.Local;
+import java.util.Collection;
 
 @Local
 public interface TaskManager {
@@ -43,4 +44,13 @@ public interface TaskManager {
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
                            Boolean accepted) throws UserStoryRealizedException,
             TaskEstimatedTimeMustBePositive, TaskDoesNotExist;
+
+    /**
+     * Get tasks user is assigned to.
+     *
+     * @param id User id
+     * @return Collection of tasks
+     */
+    public Collection<TaskEntity> getUserTasks(int id);
+
 }

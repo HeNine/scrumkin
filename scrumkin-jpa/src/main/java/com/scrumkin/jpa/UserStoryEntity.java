@@ -120,7 +120,7 @@ public class UserStoryEntity {
         this.acceptenceTests = acceptenceTests;
     }
 
-    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
     public Collection<TaskEntity> getTasks() {
         return tasks;
     }

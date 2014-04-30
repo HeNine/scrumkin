@@ -18,10 +18,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.scrumkin.api.GroupManager;
-import com.scrumkin.api.ProjectManager;
-import com.scrumkin.api.UserLoginManager;
-import com.scrumkin.api.UserManager;
+import com.scrumkin.api.*;
 import com.scrumkin.api.exceptions.UserEmailMismatchException;
 import com.scrumkin.api.exceptions.UserInvalidGroupsException;
 import com.scrumkin.api.exceptions.UserNotUniqueException;
@@ -29,9 +26,11 @@ import com.scrumkin.api.exceptions.UserPasswordMismatchException;
 import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.ProjectEntity;
+import com.scrumkin.jpa.TaskEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.rs.annotations.Authenticated;
 import com.scrumkin.rs.json.ProjectJSON;
+import com.scrumkin.rs.json.TaskJSON;
 import com.scrumkin.rs.json.UserJSON;
 
 @Path("users")
@@ -50,6 +49,8 @@ public class UserService implements AuthenticatedRESTService {
     private ProjectManager pm;
     @Inject
     private UserLoginManager ulm;
+    @Inject
+    private TaskManager tm;
 
     private UserEntity authenticatedUser;
 
@@ -168,12 +169,30 @@ public class UserService implements AuthenticatedRESTService {
         return projectJSONs;
     }
 
-    //    @Override
+    @GET
+    @Path("{id}/tasks")
+    public TaskJSON[] getUserTasks(@PathParam("id") int id) {
+        Collection<TaskEntity> taskEntities = tm.getUserTasks(id);
+
+        TaskJSON[] taskJSONs = new TaskJSON[taskEntities.size()];
+
+        Iterator<TaskEntity> tIt = taskEntities.iterator();
+
+        for (int i = 0; i < taskJSONs.length; i++) {
+            TaskJSON taskJSON = new TaskJSON();
+            taskJSON.init(tIt.next());
+            taskJSONs[i] = taskJSON;
+        }
+
+        return taskJSONs;
+    }
+
+    @Override
     public UserEntity getAuthenticatedUser() {
         return authenticatedUser;
     }
 
-    //    @Override
+    @Override
     public void setAuthenticatedUser(UserEntity user) {
         this.authenticatedUser = user;
     }

@@ -9,6 +9,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "tasks", schema = "public", catalog = "scrumkin")
+@NamedQueries({@NamedQuery(name = "TaskEntity.getUserTasks", query = "SELECT t FROM TaskEntity t " +
+        "WHERE t.assignee.id = :user_id")})
 public class TaskEntity {
     private int id;
     private String description;
@@ -99,7 +101,7 @@ public class TaskEntity {
         return result;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_story_id", referencedColumnName = "id", nullable = false)
     public UserStoryEntity getUserStory() {
         return userStory;
@@ -109,7 +111,7 @@ public class TaskEntity {
         this.userStory = userStory;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "assignee_id", referencedColumnName = "id")
     public UserEntity getAssignee() {
         return assignee;
