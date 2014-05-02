@@ -14,6 +14,8 @@ import com.scrumkin.api.exceptions.SprintNotActiveException;
 import com.scrumkin.api.exceptions.TaskDoesNotExist;
 import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
 import com.scrumkin.api.exceptions.UserStoryRealizedException;
+import com.scrumkin.api.exceptions.TaskAlreadyFinished;
+import com.scrumkin.api.exceptions.TaskNotAccepted;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.TaskEntity;
 import com.scrumkin.jpa.UserEntity;
@@ -22,8 +24,6 @@ import com.scrumkin.jpa.UserStoryEntity;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 @Stateless
 public class TaskManagerEJB implements TaskManager {
@@ -127,5 +127,22 @@ public class TaskManagerEJB implements TaskManager {
         query.setParameter("user_id", id);
 
         return query.getResultList();
+    }
+
+    @Override
+    public void finishUserTask(int id) throws TaskAlreadyFinished, TaskNotAccepted {
+        TaskEntity task = em.find(TaskEntity.class, id);
+
+        BigDecimal estimatedTime = task.getEstimatedTime();
+        if(estimatedTime.compareTo(BigDecimal.ZERO) == 0) {
+            throw new TaskAlreadyFinished("Task " + task.getDescription() + " is already finished!");
+        }
+
+        if(task.getAccepted() == null || !task.getAccepted()) {
+            throw new TaskNotAccepted("Task " + task.getDescription() + " is not accepted!");
+        }
+
+        task.setEstimatedTime(BigDecimal.valueOf(0));
+        em.persist(task);
     }
 }

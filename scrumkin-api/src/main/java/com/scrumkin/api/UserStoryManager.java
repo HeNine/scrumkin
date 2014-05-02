@@ -119,7 +119,11 @@ public interface UserStoryManager {
             UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
             UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist;
 
-
+    /**
+     * Gets acceptance tests by id
+     *
+     * @param id Acceptance test id
+     */
     public AcceptenceTestEntity getAcceptanceTest(int id);
 
     /**

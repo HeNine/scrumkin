@@ -33,13 +33,7 @@ public class TaskService {
         try {
             tm.addTaskToStory(id, taskJSON.userStoryID, taskJSON.description, taskJSON.estimatedTime,
                     taskJSON.assigneeID);
-        } catch (SprintNotActiveException e) {
-            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            HelperClass.exceptionHandler(response, e.getMessage());
-        } catch (UserStoryRealizedException e) {
-            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            HelperClass.exceptionHandler(response, e.getMessage());
-        } catch (TaskEstimatedTimeMustBePositive e) {
+        } catch (SprintNotActiveException | UserStoryRealizedException | TaskEstimatedTimeMustBePositive e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
@@ -66,6 +60,17 @@ public class TaskService {
         try {
             tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted);
         } catch (UserStoryRealizedException | TaskDoesNotExist | TaskEstimatedTimeMustBePositive e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("/{id}/finish")
+    public void finishUserTask(@PathParam("id") int id, @Context HttpServletResponse response) {
+        try {
+            tm.finishUserTask(id);
+        } catch (TaskAlreadyFinished | TaskNotAccepted e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
