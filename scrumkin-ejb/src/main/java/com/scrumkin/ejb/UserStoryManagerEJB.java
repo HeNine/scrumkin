@@ -137,7 +137,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
         StoryCommentEntity storyCommentEntity = new StoryCommentEntity();
         storyCommentEntity.setStory(getUserStory(id));
         storyCommentEntity.setComment(comment);
-        storyCommentEntity.setDate(Timestamp.from(Instant.now()));
+        storyCommentEntity.setDate(new Timestamp(System.currentTimeMillis()));
 
         em.persist(storyCommentEntity);
     }
