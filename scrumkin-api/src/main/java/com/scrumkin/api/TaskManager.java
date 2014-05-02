@@ -44,8 +44,8 @@ public interface TaskManager {
      * @param accepted      Has user accepted the task
      */
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws UserStoryRealizedException,
-            TaskEstimatedTimeMustBePositive, TaskDoesNotExist;
+                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
+            TaskAlreadyFinished, TaskNotAccepted;
 
     /**
      * Get tasks user is assigned to.
@@ -60,5 +60,5 @@ public interface TaskManager {
      *
      * @param id task id
      */
-    public void finishUserTask(int id) throws TaskAlreadyFinished, TaskNotAccepted;
+    public void finishUserTask(int id)  throws TaskAlreadyFinished, TaskNotAccepted;
 }

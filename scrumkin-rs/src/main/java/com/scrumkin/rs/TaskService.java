@@ -59,7 +59,7 @@ public class TaskService {
     public void updateTask(@PathParam("id") int id, TaskJSON taskJSON, @Context HttpServletResponse response) {
         try {
             tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted);
-        } catch (UserStoryRealizedException | TaskDoesNotExist | TaskEstimatedTimeMustBePositive e) {
+        } catch (TaskEstimatedTimeMustBePositive | TaskDoesNotExist | TaskAlreadyFinished | TaskNotAccepted e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
@@ -74,5 +74,8 @@ public class TaskService {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
+
+        response.setStatus(Response.Status.OK.getStatusCode());
+        HelperClass.exceptionHandler(response, "Task with id: " + id + " successfully finished.");
     }
 }

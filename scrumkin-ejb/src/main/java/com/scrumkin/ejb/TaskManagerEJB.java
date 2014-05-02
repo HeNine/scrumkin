@@ -91,7 +91,7 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws TaskDoesNotExist {
+                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist, TaskAlreadyFinished, TaskNotAccepted {
 
         TaskEntity task = em.find(TaskEntity.class, id);
         if (task == null) {
@@ -102,12 +102,6 @@ public class TaskManagerEJB implements TaskManager {
             task.setDescription(description);
         }
 
-        if (estimatedTime != null) {
-            if (estimatedTime < 0) {
-                task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
-            }
-        }
-
         if (userId != null) {
             task.setAssignee(um.getUser(userId));
 
@@ -115,7 +109,24 @@ public class TaskManagerEJB implements TaskManager {
         }
 
         if (accepted != null) {
-            task.setAccepted(true);
+            task.setAccepted(accepted);
+        }
+
+        if (estimatedTime != null) {
+            if(estimatedTime > 0) {
+                task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
+            }
+            else if(estimatedTime == 0) {
+                try {
+                    finishUserTask(id);
+                } catch (TaskAlreadyFinished |TaskNotAccepted e) {
+                    throw e;
+                }
+            }
+            else {
+                throw new TaskEstimatedTimeMustBePositive("Task with id " + id + " must have positive estimated " +
+                        "time!");
+            }
         }
 
         em.persist(task);
