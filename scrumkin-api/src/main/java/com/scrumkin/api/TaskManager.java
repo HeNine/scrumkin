@@ -4,6 +4,8 @@ import com.scrumkin.api.exceptions.SprintNotActiveException;
 import com.scrumkin.api.exceptions.TaskDoesNotExist;
 import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
 import com.scrumkin.api.exceptions.UserStoryRealizedException;
+import com.scrumkin.api.exceptions.TaskAlreadyFinished;
+import com.scrumkin.api.exceptions.TaskNotAccepted;
 import com.scrumkin.jpa.TaskEntity;
 
 import javax.ejb.Local;
@@ -21,7 +23,7 @@ public interface TaskManager {
     public TaskEntity getTask(int id);
 
     /**
-     * Add a task to a story of an active sprint
+     * Add a task to a story of an active sprint.
      *
      * @param activeSprintID Active sprint ID
      * @param userStoryID    User story ID
@@ -43,8 +45,8 @@ public interface TaskManager {
      * @param accepted      Has user accepted the task
      */
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws UserStoryRealizedException,
-            TaskEstimatedTimeMustBePositive, TaskDoesNotExist;
+                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
+            TaskAlreadyFinished, TaskNotAccepted;
 
     /**
      * Get tasks user is assigned to.
@@ -65,4 +67,10 @@ public interface TaskManager {
      */
     public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining, Timestamp date);
 
+    /**
+     * Finishes specified task a user is assigned to.
+     *
+     * @param id task id
+     */
+    public void finishUserTask(int id)  throws TaskAlreadyFinished, TaskNotAccepted;
 }

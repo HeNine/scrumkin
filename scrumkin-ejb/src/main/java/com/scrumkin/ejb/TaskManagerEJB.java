@@ -14,14 +14,14 @@ import com.scrumkin.api.exceptions.SprintNotActiveException;
 import com.scrumkin.api.exceptions.TaskDoesNotExist;
 import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
 import com.scrumkin.api.exceptions.UserStoryRealizedException;
+import com.scrumkin.api.exceptions.TaskAlreadyFinished;
+import com.scrumkin.api.exceptions.TaskNotAccepted;
 import com.scrumkin.jpa.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 @Stateless
 public class TaskManagerEJB implements TaskManager {
@@ -89,7 +89,7 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws TaskDoesNotExist {
+                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist, TaskAlreadyFinished, TaskNotAccepted {
 
         TaskEntity task = em.find(TaskEntity.class, id);
         if (task == null) {
@@ -100,12 +100,6 @@ public class TaskManagerEJB implements TaskManager {
             task.setDescription(description);
         }
 
-        if (estimatedTime != null) {
-            if (estimatedTime < 0) {
-                task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
-            }
-        }
-
         if (userId != null) {
             task.setAssignee(um.getUser(userId));
 
@@ -113,7 +107,24 @@ public class TaskManagerEJB implements TaskManager {
         }
 
         if (accepted != null) {
-            task.setAccepted(true);
+            task.setAccepted(accepted);
+        }
+
+        if (estimatedTime != null) {
+            if(estimatedTime > 0) {
+                task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
+            }
+            else if(estimatedTime == 0) {
+                try {
+                    finishUserTask(id);
+                } catch (TaskAlreadyFinished |TaskNotAccepted e) {
+                    throw e;
+                }
+            }
+            else {
+                throw new TaskEstimatedTimeMustBePositive("Task with id " + id + " must have positive estimated " +
+                        "time!");
+            }
         }
 
         em.persist(task);
@@ -125,6 +136,23 @@ public class TaskManagerEJB implements TaskManager {
         query.setParameter("user_id", id);
 
         return query.getResultList();
+    }
+
+    @Override
+    public void finishUserTask(int id) throws TaskAlreadyFinished, TaskNotAccepted {
+        TaskEntity task = em.find(TaskEntity.class, id);
+
+        BigDecimal estimatedTime = task.getEstimatedTime();
+        if(estimatedTime.compareTo(BigDecimal.ZERO) == 0) {
+            throw new TaskAlreadyFinished("Task " + task.getDescription() + " is already finished!");
+        }
+
+        if(task.getAccepted() == null || !task.getAccepted()) {
+            throw new TaskNotAccepted("Task " + task.getDescription() + " is not accepted!");
+        }
+
+        task.setEstimatedTime(BigDecimal.valueOf(0));
+        em.persist(task);
     }
 
     @Override
