@@ -128,4 +128,9 @@ public class TaskManagerEJB implements TaskManager {
 
         return query.getResultList();
     }
+
+    @Override
+    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining) {
+
+    }
 }

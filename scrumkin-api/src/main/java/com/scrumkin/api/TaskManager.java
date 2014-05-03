@@ -53,4 +53,14 @@ public interface TaskManager {
      */
     public Collection<TaskEntity> getUserTasks(int id);
 
+    /**
+     * Add work done to a task.
+     *
+     * @param id             Task ID
+     * @param user_id        User ID
+     * @param work_done      Work done in hours
+     * @param work_remaining Work remaining on task in hours
+     */
+    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining);
+
 }
