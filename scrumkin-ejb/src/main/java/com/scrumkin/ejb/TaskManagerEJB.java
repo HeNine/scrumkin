@@ -10,12 +10,7 @@ import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.TaskManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.UserStoryManager;
-import com.scrumkin.api.exceptions.SprintNotActiveException;
-import com.scrumkin.api.exceptions.TaskDoesNotExist;
-import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
-import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.api.exceptions.TaskAlreadyFinished;
-import com.scrumkin.api.exceptions.TaskNotAccepted;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.*;
 
 import java.math.BigDecimal;
@@ -89,7 +84,8 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist, TaskAlreadyFinished, TaskNotAccepted {
+                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
+            TaskAlreadyFinished, TaskNotAccepted {
 
         TaskEntity task = em.find(TaskEntity.class, id);
         if (task == null) {
@@ -111,17 +107,15 @@ public class TaskManagerEJB implements TaskManager {
         }
 
         if (estimatedTime != null) {
-            if(estimatedTime > 0) {
+            if (estimatedTime > 0) {
                 task.setEstimatedTime(BigDecimal.valueOf(estimatedTime));
-            }
-            else if(estimatedTime == 0) {
+            } else if (estimatedTime == 0) {
                 try {
                     finishUserTask(id);
-                } catch (TaskAlreadyFinished |TaskNotAccepted e) {
+                } catch (TaskAlreadyFinished | TaskNotAccepted e) {
                     throw e;
                 }
-            }
-            else {
+            } else {
                 throw new TaskEstimatedTimeMustBePositive("Task with id " + id + " must have positive estimated " +
                         "time!");
             }
@@ -143,11 +137,11 @@ public class TaskManagerEJB implements TaskManager {
         TaskEntity task = em.find(TaskEntity.class, id);
 
         BigDecimal estimatedTime = task.getEstimatedTime();
-        if(estimatedTime.compareTo(BigDecimal.ZERO) == 0) {
+        if (estimatedTime.compareTo(BigDecimal.ZERO) == 0) {
             throw new TaskAlreadyFinished("Task " + task.getDescription() + " is already finished!");
         }
 
-        if(task.getAccepted() == null || !task.getAccepted()) {
+        if (task.getAccepted() == null || !task.getAccepted()) {
             throw new TaskNotAccepted("Task " + task.getDescription() + " is not accepted!");
         }
 
@@ -156,7 +150,17 @@ public class TaskManagerEJB implements TaskManager {
     }
 
     @Override
-    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Timestamp date) {
+    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining,
+                                Timestamp date) throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
+
+        if (workDone < 0) {
+            throw new TaskWorkDoneMustBePositive();
+        }
+
+        if (workRemaining < 0) {
+            throw new TaskEstimatedTimeMustBePositive("Task estimated time must be positive");
+        }
+
         TasksWorkDoneEntity tasksWorkDoneEntity = new TasksWorkDoneEntity();
         tasksWorkDoneEntity.setUser(um.getUser(userId));
         tasksWorkDoneEntity.setTask(getTask(id));

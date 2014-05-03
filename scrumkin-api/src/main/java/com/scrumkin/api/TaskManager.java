@@ -1,11 +1,6 @@
 package com.scrumkin.api;
 
-import com.scrumkin.api.exceptions.SprintNotActiveException;
-import com.scrumkin.api.exceptions.TaskDoesNotExist;
-import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
-import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.api.exceptions.TaskAlreadyFinished;
-import com.scrumkin.api.exceptions.TaskNotAccepted;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.TaskEntity;
 
 import javax.ejb.Local;
@@ -59,18 +54,19 @@ public interface TaskManager {
     /**
      * Add work done to a task.
      *
-     * @param id             Task ID
-     * @param user_id        User ID
-     * @param work_done      Work done in hours
-     * @param work_remaining Work remaining on task in hours
-     * @param date           Date of work done
+     * @param id            Task ID
+     * @param userId        User ID
+     * @param workDone      Work done in hours
+     * @param workRemaining Work remaining on task in hours
+     * @param date          Date of work done
      */
-    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining, Timestamp date);
+    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Timestamp date)
+            throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
 
     /**
      * Finishes specified task a user is assigned to.
      *
      * @param id task id
      */
-    public void finishUserTask(int id)  throws TaskAlreadyFinished, TaskNotAccepted;
+    public void finishUserTask(int id) throws TaskAlreadyFinished, TaskNotAccepted;
 }

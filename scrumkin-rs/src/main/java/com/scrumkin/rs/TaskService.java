@@ -5,6 +5,7 @@ import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.*;
 import com.scrumkin.rs.json.AcceptanceTestJSON;
 import com.scrumkin.rs.json.TaskJSON;
+import com.scrumkin.rs.json.TaskWorkDoneJSON;
 import com.scrumkin.rs.json.UserStoryJSON;
 
 import javax.ejb.Stateless;
@@ -77,5 +78,17 @@ public class TaskService {
 
         response.setStatus(Response.Status.OK.getStatusCode());
         HelperClass.exceptionHandler(response, "Task with id: " + id + " successfully finished.");
+    }
+
+    @POST
+    @Path("/{id}/log")
+    public void addWorkToLog(@PathParam("id") int id, TaskWorkDoneJSON taskWorkDoneJSON,
+                             @Context HttpServletResponse response) {
+        try {
+            tm.addTaskWorkDone(id, taskWorkDoneJSON.user, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining,
+                    taskWorkDoneJSON.date);
+        } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive e) {
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
     }
 }
