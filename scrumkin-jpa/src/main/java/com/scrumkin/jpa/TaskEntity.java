@@ -1,6 +1,7 @@
 package com.scrumkin.jpa;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import javax.persistence.*;
 
@@ -19,6 +20,7 @@ public class TaskEntity {
     private Boolean accepted;
     private UserStoryEntity userStory;
     private UserEntity assignee;
+    private Collection<TasksWorkDoneEntity> workLog;
 
     @Id
     @Column(name = "id")
@@ -119,5 +121,14 @@ public class TaskEntity {
 
     public void setAssignee(UserEntity assignee) {
         this.assignee = assignee;
+    }
+
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    public Collection<TasksWorkDoneEntity> getWorkLog() {
+        return workLog;
+    }
+
+    public void setWorkLog(Collection<TasksWorkDoneEntity> workLog) {
+        this.workLog = workLog;
     }
 }

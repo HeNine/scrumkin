@@ -16,6 +16,7 @@
         <class>com.scrumkin.jpa.UserEntity</class>
         <class>com.scrumkin.jpa.LoginTokenEntity</class>
         <class>com.scrumkin.jpa.StoryCommentEntity</class>
+        <class>com.scrumkin.jpa.TasksWorkDoneEntity</class>
         <properties>
             <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/scrumkin"/>
             <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>

@@ -14,13 +14,11 @@ import com.scrumkin.api.exceptions.SprintNotActiveException;
 import com.scrumkin.api.exceptions.TaskDoesNotExist;
 import com.scrumkin.api.exceptions.TaskEstimatedTimeMustBePositive;
 import com.scrumkin.api.exceptions.UserStoryRealizedException;
-import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.TaskEntity;
-import com.scrumkin.jpa.UserEntity;
-import com.scrumkin.jpa.UserStoryEntity;
+import com.scrumkin.jpa.*;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,7 +128,20 @@ public class TaskManagerEJB implements TaskManager {
     }
 
     @Override
-    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining) {
+    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Timestamp date) {
+        TasksWorkDoneEntity tasksWorkDoneEntity = new TasksWorkDoneEntity();
+        tasksWorkDoneEntity.setUser(um.getUser(userId));
+        tasksWorkDoneEntity.setTask(getTask(id));
+        tasksWorkDoneEntity.setWorkDone(BigDecimal.valueOf(workDone));
+        tasksWorkDoneEntity.setWorkRemaining(BigDecimal.valueOf(workRemaining));
+        tasksWorkDoneEntity.setDate(date);
+
+        TaskEntity task = getTask(id);
+        task.getWorkLog().add(tasksWorkDoneEntity);
+        task.setEstimatedTime(BigDecimal.valueOf(workRemaining));
+        task.setWorkDone(task.getWorkDone().add(BigDecimal.valueOf(workDone)));
+
+        em.persist(task);
 
     }
 }

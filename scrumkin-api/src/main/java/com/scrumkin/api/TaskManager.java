@@ -7,6 +7,7 @@ import com.scrumkin.api.exceptions.UserStoryRealizedException;
 import com.scrumkin.jpa.TaskEntity;
 
 import javax.ejb.Local;
+import java.sql.Timestamp;
 import java.util.Collection;
 
 @Local
@@ -60,7 +61,8 @@ public interface TaskManager {
      * @param user_id        User ID
      * @param work_done      Work done in hours
      * @param work_remaining Work remaining on task in hours
+     * @param date           Date of work done
      */
-    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining);
+    public void addTaskWorkDone(int id, int user_id, double work_done, double work_remaining, Timestamp date);
 
 }
