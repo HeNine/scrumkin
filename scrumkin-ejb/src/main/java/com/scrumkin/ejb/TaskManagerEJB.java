@@ -152,7 +152,16 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws
-            NoLogEntryException {
+            NoLogEntryException, TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
+
+        if (workDone < 0) {
+            throw new TaskWorkDoneMustBePositive();
+        }
+
+        if (workRemaining < 0) {
+            throw new TaskEstimatedTimeMustBePositive("Task estimated time must be positive");
+        }
+
         TypedQuery<TasksWorkDoneEntity> entryQuery = em.createNamedQuery("TasksWorkDoneEntity.getLogEntry",
                 TasksWorkDoneEntity.class);
         entryQuery.setParameter("task_id", id);

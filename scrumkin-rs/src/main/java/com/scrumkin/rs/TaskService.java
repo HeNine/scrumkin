@@ -16,6 +16,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.sql.Date;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,6 +83,21 @@ public class TaskService {
         HelperClass.exceptionHandler(response, "Task with id: " + id + " successfully finished.");
     }
 
+    @GET
+    @Path("/{id}/log")
+    public TaskWorkDoneJSON[] getWorkLog(@PathParam("id") int id) {
+        Collection<TasksWorkDoneEntity> entities = tm.getTask(id).getWorkLog();
+        TaskWorkDoneJSON[] jsons = new TaskWorkDoneJSON[entities.size()];
+
+        Iterator<TasksWorkDoneEntity> wIt = entities.iterator();
+        for (int i = 0; i < jsons.length; i++) {
+            jsons[i] = new TaskWorkDoneJSON();
+            jsons[i].init(wIt.next());
+        }
+
+        return jsons;
+    }
+
     @POST
     @Path("/{id}/log")
     public void addWorkToLog(@PathParam("id") int id, TaskWorkDoneJSON taskWorkDoneJSON,
@@ -88,6 +106,17 @@ public class TaskService {
             tm.addTaskWorkDone(id, taskWorkDoneJSON.user, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining,
                     taskWorkDoneJSON.date);
         } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive e) {
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("/{id}/log/{date : \\d{4}-\\d{2}-\\d{2}}")
+    public void updateWorkLog(@PathParam("id") int id, @PathParam("date") Date date, TaskWorkDoneJSON taskWorkDoneJSON,
+                              @Context HttpServletResponse response) {
+        try {
+            tm.updateWorkDone(id, date, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining);
+        } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive | NoLogEntryException e) {
             HelperClass.exceptionHandler(response, e.getMessage());
         }
     }
