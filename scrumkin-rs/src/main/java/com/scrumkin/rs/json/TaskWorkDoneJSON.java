@@ -5,6 +5,7 @@ import com.scrumkin.jpa.TasksWorkDoneEntity;
 import com.scrumkin.jpa.UserEntity;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -17,7 +18,7 @@ public class TaskWorkDoneJSON {
     public int task;
     public double workDone;
     public double workRemaining;
-    public Timestamp date;
+    public Date date;
 
     public void init(TasksWorkDoneEntity tasksWorkDoneEntity) {
         this.id = tasksWorkDoneEntity.getId();

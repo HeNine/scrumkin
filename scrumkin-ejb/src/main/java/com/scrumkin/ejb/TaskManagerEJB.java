@@ -3,6 +3,7 @@ package com.scrumkin.ejb;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -150,8 +151,29 @@ public class TaskManagerEJB implements TaskManager {
     }
 
     @Override
+    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws
+            NoLogEntryException {
+        TypedQuery<TasksWorkDoneEntity> entryQuery = em.createNamedQuery("TasksWorkDoneEntity.getLogEntry",
+                TasksWorkDoneEntity.class);
+        entryQuery.setParameter("task_id", id);
+        entryQuery.setParameter("date", date);
+
+        TasksWorkDoneEntity entry;
+        try {
+            entry = entryQuery.getSingleResult();
+        } catch (NoResultException e) {
+            throw new NoLogEntryException();
+        }
+
+        entry.setWorkDone(BigDecimal.valueOf(workDone));
+        entry.setWorkRemaining(BigDecimal.valueOf(workRemaining));
+
+        em.persist(entry);
+    }
+
+    @Override
     public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining,
-                                Timestamp date) throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
+                                Date date) throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
 
         if (workDone < 0) {
             throw new TaskWorkDoneMustBePositive();
@@ -176,4 +198,5 @@ public class TaskManagerEJB implements TaskManager {
         em.persist(task);
 
     }
+
 }

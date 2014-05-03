@@ -4,6 +4,7 @@ import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.TaskEntity;
 
 import javax.ejb.Local;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -60,7 +61,7 @@ public interface TaskManager {
      * @param workRemaining Work remaining on task in hours
      * @param date          Date of work done
      */
-    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Timestamp date)
+    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Date date)
             throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
 
     /**
@@ -69,4 +70,14 @@ public interface TaskManager {
      * @param id task id
      */
     public void finishUserTask(int id) throws TaskAlreadyFinished, TaskNotAccepted;
+
+    /**
+     * Update a work log entry.
+     *
+     * @param id            Task ID
+     * @param date          Date of work
+     * @param workDone      New work done
+     * @param workRemaining New work remaining
+     */
+    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws NoLogEntryException;
 }

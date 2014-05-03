@@ -2,6 +2,7 @@ package com.scrumkin.jpa;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -9,13 +10,15 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "tasks_work_done", schema = "public", catalog = "scrumkin")
+@NamedQueries({@NamedQuery(name = "TasksWorkDoneEntity.getLogEntry", query = "SELECT wd FROM TasksWorkDoneEntity wd " +
+        "WHERE wd.task.id = :task_id AND wd.date = :date")})
 public class TasksWorkDoneEntity {
     private int id;
     private UserEntity user;
     private TaskEntity task;
     private BigDecimal workDone;
     private BigDecimal workRemaining;
-    private Timestamp date;
+    private Date date;
 
     @Id
     @Column(name = "id")
@@ -49,11 +52,11 @@ public class TasksWorkDoneEntity {
 
     @Basic
     @Column(name = "date")
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
