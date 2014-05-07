@@ -120,4 +120,11 @@ public class TaskService {
             HelperClass.exceptionHandler(response, e.getMessage());
         }
     }
+
+    @DELETE
+    @Path("/{id}/log/{date : \\d{4}-\\d{2}-\\d{2}}")
+    public void deleteLogEntry(@PathParam("id") int id, @PathParam("date") Date date, TaskWorkDoneJSON taskWorkDoneJSON,
+                               @Context HttpServletResponse response) {
+        tm.removeWorkFromLog(id, date);
+    }
 }

@@ -10,8 +10,12 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "tasks_work_done", schema = "public", catalog = "scrumkin")
-@NamedQueries({@NamedQuery(name = "TasksWorkDoneEntity.getLogEntry", query = "SELECT wd FROM TasksWorkDoneEntity wd " +
-        "WHERE wd.task.id = :task_id AND wd.date = :date")})
+@NamedQueries({
+        @NamedQuery(name = "TasksWorkDoneEntity.getLogEntry", query = "SELECT wd FROM TasksWorkDoneEntity wd " +
+                "WHERE wd.task.id = :task_id AND wd.date = :date"),
+        @NamedQuery(name = "TasksWorkDoneEntity.deleteLogEntry", query = "DELETE FROM TasksWorkDoneEntity wd " +
+                "WHERE wd.task.id = :task_id AND wd.date = :date")
+})
 public class TasksWorkDoneEntity {
     private int id;
     private UserEntity user;
@@ -22,6 +26,10 @@ public class TasksWorkDoneEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tasks_work_done_id_seq")
+    @SequenceGenerator(name = "tasks_work_done_id_seq",
+            sequenceName = "tasks_work_done_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }

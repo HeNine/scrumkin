@@ -2,10 +2,7 @@ package com.scrumkin.ejb;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 
 import com.scrumkin.api.SprintManager;
 import com.scrumkin.api.TaskManager;
@@ -178,6 +175,15 @@ public class TaskManagerEJB implements TaskManager {
         entry.setWorkRemaining(BigDecimal.valueOf(workRemaining));
 
         em.persist(entry);
+    }
+
+    @Override
+    public void removeWorkFromLog(int id, Date date) {
+        Query query = em.createNamedQuery("TasksWorkDoneEntity.deleteLogEntry");
+        query.setParameter("task_id", id);
+        query.setParameter("date", date);
+
+        query.executeUpdate();
     }
 
     @Override

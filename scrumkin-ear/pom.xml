@@ -5,7 +5,7 @@
     <parent>
         <artifactId>scrumkin</artifactId>
         <groupId>com.scrumkin</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,29 +17,29 @@
         <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-jpa</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-ejb</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
             <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-rs</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>com.scrumkin</groupId>
             <artifactId>scrumkin-web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
             <type>war</type>
         </dependency>
     </dependencies>

@@ -79,5 +79,14 @@ public interface TaskManager {
      * @param workDone      New work done
      * @param workRemaining New work remaining
      */
-    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws NoLogEntryException, TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
+    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws NoLogEntryException,
+            TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
+
+    /**
+     * Remove day from task work log.
+     *
+     * @param id   Task ID
+     * @param date Date of work
+     */
+    public void removeWorkFromLog(int id, Date date);
 }
