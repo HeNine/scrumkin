@@ -143,7 +143,7 @@ public class TaskManagerEJB implements TaskManager {
             throw new TaskNotAccepted("Task " + task.getDescription() + " is not accepted!");
         }
 
-        task.setEstimatedTime(BigDecimal.valueOf(0));
+        task.setWorkDone(task.getEstimatedTime());
         em.persist(task);
     }
 
@@ -171,14 +171,28 @@ public class TaskManagerEJB implements TaskManager {
             throw new NoLogEntryException();
         }
 
+        TaskEntity task = entry.getTask();
+        task.setWorkDone(task.getWorkDone().subtract(entry.getWorkDone()).add(BigDecimal.valueOf(workDone)));
+
         entry.setWorkDone(BigDecimal.valueOf(workDone));
         entry.setWorkRemaining(BigDecimal.valueOf(workRemaining));
 
-        em.persist(entry);
+        em.persist(task);
     }
 
     @Override
     public void removeWorkFromLog(int id, Date date) {
+        TypedQuery<TasksWorkDoneEntity> twdQuery = em.createNamedQuery("TasksWorkDoneEntity.getLogEntry",
+                TasksWorkDoneEntity.class);
+        twdQuery.setParameter("task_id", id);
+        twdQuery.setParameter("date", date);
+
+        TasksWorkDoneEntity tasksWorkDoneEntity = twdQuery.getSingleResult();
+        TaskEntity task = tasksWorkDoneEntity.getTask();
+        task.setWorkDone(task.getWorkDone().subtract(tasksWorkDoneEntity.getWorkDone()));
+
+        em.persist(task);
+
         Query query = em.createNamedQuery("TasksWorkDoneEntity.deleteLogEntry");
         query.setParameter("task_id", id);
         query.setParameter("date", date);

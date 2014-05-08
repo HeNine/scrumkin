@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
@@ -143,11 +144,12 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
     @Override
     public List<StoryCommentEntity> getStoryComments(int id) {
-        TypedQuery<StoryCommentEntity> query = em.createNamedQuery("StoryCommentEntity.getAllStoryComments",
-                StoryCommentEntity.class);
-        query.setParameter("story_id", id);
-
-        return query.getResultList();
+//        TypedQuery<StoryCommentEntity> query = em.createNamedQuery("StoryCommentEntity.getAllStoryComments",
+//                StoryCommentEntity.class);
+//        query.setParameter("story_id", id);
+//
+//        return query.getResultList();
+        return new LinkedList<>(em.find(UserStoryEntity.class, id).getComments());
     }
 
     @Override
