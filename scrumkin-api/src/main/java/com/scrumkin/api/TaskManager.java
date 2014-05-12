@@ -41,8 +41,14 @@ public interface TaskManager {
      * @param accepted      Has user accepted the task
      */
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
-            TaskAlreadyFinished, TaskNotAccepted;
+                           Boolean accepted, Double workDone) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
+            TaskAlreadyFinished, TaskNotAccepted, TaskWorkDoneNegative;
+
+    /**
+     * Delete task.
+     * @param id Task id
+     */
+    public void deleteTask(int id) throws TaskAccepted;
 
     /**
      * Get tasks user is assigned to.

@@ -82,8 +82,8 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void updateTask(int id, String description, Double estimatedTime, Integer userId,
-                           Boolean accepted) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
-            TaskAlreadyFinished, TaskNotAccepted {
+                           Boolean accepted, Double workDone) throws TaskEstimatedTimeMustBePositive, TaskDoesNotExist,
+            TaskAlreadyFinished, TaskNotAccepted, TaskWorkDoneNegative {
 
         TaskEntity task = em.find(TaskEntity.class, id);
         if (task == null) {
@@ -119,7 +119,25 @@ public class TaskManagerEJB implements TaskManager {
             }
         }
 
+        if(workDone != null) {
+            if(workDone < 0) {
+                throw new TaskWorkDoneNegative("Task cannot have negative work done!");
+            }
+            task.setWorkDone(BigDecimal.valueOf(workDone));
+        }
+
         em.persist(task);
+    }
+
+    @Override
+    public void deleteTask(int id) throws TaskAccepted {
+        TaskEntity task = em.find(TaskEntity.class, id);
+
+        if(task.getAccepted()) {
+            throw new TaskAccepted("Task " + id + " is accepted and therefore cannot be deleted!");
+        }
+
+        em.remove(task);
     }
 
     @Override

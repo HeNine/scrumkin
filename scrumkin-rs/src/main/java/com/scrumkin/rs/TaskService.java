@@ -62,8 +62,19 @@ public class TaskService {
     @Path("/{id}")
     public void updateTask(@PathParam("id") int id, TaskJSON taskJSON, @Context HttpServletResponse response) {
         try {
-            tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted);
-        } catch (TaskEstimatedTimeMustBePositive | TaskDoesNotExist | TaskAlreadyFinished | TaskNotAccepted e) {
+            tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted, taskJSON.workDone);
+        } catch (TaskEstimatedTimeMustBePositive | TaskDoesNotExist | TaskAlreadyFinished | TaskNotAccepted | TaskWorkDoneNegative e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public void deleteTask(@PathParam("id") int id, @Context HttpServletResponse response) {
+        try {
+            tm.deleteTask(id);
+        } catch (TaskAccepted e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
