@@ -179,4 +179,16 @@ public class ProjectService {
 
         return developersJSON;
     }
+
+    @PUT
+    @Path("{id}")
+    public void updateProject(@PathParam("id") int id, ProjectJSON projectJSON,
+                              @Context HttpServletResponse response) {
+        try {
+            pm.updateProject(id, projectJSON.name);
+        } catch (ProjectNameNotUniqueException e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
 }

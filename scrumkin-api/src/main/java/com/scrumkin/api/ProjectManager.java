@@ -32,6 +32,13 @@ public interface ProjectManager {
                            @NotNull Collection<UserEntity> developers) throws ProjectNameNotUniqueException;
 
     /**
+     * Updates project.
+     * @param id   Project ID
+     * @param name Project Name
+     */
+    public void updateProject(int id, String name) throws ProjectNameNotUniqueException;
+
+    /**
      * Returns all projects
      *
      * @return Collection of all projects

@@ -8,22 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.scrumkin.api.*;
-import com.scrumkin.api.exceptions.UserEmailMismatchException;
-import com.scrumkin.api.exceptions.UserInvalidGroupsException;
-import com.scrumkin.api.exceptions.UserNotUniqueException;
-import com.scrumkin.api.exceptions.UserPasswordMismatchException;
-import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.TaskEntity;
@@ -195,5 +186,41 @@ public class UserService implements AuthenticatedRESTService {
     @Override
     public void setAuthenticatedUser(UserEntity user) {
         this.authenticatedUser = user;
+    }
+
+    @DELETE
+    @Path("{id}/projects/{projectID}")
+    public void removeUserFromProject(@PathParam("id") int id, @PathParam("projectID") int projectID,
+                                      @Context HttpServletResponse response) {
+        try {
+            um.deleteUserFromProject(id, projectID);
+        } catch (UserNotInProject e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @POST
+    @Path("{id}/groups/add")
+    public void addGroupsToUser(@PathParam("id") int id, UserJSON userJSON,
+                                      @Context HttpServletResponse response) {
+        try {
+            um.addUserGroups(id, userJSON.groups);
+        } catch (UserInGroup e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @POST
+    @Path("{id}/groups/remove")
+    public void removeGroupsFromUser(@PathParam("id") int id, UserJSON userJSON,
+                                      @Context HttpServletResponse response) {
+        try {
+            um.deleteUserGroups(id, userJSON.groups);
+        } catch (UserNotInGroup e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
     }
 }

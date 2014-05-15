@@ -16,6 +16,8 @@ import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Project manager EJB.
@@ -85,6 +87,21 @@ public class ProjectManagerEJB implements ProjectManager {
                 gm.addUserToGroup(user, gm.getGroup(groupId));
             }
         } catch (PermissionInvalidException e) {
+        }
+
+        em.persist(project);
+    }
+
+    @Override
+    public void updateProject(int id, String name) throws ProjectNameNotUniqueException {
+
+        ProjectEntity project = em.find(ProjectEntity.class, id);
+
+        if(name != null) {
+            if (!projectNameIsUnique(name)) {
+                throw new ProjectNameNotUniqueException("Project name [" + name + "] is not unique.");
+            }
+            project.setName(name);
         }
 
         em.persist(project);

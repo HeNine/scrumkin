@@ -109,6 +109,17 @@ public class GroupManagerEJB implements GroupManager {
     }
 
     @Override
+    public void deleteUserFromGroup(UserEntity user, GroupEntity group) {
+        if (!user.getGroups().contains(group)) {
+            return;
+        }
+
+        user.getGroups().remove(group);
+
+        em.persist(user);
+    }
+
+    @Override
     public GroupEntity getGroup(int id) {
         GroupEntity group = em.find(GroupEntity.class, id);
 

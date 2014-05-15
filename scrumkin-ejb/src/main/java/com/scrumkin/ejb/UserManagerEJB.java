@@ -5,19 +5,18 @@ import java.util.*;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import com.scrumkin.api.GroupManager;
+import com.scrumkin.api.ProjectManager;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.ProjectEntity;
 import org.mindrot.jbcrypt.BCrypt;
 
 import com.scrumkin.api.UserManager;
-import com.scrumkin.api.exceptions.UserEmailMismatchException;
-import com.scrumkin.api.exceptions.UserInvalidGroupsException;
-import com.scrumkin.api.exceptions.UserNotUniqueException;
-import com.scrumkin.api.exceptions.UserPasswordMismatchException;
-import com.scrumkin.api.exceptions.UserUsernameNotUniqueException;
 import com.scrumkin.jpa.GroupEntity;
 import com.scrumkin.jpa.UserEntity;
 
@@ -29,6 +28,12 @@ public class UserManagerEJB implements UserManager {
 
     @PersistenceContext(unitName = "scrumkin_PU")
     private EntityManager em;
+
+    @Inject
+    private ProjectManager pm;
+
+    @Inject
+    private GroupManager gm;
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -124,6 +129,92 @@ public class UserManagerEJB implements UserManager {
         return projects;
     }
 
+    @Override
+    public void deleteUserFromProject(int userId, int projectId) throws UserNotInProject {
+        UserEntity user = getUser(userId);
+        ProjectEntity userProject = pm.getProject(projectId);
+
+        boolean userInProject = false;
+        Collection<GroupEntity> userGroups = user.getGroups();
+        Iterator<GroupEntity> userGroupsIter = userGroups.iterator();
+
+        while (userGroupsIter.hasNext()){
+            GroupEntity userGroup = userGroupsIter.next();
+            ProjectEntity groupProject = userGroup.getProject();
+
+            if(groupProject.equals(userProject)) {
+                userInProject = true;
+                userGroupsIter.remove();
+            }
+        }
+
+        if(!userInProject) {
+            throw new UserNotInProject("User " + user.getName() + " is not assigned to project " +
+                    userProject.getName());
+        }
+
+        em.persist(user);
+    }
+
+    @Override
+    public void deleteUserGroups(int userId, int[] groupIds) throws UserNotInGroup {
+        UserEntity user = getUser(userId);
+        Map<String, ArrayList<String>> userNotInProjectGroups = new LinkedHashMap<String, ArrayList<String>>();
+
+        for (int groupId : groupIds) {
+            GroupEntity group = gm.getGroup(groupId);
+
+            if(!group.getUsers().contains(user)) {
+                String groupProjectName = group.getProject().getName();
+                String GroupName = group.getName();
+
+                addExceptionMapElement(userNotInProjectGroups, groupProjectName, GroupName);
+            }
+            else if (userNotInProjectGroups.size() == 0){
+                gm.deleteUserFromGroup(user, group);
+            }
+        }
+
+        if(userNotInProjectGroups.size() > 0) {
+            throw new UserNotInGroup("User " + user.getName() + " doesn't belong to project/s-group/s: " +
+                    userNotInProjectGroups.toString());
+        }
+    }
+
+    @Override
+    public void addUserGroups(int userId, int[] groupIds) throws UserInGroup {
+        UserEntity user = getUser(userId);
+        Map<String, ArrayList<String>> userInProjectGroups = new LinkedHashMap<String, ArrayList<String>>();
+
+        for (int groupId : groupIds) {
+            GroupEntity group = gm.getGroup(groupId);
+
+            if(group.getUsers().contains(user)) {
+                String groupProjectName = group.getProject().getName();
+                String GroupName = group.getName();
+
+                addExceptionMapElement(userInProjectGroups, groupProjectName, GroupName);
+            }
+            else if (userInProjectGroups.size() == 0) {
+                gm.addUserToGroup(user, group);
+            }
+        }
+
+        if(userInProjectGroups.size() > 0) {
+            throw new UserInGroup("User " + user.getName() + " already belongs to project/s-group/s: " +
+                    userInProjectGroups.toString());
+        }
+    }
+
+    private void addExceptionMapElement(Map<String, ArrayList<String>> exceptionMap, String key, String value) {
+        if (exceptionMap.containsKey(key)){
+            exceptionMap.get(key).add(value);
+        } else {
+            ArrayList<String> userNotInGroups = new ArrayList<String>();
+            userNotInGroups.add(value);
+            exceptionMap.put(key, userNotInGroups);
+        }
+    }
 
     private boolean isUniqueUsername(String username) {
         TypedQuery<UserEntity> isUniqueQuery = em.createNamedQuery("UserEntity.getUserByUsername", UserEntity.class);

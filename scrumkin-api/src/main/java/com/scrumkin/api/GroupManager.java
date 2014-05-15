@@ -45,6 +45,8 @@ public interface GroupManager {
      */
     public void addUserToGroup(UserEntity user, GroupEntity group);
 
+    void deleteUserFromGroup(UserEntity user, GroupEntity group);
+
     /**
      * Gets group entity by id.
      *
