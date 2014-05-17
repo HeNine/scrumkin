@@ -13,10 +13,12 @@ public class StoryCommentJSON {
     public int id;
     public String comment;
     public Timestamp date;
+    public Integer role;
 
     public void init(StoryCommentEntity storyCommentEntity) {
         this.id = storyCommentEntity.getId();
         this.comment = storyCommentEntity.getComment();
         this.date = storyCommentEntity.getDate();
+        this.role = storyCommentEntity.getRole();
     }
 }

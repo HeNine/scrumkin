@@ -131,8 +131,9 @@ public interface UserStoryManager {
      *
      * @param id      Story id
      * @param comment Comment text
+     * @param role    Commenter role
      */
-    public void addStoryComment(int id, String comment);
+    public void addStoryComment(int id, String comment, int role);
 
     /**
      * Returns all comments of a story in temporal order.

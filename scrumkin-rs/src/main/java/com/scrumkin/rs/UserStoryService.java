@@ -198,7 +198,7 @@ public class UserStoryService {
     @POST
     @Path("/{id}/comments")
     public void addStoryComment(@PathParam("id") int id, StoryCommentJSON storyCommentJSON) {
-        usm.addStoryComment(id, storyCommentJSON.comment);
+        usm.addStoryComment(id, storyCommentJSON.comment, storyCommentJSON.role);
     }
 }
 

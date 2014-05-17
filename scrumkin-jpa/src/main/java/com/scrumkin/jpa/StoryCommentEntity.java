@@ -17,6 +17,7 @@ public class StoryCommentEntity {
     private String comment;
     private Timestamp date;
     private UserStoryEntity story;
+    private Integer role;
 
     @Id
     @Column(name = "id")
@@ -82,5 +83,15 @@ public class StoryCommentEntity {
 
     public void setStory(UserStoryEntity story) {
         this.story = story;
+    }
+
+    @Basic
+    @Column(name = "role")
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }
