@@ -159,7 +159,7 @@ public class UserStoryEntity {
         this.sprint = sprint;
     }
 
-    @OneToMany(mappedBy = "story", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "story", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     public Collection<StoryCommentEntity> getComments() {
         return comments;
     }

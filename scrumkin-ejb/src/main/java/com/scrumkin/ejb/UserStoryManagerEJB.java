@@ -131,13 +131,17 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
     @Override
     public void addStoryComment(int id, String comment, int role) {
+        UserStoryEntity story = getUserStory(id);
+
         StoryCommentEntity storyCommentEntity = new StoryCommentEntity();
-        storyCommentEntity.setStory(getUserStory(id));
+        storyCommentEntity.setStory(story);
         storyCommentEntity.setComment(comment);
         storyCommentEntity.setRole(role);
         storyCommentEntity.setDate(new Timestamp(System.currentTimeMillis()));
 
-        em.persist(storyCommentEntity);
+        story.getComments().add(storyCommentEntity);
+
+        em.persist(story);
     }
 
     @Override
