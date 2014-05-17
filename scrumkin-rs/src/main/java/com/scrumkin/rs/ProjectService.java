@@ -6,6 +6,7 @@ import com.scrumkin.api.UserManager;
 import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
+import com.scrumkin.api.exceptions.UserNotInProject;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
@@ -181,14 +182,15 @@ public class ProjectService {
     }
 
     @PUT
-    @Path("{id}")
-    public void updateProject(@PathParam("id") int id, ProjectJSON projectJSON,
+    @Path("{id}/{projectName}")
+    public void updateProject(@PathParam("id") int id, @PathParam("projectName") String projectName, UserJSON userJSON,
                               @Context HttpServletResponse response) {
         try {
-            pm.updateProject(id, projectJSON.name);
-        } catch (ProjectNameNotUniqueException e) {
+            pm.updateProject(id, projectName, userJSON.id, userJSON.groups);
+        } catch (ProjectNameNotUniqueException | UserNotInProject e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
     }
+
 }

@@ -45,7 +45,13 @@ public interface GroupManager {
      */
     public void addUserToGroup(UserEntity user, GroupEntity group);
 
-    void deleteUserFromGroup(UserEntity user, GroupEntity group);
+    /**
+     * Delete user from group
+     *
+     * @param user  User to add to group
+     * @param group Group from which to delete the user
+     */
+    public void deleteUserFromGroup(UserEntity user, GroupEntity group);
 
     /**
      * Gets group entity by id.

@@ -15,7 +15,7 @@ import com.scrumkin.jpa.UserEntity;
  */
 @Local
 public interface UserManager {
-	
+
     /**
      * Add new user to project {@code project}.
      *
@@ -49,16 +49,17 @@ public interface UserManager {
      * Gets all projects user is on.
      *
      * @param id User id
-     * @return Collection of projects
+     * @return   Collection of projects
      */
     public Collection<ProjectEntity> getUserProject(int id);
 
     /**
-     * Remove user from project (by removing him from his groups that belong to this project).
-     * @param userId    User ID
-     * @param projectId Project ID
+     * Get all groups user belongs to in scope of a project
+     * @param userID    User ID
+     * @param projectID Project ID
+     * @return          Collection of groups
      */
-    void deleteUserFromProject(int userId, int projectId) throws UserNotInProject;
+    Collection<GroupEntity> getUsersProjectGroups(int userID, int projectID);
 
     /**
      * Remove groups from user.

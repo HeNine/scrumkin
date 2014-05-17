@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
 import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
 import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
+import com.scrumkin.api.exceptions.UserNotInProject;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
@@ -33,10 +34,21 @@ public interface ProjectManager {
 
     /**
      * Updates project.
-     * @param id   Project ID
-     * @param name Project Name
+     * @param projectID           Project ID
+     * @param name                Project Name
+     * @param userID              User ID
+     * @param userProjectGroupIDs IDs of groups from project with id {@code projectID}, to which user with id {@code
+     * userID} belongs to
      */
-    public void updateProject(int id, String name) throws ProjectNameNotUniqueException;
+    public void updateProject(int projectID, String name, int userID, int[] userProjectGroupIDs) throws
+            ProjectNameNotUniqueException, UserNotInProject;
+
+    /**
+     * Remove user from project (by removing him from his groups that belong to this project).
+     * @param userId    User ID
+     * @param projectId Project ID
+     */
+    void deleteUserFromProject(int userId, int projectId) throws UserNotInProject;
 
     /**
      * Returns all projects

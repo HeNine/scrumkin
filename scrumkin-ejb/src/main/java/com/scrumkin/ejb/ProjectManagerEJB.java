@@ -2,10 +2,8 @@ package com.scrumkin.ejb;
 
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.ProjectManager;
-import com.scrumkin.api.exceptions.PermissionInvalidException;
-import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
-import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
-import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
+import com.scrumkin.api.UserManager;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.*;
 
 import javax.ejb.Stateless;
@@ -14,10 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Project manager EJB.
@@ -30,6 +25,8 @@ public class ProjectManagerEJB implements ProjectManager {
 
     @Inject
     private GroupManager gm;
+    @Inject
+    private UserManager um;
 
     @Override
     public void addProject(@NotNull String name, UserEntity productOwner, UserEntity scrumMaster,
@@ -93,18 +90,68 @@ public class ProjectManagerEJB implements ProjectManager {
     }
 
     @Override
-    public void updateProject(int id, String name) throws ProjectNameNotUniqueException {
+    public void updateProject(int projectID, String name, int userID, int[] userProjectGroupIDs) throws
+            ProjectNameNotUniqueException, UserNotInProject {
 
-        ProjectEntity project = em.find(ProjectEntity.class, id);
-
-        if(name != null) {
+        if(!name.equals("-")) {
             if (!projectNameIsUnique(name)) {
                 throw new ProjectNameNotUniqueException("Project name [" + name + "] is not unique.");
             }
+            ProjectEntity project = em.find(ProjectEntity.class, projectID);
             project.setName(name);
+
+            em.persist(project);
         }
 
-        em.persist(project);
+        if(userID != 0) {
+            try {
+                deleteUserFromProject(userID, projectID);
+            } catch (UserNotInProject e) {
+            }
+
+            if (userProjectGroupIDs != null) {
+                Collection<GroupEntity> userProjectGroups = new ArrayList<>();
+                for (int userGroupID : userProjectGroupIDs) {
+                    GroupEntity userGroup = gm.getGroup(userGroupID);
+                    userProjectGroups.add(userGroup);
+                }
+
+                UserEntity user = um.getUser(userID);
+                Collection<GroupEntity> userGroups = user.getGroups();
+                userGroups.addAll(userProjectGroups);
+                user.setGroups(userGroups);
+
+                em.persist(user);
+            }
+        }
+    }
+
+
+    @Override
+    public void deleteUserFromProject(int userId, int projectId) throws UserNotInProject {
+        UserEntity user = um.getUser(userId);
+        ProjectEntity userProject = getProject(projectId);
+
+        boolean userInProject = false;
+        Collection<GroupEntity> userGroups = user.getGroups();
+        Iterator<GroupEntity> userGroupsIter = userGroups.iterator();
+
+        while (userGroupsIter.hasNext()){
+            GroupEntity userGroup = userGroupsIter.next();
+            ProjectEntity groupProject = userGroup.getProject();
+
+            if(groupProject.equals(userProject)) {
+                userInProject = true;
+                userGroupsIter.remove();
+            }
+        }
+
+        if(!userInProject) {
+            throw new UserNotInProject("User " + user.getName() + " is not assigned to project " +
+                    userProject.getName());
+        }
+
+        em.persist(user);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.TaskEntity;
 import com.scrumkin.jpa.UserEntity;
 import com.scrumkin.rs.annotations.Authenticated;
+import com.scrumkin.rs.json.GroupJSON;
 import com.scrumkin.rs.json.ProjectJSON;
 import com.scrumkin.rs.json.TaskJSON;
 import com.scrumkin.rs.json.UserJSON;
@@ -193,11 +194,30 @@ public class UserService implements AuthenticatedRESTService {
     public void removeUserFromProject(@PathParam("id") int id, @PathParam("projectID") int projectID,
                                       @Context HttpServletResponse response) {
         try {
-            um.deleteUserFromProject(id, projectID);
+            pm.deleteUserFromProject(id, projectID);
         } catch (UserNotInProject e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
+    }
+
+    @GET
+    @Path("{id}/projects/{projectID}/groups")
+    public GroupJSON[] getUsersProjectGroups(@PathParam("id") int id, @PathParam("projectID") int projectID,
+                                           @Context HttpServletResponse response) {
+
+        Collection<GroupEntity> usersProjectGroups = um.getUsersProjectGroups(id, projectID);
+
+        GroupJSON[] groupJSONs = new GroupJSON[usersProjectGroups.size()];
+
+        Iterator<GroupEntity> gIt = usersProjectGroups.iterator();
+        for (int i = 0; i < groupJSONs.length; i++) {
+            GroupJSON groupJSON = new GroupJSON();
+            groupJSON.init(gIt.next());
+            groupJSONs[i] = groupJSON;
+        }
+
+        return groupJSONs;
     }
 
     @POST

@@ -30,9 +30,6 @@ public class UserManagerEJB implements UserManager {
     private EntityManager em;
 
     @Inject
-    private ProjectManager pm;
-
-    @Inject
     private GroupManager gm;
 
     @Override
@@ -130,30 +127,15 @@ public class UserManagerEJB implements UserManager {
     }
 
     @Override
-    public void deleteUserFromProject(int userId, int projectId) throws UserNotInProject {
-        UserEntity user = getUser(userId);
-        ProjectEntity userProject = pm.getProject(projectId);
+    public Collection<GroupEntity> getUsersProjectGroups(int userID, int projectID) {
+        TypedQuery<GroupEntity> query = em.createNamedQuery(
+                "GroupEntity.getUserProjectGroups", GroupEntity.class);
+        query.setParameter("projectId", projectID);
+        query.setParameter("userId", userID);
 
-        boolean userInProject = false;
-        Collection<GroupEntity> userGroups = user.getGroups();
-        Iterator<GroupEntity> userGroupsIter = userGroups.iterator();
+        List<GroupEntity> userProjectGroups = query.getResultList();
 
-        while (userGroupsIter.hasNext()){
-            GroupEntity userGroup = userGroupsIter.next();
-            ProjectEntity groupProject = userGroup.getProject();
-
-            if(groupProject.equals(userProject)) {
-                userInProject = true;
-                userGroupsIter.remove();
-            }
-        }
-
-        if(!userInProject) {
-            throw new UserNotInProject("User " + user.getName() + " is not assigned to project " +
-                    userProject.getName());
-        }
-
-        em.persist(user);
+        return userProjectGroups;
     }
 
     @Override

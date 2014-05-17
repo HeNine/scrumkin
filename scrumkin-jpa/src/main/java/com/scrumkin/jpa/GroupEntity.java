@@ -9,9 +9,12 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "groups", schema = "public", catalog = "scrumkin")
-@NamedQueries(
+@NamedQueries({
         @NamedQuery(name = "GroupEntity.invalidGroups", query = "SELECT g.name FROM GroupEntity g WHERE g.id IN " +
-                ":groupIds"))
+                ":groupIds"),
+        @NamedQuery(name = "GroupEntity.getUserProjectGroups", query = "SELECT g FROM GroupEntity g, " +
+                " UserGroupsEntity ug WHERE g.project.id = :projectId AND g.id = ug.groupsByGroupId.id AND ug.usersByUserId.id = :userId")
+})
 public class GroupEntity {
     private int id;
     private String name;
