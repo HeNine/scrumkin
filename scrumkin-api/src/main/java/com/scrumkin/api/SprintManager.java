@@ -55,7 +55,7 @@ public interface SprintManager {
      *
      * @param id Sprint id
      */
-    void deleteSprint(int id);
+    void deleteSprint(int id) throws SprintStarted;
 
     /**
      * Gets all sprints.

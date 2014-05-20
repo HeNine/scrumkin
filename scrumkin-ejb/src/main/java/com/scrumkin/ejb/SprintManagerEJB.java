@@ -131,9 +131,14 @@ public class SprintManagerEJB implements SprintManager {
     }
 
     @Override
-    public void deleteSprint(int id) {
+    public void deleteSprint(int id) throws SprintStarted {
         SprintEntity sprint = getSprint(id);
         if (sprint != null) {
+            Date sprintStartDate = sprint.getStartDate();
+            Date currentDate = new Date(System.currentTimeMillis());
+            if(sprintStartDate.before(currentDate)) {
+                throw new SprintStarted();
+            }
             em.remove(sprint);
         }
     }

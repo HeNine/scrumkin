@@ -135,8 +135,13 @@ public class SprintService {
 
     @DELETE
     @Path("/{id}")
-    public void deleteSprint(@PathParam("id") int id) {
-        sm.deleteSprint(id);
+    public void deleteSprint(@PathParam("id") int id, @Context HttpServletResponse response) {
+        try {
+            sm.deleteSprint(id);
+        } catch (SprintStarted e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
     }
 
     @GET
