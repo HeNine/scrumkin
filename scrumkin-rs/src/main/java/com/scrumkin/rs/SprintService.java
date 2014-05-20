@@ -15,10 +15,7 @@ import javax.ws.rs.core.Response;
 
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.SprintManager;
-import com.scrumkin.api.exceptions.SprintDatesOutOfOrderException;
-import com.scrumkin.api.exceptions.SprintStartDateInThePast;
-import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
-import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserStoryEntity;
@@ -119,38 +116,27 @@ public class SprintService {
                     sprint.velocity, sprint.stories);
         } catch (SprintDatesOutOfOrderException e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Sprint dates out of order");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        } catch (SprintStartDateInThePast sprintStartDateInThePast) {
+            HelperClass.exceptionHandler(response, "Sprint dates out of order");
+        } catch (SprintStartDateInThePast e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Sprint start date is in the past");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        } catch (SprintVelocityZeroOrNegative sprintVelocityZeroOrNegative) {
+            HelperClass.exceptionHandler(response, "Sprint start date is in the past");
+        } catch (SprintVelocityZeroOrNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Sprint velocity is zero or negative");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        } catch (SprintTimeSlotNotAvailable sprintTimeSlotNotAvailable) {
+            HelperClass.exceptionHandler(response, "Sprint velocity is zero or negative");
+        } catch (SprintTimeSlotNotAvailable e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("Sprint date is not available");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, "Sprint date is not available");
+        } catch (SprintOverlap e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
         }
 
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public void deleteSprint(@PathParam("id") int id) {
+        sm.deleteSprint(id);
     }
 
     @GET

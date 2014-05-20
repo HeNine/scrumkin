@@ -1,9 +1,6 @@
 package com.scrumkin.api;
 
-import com.scrumkin.api.exceptions.SprintDatesOutOfOrderException;
-import com.scrumkin.api.exceptions.SprintStartDateInThePast;
-import com.scrumkin.api.exceptions.SprintTimeSlotNotAvailable;
-import com.scrumkin.api.exceptions.SprintVelocityZeroOrNegative;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserStoryEntity;
@@ -47,11 +44,18 @@ public interface SprintManager {
      * @throws SprintStartDateInThePast
      * @throws SprintVelocityZeroOrNegative
      * @throws SprintTimeSlotNotAvailable
+     * @throws SprintOverlap
      */
     public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
                              int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
-            SprintVelocityZeroOrNegative,
-            SprintTimeSlotNotAvailable;
+            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable, SprintOverlap;
+
+    /**
+     * Delete sprint.
+     *
+     * @param id Sprint id
+     */
+    void deleteSprint(int id);
 
     /**
      * Gets all sprints.

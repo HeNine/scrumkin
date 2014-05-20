@@ -69,40 +69,74 @@ public class SprintManagerEJB implements SprintManager {
     @Override
     public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
                              int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
-            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable {
-
-        if (startDate.after(endDate)) {
-            throw new SprintDatesOutOfOrderException();
-        }
-
-        if (startDate.before(new Date(System.currentTimeMillis()))) {
-            throw new SprintStartDateInThePast();
-        }
-
-        if (velocity.compareTo(BigDecimal.ZERO) == -1) {
-            throw new SprintVelocityZeroOrNegative();
-        }
+            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable, SprintOverlap {
 
         SprintEntity sprint = getSprint(id);
-        sprint.setStartDate(startDate);
-        sprint.setEndDate(endDate);
-        sprint.setVelocity(velocity);
 
-        List<UserStoryEntity> storyEntityList = new LinkedList<>();
-        for (int sId : stories) {
-            storyEntityList.add(usm.getUserStory(sId));
+        if(startDate != null) {
+            if (startDate.after(endDate)) {
+                throw new SprintDatesOutOfOrderException();
+            }
+            sprint.setStartDate(startDate);
         }
-        try {
-            usm.assignUserStoriesToSprint(sprint, storyEntityList);
-        } catch (UserStoryEstimatedTimeNotSetException e) {
-        } catch (UserStoryRealizedException e) {
-        } catch (UserStoryInThisSprintException e) {
-        } catch (UserStoryInAnotherSprintException e) {
+
+        if(endDate != null) {
+            if (startDate.before(new Date(System.currentTimeMillis()))) {
+                throw new SprintStartDateInThePast();
+            }
+            sprint.setEndDate(endDate);
+        }
+
+        if(startDate != null || endDate != null) {
+            Collection<SprintEntity> projectSprints = sprint.getProject().getSprints();
+
+            for (SprintEntity projectSprint : projectSprints) {
+                if(sprint.equals(projectSprint)) {
+                    continue;
+                }
+
+                Date projectSprintStart = projectSprint.getStartDate();
+                Date projectSprintEnd = projectSprint.getEndDate();
+
+                if (startDate.compareTo(projectSprintStart) >= 0 && startDate.compareTo(projectSprintEnd) <= 0 ||
+                        endDate.compareTo(projectSprintStart) >= 0 && endDate.compareTo(projectSprintEnd) <= 0) {
+                    throw new SprintOverlap("Sprint with id " + projectSprint.getId() + " is overlapping this " +
+                            "sprint!");
+                }
+            }
+        }
+
+        if(velocity != null) {
+            if (velocity.compareTo(BigDecimal.ZERO) == -1) {
+                throw new SprintVelocityZeroOrNegative();
+            }
+            sprint.setVelocity(velocity);
+        }
+
+        if(stories != null) {
+            List<UserStoryEntity> storyEntityList = new LinkedList<>();
+            for (int sId : stories) {
+                storyEntityList.add(usm.getUserStory(sId));
+            }
+            try {
+                usm.assignUserStoriesToSprint(sprint, storyEntityList);
+            } catch (UserStoryEstimatedTimeNotSetException e) {
+            } catch (UserStoryRealizedException e) {
+            } catch (UserStoryInThisSprintException e) {
+            } catch (UserStoryInAnotherSprintException e) {
+            }
         }
 
         em.persist(sprint);
     }
 
+    @Override
+    public void deleteSprint(int id) {
+        SprintEntity sprint = getSprint(id);
+        if (sprint != null) {
+            em.remove(sprint);
+        }
+    }
 
     @Override
     public Collection<SprintEntity> getAllSprints() {
