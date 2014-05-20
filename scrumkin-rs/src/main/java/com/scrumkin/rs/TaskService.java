@@ -62,8 +62,10 @@ public class TaskService {
     @Path("/{id}")
     public void updateTask(@PathParam("id") int id, TaskJSON taskJSON, @Context HttpServletResponse response) {
         try {
-            tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted, taskJSON.workDone);
-        } catch (TaskEstimatedTimeMustBePositive | TaskDoesNotExist | TaskAlreadyFinished | TaskNotAccepted | TaskWorkDoneNegative e) {
+            tm.updateTask(id, taskJSON.description, taskJSON.estimatedTime, taskJSON.assigneeID, taskJSON.accepted,
+                    taskJSON.workDone);
+        } catch (TaskEstimatedTimeMustBePositive | TaskDoesNotExist | TaskAlreadyFinished | TaskNotAccepted |
+                TaskWorkDoneNegative e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
@@ -116,7 +118,7 @@ public class TaskService {
         try {
             tm.addTaskWorkDone(id, taskWorkDoneJSON.user, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining,
                     taskWorkDoneJSON.date);
-        } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive e) {
+        } catch (TaskWorkLogDateAlreadyExists | TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive e) {
             HelperClass.exceptionHandler(response, e.getMessage());
         }
     }

@@ -68,7 +68,7 @@ public interface TaskManager {
      * @param date          Date of work done
      */
     public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Date date)
-            throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
+            throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive, TaskWorkLogDateAlreadyExists;
 
     /**
      * Finishes specified task a user is assigned to.

@@ -119,8 +119,8 @@ public class TaskManagerEJB implements TaskManager {
             }
         }
 
-        if(workDone != null) {
-            if(workDone < 0) {
+        if (workDone != null) {
+            if (workDone < 0) {
                 throw new TaskWorkDoneNegative("Task cannot have negative work done!");
             }
             task.setWorkDone(BigDecimal.valueOf(workDone));
@@ -133,7 +133,7 @@ public class TaskManagerEJB implements TaskManager {
     public void deleteTask(int id) throws TaskAccepted {
         TaskEntity task = em.find(TaskEntity.class, id);
 
-        if(task.getAccepted()) {
+        if (task.getAccepted()) {
             throw new TaskAccepted("Task " + id + " is accepted and therefore cannot be deleted!");
         }
 
@@ -220,7 +220,8 @@ public class TaskManagerEJB implements TaskManager {
 
     @Override
     public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining,
-                                Date date) throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
+                                Date date) throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive,
+            TaskWorkLogDateAlreadyExists {
 
         if (workDone < 0) {
             throw new TaskWorkDoneMustBePositive();
@@ -228,6 +229,15 @@ public class TaskManagerEJB implements TaskManager {
 
         if (workRemaining < 0) {
             throw new TaskEstimatedTimeMustBePositive("Task estimated time must be positive");
+        }
+
+        TypedQuery<TasksWorkDoneEntity> twdQuery = em.createNamedQuery("TasksWorkDoneEntity.getLogEntry",
+                TasksWorkDoneEntity.class);
+        twdQuery.setParameter("task_id", id);
+        twdQuery.setParameter("date", date);
+
+        if (twdQuery.getResultList().size() != 0) {
+            throw new TaskWorkLogDateAlreadyExists();
         }
 
         TasksWorkDoneEntity tasksWorkDoneEntity = new TasksWorkDoneEntity();
