@@ -39,6 +39,8 @@ public class ProjectManagerEJB implements ProjectManager {
         ProjectEntity project = new ProjectEntity();
         project.setName(name);
 
+        project.setGroups(new HashSet<GroupEntity>(3, 1));
+
         // create user groups and add users to groups
         Collection<PermissionEntity> permissions;
         // Product owner
@@ -93,7 +95,7 @@ public class ProjectManagerEJB implements ProjectManager {
     public void updateProject(int projectID, String name, int userID, int[] userProjectGroupIDs) throws
             ProjectNameNotUniqueException, UserNotInProject {
 
-        if(!name.equals("-")) {
+        if (!name.equals("-")) {
             if (!projectNameIsUnique(name)) {
                 throw new ProjectNameNotUniqueException("Project name [" + name + "] is not unique.");
             }
@@ -103,7 +105,7 @@ public class ProjectManagerEJB implements ProjectManager {
             em.persist(project);
         }
 
-        if(userID != 0) {
+        if (userID != 0) {
             try {
                 deleteUserFromProject(userID, projectID);
             } catch (UserNotInProject e) {
@@ -136,17 +138,17 @@ public class ProjectManagerEJB implements ProjectManager {
         Collection<GroupEntity> userGroups = user.getGroups();
         Iterator<GroupEntity> userGroupsIter = userGroups.iterator();
 
-        while (userGroupsIter.hasNext()){
+        while (userGroupsIter.hasNext()) {
             GroupEntity userGroup = userGroupsIter.next();
             ProjectEntity groupProject = userGroup.getProject();
 
-            if(groupProject.equals(userProject)) {
+            if (groupProject.equals(userProject)) {
                 userInProject = true;
                 userGroupsIter.remove();
             }
         }
 
-        if(!userInProject) {
+        if (!userInProject) {
             throw new UserNotInProject("User " + user.getName() + " is not assigned to project " +
                     userProject.getName());
         }

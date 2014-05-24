@@ -91,6 +91,8 @@ public class GroupManagerEJB implements GroupManager {
         group.setProject(project);
         group.setPermissions(permissions);
 
+        project.getGroups().add(group);
+
         em.persist(group);
         em.flush();
 

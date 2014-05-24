@@ -71,7 +71,7 @@ public class ProjectEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST})
     public Collection<GroupEntity> getGroups() {
         return groups;
     }
