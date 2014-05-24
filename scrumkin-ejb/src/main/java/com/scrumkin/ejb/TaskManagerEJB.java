@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
 
 @Stateless
 public class TaskManagerEJB implements TaskManager {
@@ -191,6 +192,13 @@ public class TaskManagerEJB implements TaskManager {
 
         TaskEntity task = entry.getTask();
         task.setWorkDone(task.getWorkDone().subtract(entry.getWorkDone()).add(BigDecimal.valueOf(workDone)));
+        TypedQuery<TasksWorkDoneEntity> lastQuery = em.createNamedQuery("TasksWorkDoneEntity.getEntriesInOrder",
+                TasksWorkDoneEntity.class);
+        lastQuery.setParameter("task_id", task.getId());
+        List<TasksWorkDoneEntity> results = lastQuery.getResultList();
+        if (results.size() == 0 || !results.get(0).getDate().after(entry.getDate())) {
+            task.setEstimatedTime(BigDecimal.valueOf(workRemaining));
+        }
 
         entry.setWorkDone(BigDecimal.valueOf(workDone));
         entry.setWorkRemaining(BigDecimal.valueOf(workRemaining));
@@ -208,6 +216,14 @@ public class TaskManagerEJB implements TaskManager {
         TasksWorkDoneEntity tasksWorkDoneEntity = twdQuery.getSingleResult();
         TaskEntity task = tasksWorkDoneEntity.getTask();
         task.setWorkDone(task.getWorkDone().subtract(tasksWorkDoneEntity.getWorkDone()));
+
+        TypedQuery<TasksWorkDoneEntity> lastQuery = em.createNamedQuery("TasksWorkDoneEntity.getEntriesInOrder",
+                TasksWorkDoneEntity.class);
+        lastQuery.setParameter("task_id", task.getId());
+        List<TasksWorkDoneEntity> results = lastQuery.getResultList();
+        if (results.size() == 0) {
+            task.setEstimatedTime(results.get(0).getWorkRemaining());
+        }
 
         em.persist(task);
 
@@ -249,7 +265,14 @@ public class TaskManagerEJB implements TaskManager {
 
         TaskEntity task = getTask(id);
         task.getWorkLog().add(tasksWorkDoneEntity);
-        task.setEstimatedTime(BigDecimal.valueOf(workRemaining));
+
+        TypedQuery<TasksWorkDoneEntity> lastQuery = em.createNamedQuery("TasksWorkDoneEntity.getEntriesInOrder",
+                TasksWorkDoneEntity.class);
+        lastQuery.setParameter("task_id", task.getId());
+        List<TasksWorkDoneEntity> results = lastQuery.getResultList();
+        if (results.size() == 0 || !results.get(0).getDate().after(tasksWorkDoneEntity.getDate())) {
+            task.setEstimatedTime(BigDecimal.valueOf(workRemaining));
+        }
         task.setWorkDone(task.getWorkDone().add(BigDecimal.valueOf(workDone)));
 
         em.persist(task);

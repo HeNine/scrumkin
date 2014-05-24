@@ -14,7 +14,9 @@ import java.sql.Timestamp;
         @NamedQuery(name = "TasksWorkDoneEntity.getLogEntry", query = "SELECT wd FROM TasksWorkDoneEntity wd " +
                 "WHERE wd.task.id = :task_id AND wd.date = :date"),
         @NamedQuery(name = "TasksWorkDoneEntity.deleteLogEntry", query = "DELETE FROM TasksWorkDoneEntity wd " +
-                "WHERE wd.task.id = :task_id AND wd.date = :date")
+                "WHERE wd.task.id = :task_id AND wd.date = :date"),
+        @NamedQuery(name = "TasksWorkDoneEntity.getEntriesInOrder", query = "SELECT wd FROM TasksWorkDoneEntity wd " +
+                "WHERE wd.task.id = :task_id ORDER BY wd.date DESC")
 })
 public class TasksWorkDoneEntity {
     private int id;
