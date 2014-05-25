@@ -112,16 +112,15 @@ public class ProjectManagerEJB implements ProjectManager {
             }
 
             if (userProjectGroupIDs != null) {
-                Collection<GroupEntity> userProjectGroups = new ArrayList<>();
-                for (int userGroupID : userProjectGroupIDs) {
-                    GroupEntity userGroup = gm.getGroup(userGroupID);
-                    userProjectGroups.add(userGroup);
-                }
-
                 UserEntity user = um.getUser(userID);
                 Collection<GroupEntity> userGroups = user.getGroups();
-                userGroups.addAll(userProjectGroups);
-                user.setGroups(userGroups);
+
+                for (int userGroupID : userProjectGroupIDs) {
+                    GroupEntity userGroup = gm.getGroup(userGroupID);
+                    if(!userGroups.contains(userGroup)) {
+                        userGroups.add(userGroup);
+                    }
+                }
 
                 em.persist(user);
             }
