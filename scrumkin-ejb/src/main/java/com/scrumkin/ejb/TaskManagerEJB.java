@@ -167,7 +167,7 @@ public class TaskManagerEJB implements TaskManager {
     }
 
     @Override
-    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws
+    public void updateWorkDone(int id, int userId, Date date, double workDone, double workRemaining) throws
             NoLogEntryException, TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive {
 
         if (workDone < 0) {
@@ -187,7 +187,12 @@ public class TaskManagerEJB implements TaskManager {
         try {
             entry = entryQuery.getSingleResult();
         } catch (NoResultException e) {
-            throw new NoLogEntryException();
+            try {
+                this.addTaskWorkDone(id, userId, workDone, workRemaining, date);
+                return;
+            } catch (TaskWorkLogDateAlreadyExists taskWorkLogDateAlreadyExists) {
+                return;
+            }
         }
 
         TaskEntity task = entry.getTask();

@@ -128,7 +128,8 @@ public class TaskService {
     public void updateWorkLog(@PathParam("id") int id, @PathParam("date") Date date, TaskWorkDoneJSON taskWorkDoneJSON,
                               @Context HttpServletResponse response) {
         try {
-            tm.updateWorkDone(id, date, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining);
+            tm.updateWorkDone(id, taskWorkDoneJSON.user, date, taskWorkDoneJSON.workDone,
+                    taskWorkDoneJSON.workRemaining);
         } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive | NoLogEntryException e) {
             HelperClass.exceptionHandler(response, e.getMessage());
         }
