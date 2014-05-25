@@ -199,7 +199,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
         try {
             return group.getUsers().iterator().next();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | NoSuchElementException e) {
             throw new ProjectHasNoScrumMasterException();
         }
     }
