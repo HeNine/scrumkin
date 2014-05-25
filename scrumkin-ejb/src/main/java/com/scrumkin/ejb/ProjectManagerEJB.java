@@ -142,7 +142,7 @@ public class ProjectManagerEJB implements ProjectManager {
             GroupEntity userGroup = userGroupsIter.next();
             ProjectEntity groupProject = userGroup.getProject();
 
-            if (groupProject.equals(userProject)) {
+            if (groupProject != null && groupProject.equals(userProject)) {
                 userInProject = true;
                 userGroupsIter.remove();
             }
