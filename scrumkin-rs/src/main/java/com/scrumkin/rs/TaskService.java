@@ -113,25 +113,37 @@ public class TaskService {
 
     @POST
     @Path("/{id}/log")
-    public void addWorkToLog(@PathParam("id") int id, TaskWorkDoneJSON taskWorkDoneJSON,
-                             @Context HttpServletResponse response) {
+    public TaskJSON addWorkToLog(@PathParam("id") int id, TaskWorkDoneJSON taskWorkDoneJSON,
+                                 @Context HttpServletResponse response) {
         try {
-            tm.addTaskWorkDone(id, taskWorkDoneJSON.user, taskWorkDoneJSON.workDone, taskWorkDoneJSON.workRemaining,
+            TaskEntity taskEntity = tm.addTaskWorkDone(id, taskWorkDoneJSON.user, taskWorkDoneJSON.workDone,
+                    taskWorkDoneJSON.workRemaining,
                     taskWorkDoneJSON.date);
+            TaskJSON taskJSON = new TaskJSON();
+            taskJSON.init(taskEntity);
+
+            return taskJSON;
         } catch (TaskWorkLogDateAlreadyExists | TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive e) {
             HelperClass.exceptionHandler(response, e.getMessage());
+            return null;
         }
     }
 
     @PUT
     @Path("/{id}/log/{date : \\d{4}-\\d{2}-\\d{2}}")
-    public void updateWorkLog(@PathParam("id") int id, @PathParam("date") Date date, TaskWorkDoneJSON taskWorkDoneJSON,
-                              @Context HttpServletResponse response) {
+    public TaskJSON updateWorkLog(@PathParam("id") int id, @PathParam("date") Date date,
+                                  TaskWorkDoneJSON taskWorkDoneJSON,
+                                  @Context HttpServletResponse response) {
         try {
-            tm.updateWorkDone(id, taskWorkDoneJSON.user, date, taskWorkDoneJSON.workDone,
+            TaskEntity taskEntity = tm.updateWorkDone(id, taskWorkDoneJSON.user, date, taskWorkDoneJSON.workDone,
                     taskWorkDoneJSON.workRemaining);
+            TaskJSON taskJSON = new TaskJSON();
+            taskJSON.init(taskEntity);
+
+            return taskJSON;
         } catch (TaskWorkDoneMustBePositive | TaskEstimatedTimeMustBePositive | NoLogEntryException e) {
             HelperClass.exceptionHandler(response, e.getMessage());
+            return null;
         }
     }
 

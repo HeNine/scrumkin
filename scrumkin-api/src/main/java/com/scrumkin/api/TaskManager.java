@@ -68,7 +68,7 @@ public interface TaskManager {
      * @param workRemaining Work remaining on task in hours
      * @param date          Date of work done
      */
-    public void addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Date date)
+    public TaskEntity addTaskWorkDone(int id, int userId, double workDone, double workRemaining, Date date)
             throws TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive, TaskWorkLogDateAlreadyExists;
 
     /**
@@ -87,8 +87,8 @@ public interface TaskManager {
      * @param workDone      New work done
      * @param workRemaining New work remaining
      */
-    public void updateWorkDone(int id, int userId, Date date, double workDone,
-                               double workRemaining) throws NoLogEntryException,
+    public TaskEntity updateWorkDone(int id, int userId, Date date, double workDone,
+                                     double workRemaining) throws NoLogEntryException,
             TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
 
     /**
