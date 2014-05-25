@@ -46,6 +46,7 @@ public interface TaskManager {
 
     /**
      * Delete task.
+     *
      * @param id Task id
      */
     public void deleteTask(int id) throws TaskAccepted;
@@ -81,11 +82,13 @@ public interface TaskManager {
      * Update a work log entry.
      *
      * @param id            Task ID
+     * @param userId        User ID
      * @param date          Date of work
      * @param workDone      New work done
      * @param workRemaining New work remaining
      */
-    public void updateWorkDone(int id, Date date, double workDone, double workRemaining) throws NoLogEntryException,
+    public void updateWorkDone(int id, int userId, Date date, double workDone,
+                               double workRemaining) throws NoLogEntryException,
             TaskWorkDoneMustBePositive, TaskEstimatedTimeMustBePositive;
 
     /**
