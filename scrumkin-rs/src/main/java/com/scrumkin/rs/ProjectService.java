@@ -183,10 +183,21 @@ public class ProjectService {
 
     @PUT
     @Path("{id}/{projectName}")
-    public void updateProject(@PathParam("id") int id, @PathParam("projectName") String projectName, UserJSON userJSON,
-                              @Context HttpServletResponse response) {
+    public void updateProject(@PathParam("id") int id, @PathParam("projectName") String projectName,
+                              Collection<UserJSON> userJSON, @Context HttpServletResponse response) {
+
+        int[] userIDs = new int[userJSON.size()];
+        int[][] userGroups = new int[userJSON.size()][];
+
+        Iterator<UserJSON> uIt = userJSON.iterator();
+        for(int i = 0; i < userJSON.size(); i++) {
+            UserJSON user = uIt.next();
+            userIDs[i] = user.id;
+            userGroups[i] = user.groups;
+        }
+
         try {
-            pm.updateProject(id, projectName, userJSON.id, userJSON.groups);
+            pm.updateProject(id, projectName, userIDs, userGroups);
         } catch (ProjectNameNotUniqueException | UserNotInProject e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());

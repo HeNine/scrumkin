@@ -92,7 +92,7 @@ public class ProjectManagerEJB implements ProjectManager {
     }
 
     @Override
-    public void updateProject(int projectID, String name, int userID, int[] userProjectGroupIDs) throws
+    public void updateProject(int projectID, String name, int[] userIDs, int[][] userProjectGroupIDs) throws
             ProjectNameNotUniqueException, UserNotInProject {
 
         if (!name.equals("-")) {
@@ -105,25 +105,20 @@ public class ProjectManagerEJB implements ProjectManager {
             em.persist(project);
         }
 
-        if (userID != 0) {
-            try {
-                deleteUserFromProject(userID, projectID);
-            } catch (UserNotInProject e) {
+        int j = 0;
+        for(int userID : userIDs) {
+            Collection<GroupEntity> userGroups = new ArrayList<GroupEntity>();
+
+            for (int userGroupID : userProjectGroupIDs[j]) {
+                GroupEntity userGroup = gm.getGroup(userGroupID);
+                userGroups.add(userGroup);
             }
 
-            if (userProjectGroupIDs != null) {
-                UserEntity user = um.getUser(userID);
-                Collection<GroupEntity> userGroups = user.getGroups();
+            UserEntity user = um.getUser(userID);
+            user.setGroups(userGroups);
 
-                for (int userGroupID : userProjectGroupIDs) {
-                    GroupEntity userGroup = gm.getGroup(userGroupID);
-                    if(!userGroups.contains(userGroup)) {
-                        userGroups.add(userGroup);
-                    }
-                }
-
-                em.persist(user);
-            }
+            em.persist(user);
+            j++;
         }
     }
 

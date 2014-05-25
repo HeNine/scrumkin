@@ -36,11 +36,11 @@ public interface ProjectManager {
      * Updates project.
      * @param projectID           Project ID
      * @param name                Project Name
-     * @param userID              User ID
-     * @param userProjectGroupIDs IDs of groups from project with id {@code projectID}, to which user with id {@code
-     * userID} belongs to
+     * @param userIDs              User IDs
+     * @param userProjectGroupIDs IDs of groups from project with id {@code projectID}, to which user with id from
+     * {@code userIDs} belongs to
      */
-    public void updateProject(int projectID, String name, int userID, int[] userProjectGroupIDs) throws
+    void updateProject(int projectID, String name, int[] userIDs, int[][] userProjectGroupIDs) throws
             ProjectNameNotUniqueException, UserNotInProject;
 
     /**
