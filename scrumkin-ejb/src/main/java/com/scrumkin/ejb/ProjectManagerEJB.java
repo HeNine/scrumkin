@@ -163,15 +163,33 @@ public class ProjectManagerEJB implements ProjectManager {
         return project;
     }
 
-    @Override
-    public UserEntity getProductOwner(ProjectEntity project) throws ProjectHasNoProductOwnerException {
+    public GroupEntity getProjectGroup(String name, ProjectEntity project) {
         GroupEntity group = null;
         for (GroupEntity g : project.getGroups()) {
-            if (g.getName().endsWith("Product Owner")) {
+            if (g.getName().endsWith(name)) {
                 group = g;
                 break;
             }
         }
+
+        return group;
+    }
+
+    public GroupEntity getProductOwnerGroup(ProjectEntity project) {
+        return getProjectGroup("Product Owner", project);
+    }
+
+    public GroupEntity getScrumMasterGroup(ProjectEntity project) {
+        return getProjectGroup("Scrum Master", project);
+    }
+
+    public GroupEntity getDeveloperGroup(ProjectEntity project) {
+        return getProjectGroup("Team Member", project);
+    }
+
+    @Override
+    public UserEntity getProductOwner(ProjectEntity project) throws ProjectHasNoProductOwnerException {
+        GroupEntity group = getProductOwnerGroup(project);
 
         try {
             return group.getUsers().iterator().next();
@@ -183,13 +201,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
     @Override
     public UserEntity getScrumMaster(ProjectEntity project) throws ProjectHasNoScrumMasterException {
-        GroupEntity group = null;
-        for (GroupEntity g : project.getGroups()) {
-            if (g.getName().endsWith("Scrum Master")) {
-                group = g;
-                break;
-            }
-        }
+        GroupEntity group = getScrumMasterGroup(project);
 
         try {
             return group.getUsers().iterator().next();
@@ -200,15 +212,69 @@ public class ProjectManagerEJB implements ProjectManager {
 
     @Override
     public Collection<UserEntity> getDevelopers(ProjectEntity project) {
-        GroupEntity group = null;
-        for (GroupEntity g : project.getGroups()) {
-            if (g.getName().endsWith("Team Member")) {
-                group = g;
-                break;
-            }
-        }
+        GroupEntity group = getDeveloperGroup(project);
 
         return group.getUsers();
+    }
+
+    @Override
+    public void setProductOwner(int userID, int projectID) throws ProductOwnerOrScrumMasterOnly {
+        ProjectEntity project = getProject(projectID);
+        GroupEntity productOwnerGroup = getProductOwnerGroup(project);
+        UserEntity user = um.getUser(userID);
+
+        try {
+            UserEntity scrumMaster = getScrumMaster(project);
+            if(user.equals(scrumMaster)) {
+                throw new ProductOwnerOrScrumMasterOnly();
+            }
+        } catch (ProjectHasNoScrumMasterException e) {
+        }
+
+        try {
+            UserEntity productOwner = getProductOwner(project);
+            gm.deleteUserFromGroup(productOwner, productOwnerGroup);
+        } catch (ProjectHasNoProductOwnerException e) {
+        }
+
+        gm.addUserToGroup(user, productOwnerGroup);
+    }
+
+    @Override
+    public void setScrumMaster(int userID, int projectID) throws ProductOwnerOrScrumMasterOnly {
+        ProjectEntity project = getProject(projectID);
+        GroupEntity scrumMasterGroup = getScrumMasterGroup(project);
+        UserEntity user = um.getUser(userID);
+
+        try {
+            UserEntity productOwner = getProductOwner(project);
+            if(user.equals(productOwner)) {
+                throw new ProductOwnerOrScrumMasterOnly();
+            }
+        } catch (ProjectHasNoProductOwnerException e) {
+        }
+
+        try {
+            UserEntity scrumMaster = getScrumMaster(project);
+            gm.deleteUserFromGroup(scrumMaster, scrumMasterGroup);
+        } catch (ProjectHasNoScrumMasterException e) {
+        }
+
+        gm.addUserToGroup(user, scrumMasterGroup);
+    }
+
+    @Override
+    public void setDeveloper(int userID, int projectID, boolean assign) {
+        ProjectEntity project = getProject(projectID);
+        GroupEntity developerGroup = getDeveloperGroup(project);
+
+        UserEntity user = um.getUser(userID);
+        if(assign) {
+            gm.addUserToGroup(user, developerGroup);
+        }
+        else {
+            gm.deleteUserFromGroup(user, developerGroup);
+        }
     }
 
     @Override

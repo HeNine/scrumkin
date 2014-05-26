@@ -5,10 +5,7 @@ import java.util.Collection;
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 
-import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
-import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
-import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
-import com.scrumkin.api.exceptions.UserNotInProject;
+import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.ProjectEntity;
 import com.scrumkin.jpa.SprintEntity;
 import com.scrumkin.jpa.UserEntity;
@@ -81,12 +78,36 @@ public interface ProjectManager {
     public UserEntity getScrumMaster(ProjectEntity project) throws ProjectHasNoScrumMasterException;
 
     /**
-     * Returns developers on project
+     * Returns developers on project.
      *
      * @param project Project
      * @return List of developers
      */
     public Collection<UserEntity> getDevelopers(ProjectEntity project);
+
+    /**
+     * Sets product owner.
+     *
+     * @param userID    User ID
+     * @param projectID Project ID
+     */
+    void setProductOwner(int userID, int projectID) throws ProductOwnerOrScrumMasterOnly;
+
+    /**
+     * Sets scrum master.
+     *
+     * @param userID    User ID
+     * @param projectID Project ID
+     */
+    void setScrumMaster(int userID, int projectID) throws ProductOwnerOrScrumMasterOnly;
+
+    /**
+     * Sets developer.
+     *
+     * @param userID    User ID
+     * @param projectID Project ID
+     */
+    void setDeveloper(int userID, int projectID, boolean assign);
 
     /**
      * Get all user stories in a project.

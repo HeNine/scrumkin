@@ -1,16 +1,11 @@
 package com.scrumkin.rs;
 
+import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.api.UserManager;
-import com.scrumkin.api.exceptions.ProjectHasNoProductOwnerException;
-import com.scrumkin.api.exceptions.ProjectHasNoScrumMasterException;
-import com.scrumkin.api.exceptions.ProjectNameNotUniqueException;
-import com.scrumkin.api.exceptions.UserNotInProject;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.SprintEntity;
-import com.scrumkin.jpa.UserEntity;
-import com.scrumkin.jpa.UserStoryEntity;
+import com.scrumkin.api.exceptions.*;
+import com.scrumkin.jpa.*;
 import com.scrumkin.rs.json.ProjectJSON;
 import com.scrumkin.rs.json.SprintJSON;
 import com.scrumkin.rs.json.UserJSON;
@@ -40,6 +35,8 @@ public class ProjectService {
     private ProjectManager pm;
     @Inject
     private UserLoginManager ulm;
+    @Inject
+    private GroupManager gm;
 
     @POST
     public void createProject(ProjectJSON project, @Context HttpServletResponse response) {
@@ -165,6 +162,44 @@ public class ProjectService {
     }
 
     @GET
+    @Path("{id}/productOwner")
+    public UserJSON getProductOwner(@PathParam("id") int id, @Context HttpServletResponse response) {
+        ProjectEntity project = pm.getProject(id);
+        UserEntity productOwner = null;
+
+        try {
+            productOwner = pm.getProductOwner(project);
+        } catch (ProjectHasNoProductOwnerException e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+
+        UserJSON user = new UserJSON();
+        user.init(productOwner);
+
+        return user;
+    }
+
+    @GET
+    @Path("{id}/scrumMaster")
+    public UserJSON getScrumMaster(@PathParam("id") int id, @Context HttpServletResponse response) {
+        ProjectEntity project = pm.getProject(id);
+        UserEntity scrumMaster = null;
+
+        try {
+            scrumMaster = pm.getScrumMaster(project);
+        } catch (ProjectHasNoScrumMasterException e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+
+        UserJSON user = new UserJSON();
+        user.init(scrumMaster);
+
+        return user;
+    }
+
+    @GET
     @Path("{id}/developers")
     public UserJSON[] getProjectDevelopers(@PathParam("id") int id) {
         Collection<UserEntity> developers = pm.getDevelopers(pm.getProject(id));
@@ -179,6 +214,40 @@ public class ProjectService {
         }
 
         return developersJSON;
+    }
+
+    @PUT
+    @Path("{id}/productOwner")
+    public void setProductOwner(@PathParam("id") int id, UserJSON user, @Context HttpServletResponse response) {
+        try {
+            pm.setProductOwner(user.id, id);
+        } catch (ProductOwnerOrScrumMasterOnly e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("{id}/scrumMaster")
+    public void setScrumMaster(@PathParam("id") int id, UserJSON user, @Context HttpServletResponse response) {
+        try {
+            pm.setScrumMaster(user.id, id);
+        } catch (ProductOwnerOrScrumMasterOnly e) {
+            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
+            HelperClass.exceptionHandler(response, e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("{id}/developer")
+    public void setDeveloper(@PathParam("id") int id, UserJSON user) {
+        pm.setDeveloper(user.id, id, true);
+    }
+
+    @DELETE
+    @Path("{id}/developer/{userID}")
+    public void removeDeveloper(@PathParam("id") int id, @PathParam("userID") int userID) {
+        pm.setDeveloper(userID, id, false);
     }
 
     @PUT

@@ -77,8 +77,6 @@ public class GroupManagerEJB implements GroupManager {
             PermissionInvalidException {
         List<PermissionEntity> invalidPermissions = new ArrayList<PermissionEntity>(
                 permissions);
-//        Collections.copy(invalidPermissions,
-//                (List<PermissionEntity>) permissions);
 
         invalidPermissions.removeAll(validPermissions);
         if (invalidPermissions.size() != 0) {
