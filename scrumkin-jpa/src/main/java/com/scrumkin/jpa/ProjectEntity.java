@@ -10,15 +10,20 @@ import javax.persistence.*;
 @Entity
 @Table(name = "projects", schema = "public", catalog = "scrumkin")
 @NamedQueries({
-        @NamedQuery(name = "ProjectEntity.isUnique", query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false " +
+        @NamedQuery(name = "ProjectEntity.isUnique",
+                query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false" +
+                        " " +
                 "END FROM " +
                 "ProjectEntity p WHERE p.name = :name"),
-        @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN (count(p) <> 0) THEN true ELSE false END" +
+        @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN " +
+                "(count(p) <> 0) THEN true ELSE false END" +
                 " FROM " +
                 "ProjectEntity p WHERE p = :project"),
-        @NamedQuery(name = "ProjectEntity.getProjectByName", query = "SELECT p FROM ProjectEntity p " +
+        @NamedQuery(name = "ProjectEntity.getProjectByName",
+                query = "SELECT p FROM ProjectEntity p " +
                 "WHERE p.name = :name"),
-        @NamedQuery(name = "ProjectEntity.getAllProjects", query = "SELECT p FROM ProjectEntity p")
+        @NamedQuery(name = "ProjectEntity.getAllProjects",
+                query = "SELECT p FROM ProjectEntity p")
 })
 public class ProjectEntity {
     private int id;
@@ -29,7 +34,8 @@ public class ProjectEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projects_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "projects_id_seq")
     @SequenceGenerator(name = "projects_id_seq",
             sequenceName = "projects_id_seq",
             allocationSize = 1)
@@ -59,7 +65,8 @@ public class ProjectEntity {
         ProjectEntity that = (ProjectEntity) o;
 
         if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null)
+            return false;
 
         return true;
     }
@@ -80,7 +87,7 @@ public class ProjectEntity {
         this.groups = groups;
     }
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST})
     public Collection<SprintEntity> getSprints() {
         return sprints;
     }

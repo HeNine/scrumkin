@@ -35,8 +35,10 @@ public class SprintManagerEJB implements SprintManager {
     private UserStoryManager usm;
 
     @Override
-    public void addSprint(ProjectEntity project, Date startDate, Date endDate, BigDecimal velocity)
-            throws SprintDatesOutOfOrderException, SprintStartDateInThePast, SprintVelocityZeroOrNegative,
+    public void addSprint(ProjectEntity project, Date startDate,
+                          Date endDate, BigDecimal velocity)
+            throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
+            SprintVelocityZeroOrNegative,
             SprintTimeSlotNotAvailable {
 
         if (startDate.after(endDate)) {
@@ -52,7 +54,8 @@ public class SprintManagerEJB implements SprintManager {
         }
 
 
-        boolean isTimeSlotAvailable = isTimeSlotAvailable(project, startDate, endDate);
+        boolean isTimeSlotAvailable = isTimeSlotAvailable(project, startDate,
+                endDate);
         if (!isTimeSlotAvailable) {
             throw new SprintTimeSlotNotAvailable();
         }
@@ -63,57 +66,66 @@ public class SprintManagerEJB implements SprintManager {
         sprint.setEndDate(endDate);
         sprint.setVelocity(velocity);
 
-        em.persist(sprint);
+        project.getSprints().add(sprint);
+
+        em.persist(project);
     }
 
     @Override
-    public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
-                             int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
-            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable, SprintOverlap {
+    public void updateSprint(int id, Date startDate, Date endDate,
+                             BigDecimal velocity,
+                             int[] stories) throws
+            SprintDatesOutOfOrderException, SprintStartDateInThePast,
+            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable,
+            SprintOverlap {
 
         SprintEntity sprint = getSprint(id);
 
-        if(startDate != null) {
+        if (startDate != null) {
             if (startDate.after(endDate)) {
                 throw new SprintDatesOutOfOrderException();
             }
             sprint.setStartDate(startDate);
         }
 
-        if(endDate != null) {
+        if (endDate != null) {
             if (startDate.before(new Date(System.currentTimeMillis()))) {
                 throw new SprintStartDateInThePast();
             }
             sprint.setEndDate(endDate);
         }
 
-        if(startDate != null || endDate != null) {
-            Collection<SprintEntity> projectSprints = sprint.getProject().getSprints();
+        if (startDate != null || endDate != null) {
+            Collection<SprintEntity> projectSprints = sprint.getProject()
+                    .getSprints();
 
             for (SprintEntity projectSprint : projectSprints) {
-                if(sprint.equals(projectSprint)) {
+                if (sprint.equals(projectSprint)) {
                     continue;
                 }
 
                 Date projectSprintStart = projectSprint.getStartDate();
                 Date projectSprintEnd = projectSprint.getEndDate();
 
-                if (startDate.compareTo(projectSprintStart) >= 0 && startDate.compareTo(projectSprintEnd) <= 0 ||
-                        endDate.compareTo(projectSprintStart) >= 0 && endDate.compareTo(projectSprintEnd) <= 0) {
-                    throw new SprintOverlap("Sprint with id " + projectSprint.getId() + " is overlapping this " +
+                if (startDate.compareTo(projectSprintStart) >= 0 && startDate
+                        .compareTo(projectSprintEnd) <= 0 ||
+                        endDate.compareTo(projectSprintStart) >= 0 && endDate
+                                .compareTo(projectSprintEnd) <= 0) {
+                    throw new SprintOverlap("Sprint with id " + projectSprint
+                            .getId() + " is overlapping this " +
                             "sprint!");
                 }
             }
         }
 
-        if(velocity != null) {
+        if (velocity != null) {
             if (velocity.compareTo(BigDecimal.ZERO) == -1) {
                 throw new SprintVelocityZeroOrNegative();
             }
             sprint.setVelocity(velocity);
         }
 
-        if(stories != null) {
+        if (stories != null) {
             List<UserStoryEntity> storyEntityList = new LinkedList<>();
             for (int sId : stories) {
                 storyEntityList.add(usm.getUserStory(sId));
@@ -136,7 +148,7 @@ public class SprintManagerEJB implements SprintManager {
         if (sprint != null) {
             Date sprintStartDate = sprint.getStartDate();
             Date currentDate = new Date(System.currentTimeMillis());
-            if(sprintStartDate.before(currentDate)) {
+            if (sprintStartDate.before(currentDate)) {
                 throw new SprintStarted();
             }
             em.remove(sprint);
@@ -145,7 +157,8 @@ public class SprintManagerEJB implements SprintManager {
 
     @Override
     public Collection<SprintEntity> getAllSprints() {
-        return em.createNamedQuery("SprintEntity.getAllSprints", SprintEntity.class).getResultList();
+        return em.createNamedQuery("SprintEntity.getAllSprints",
+                SprintEntity.class).getResultList();
     }
 
     @Override
@@ -160,9 +173,11 @@ public class SprintManagerEJB implements SprintManager {
         return getSprint(id).getUserStories();
     }
 
-    private boolean isTimeSlotAvailable(ProjectEntity project, Date startDate, Date endDate) {
-        TypedQuery<SprintEntity> isAvailableQuery = em.createNamedQuery("SprintEntity.isTimeSlotAvailable",
-                SprintEntity.class);
+    private boolean isTimeSlotAvailable(ProjectEntity project,
+                                        Date startDate, Date endDate) {
+        TypedQuery<SprintEntity> isAvailableQuery = em.createNamedQuery
+                ("SprintEntity.isTimeSlotAvailable",
+                        SprintEntity.class);
         isAvailableQuery.setParameter("project", project);
         isAvailableQuery.setParameter("startDate", startDate);
         isAvailableQuery.setParameter("endDate", endDate);
