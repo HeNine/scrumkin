@@ -44,11 +44,10 @@ public interface SprintManager {
      * @throws SprintStartDateInThePast
      * @throws SprintVelocityZeroOrNegative
      * @throws SprintTimeSlotNotAvailable
-     * @throws SprintOverlap
      */
     public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
                              int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
-            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable, SprintOverlap;
+            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable;
 
     /**
      * Delete sprint.

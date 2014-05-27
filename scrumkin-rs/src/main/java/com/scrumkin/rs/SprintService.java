@@ -126,11 +126,7 @@ public class SprintService {
         } catch (SprintTimeSlotNotAvailable e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, "Sprint date is not available");
-        } catch (SprintOverlap e) {
-            response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            HelperClass.exceptionHandler(response, e.getMessage());
         }
-
     }
 
     @DELETE

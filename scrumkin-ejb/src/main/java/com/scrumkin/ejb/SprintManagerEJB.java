@@ -69,7 +69,7 @@ public class SprintManagerEJB implements SprintManager {
     @Override
     public void updateSprint(int id, Date startDate, Date endDate, BigDecimal velocity,
                              int[] stories) throws SprintDatesOutOfOrderException, SprintStartDateInThePast,
-            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable, SprintOverlap {
+            SprintVelocityZeroOrNegative, SprintTimeSlotNotAvailable {
 
         SprintEntity sprint = getSprint(id);
 
@@ -100,8 +100,7 @@ public class SprintManagerEJB implements SprintManager {
 
                 if (startDate.compareTo(projectSprintStart) >= 0 && startDate.compareTo(projectSprintEnd) <= 0 ||
                         endDate.compareTo(projectSprintStart) >= 0 && endDate.compareTo(projectSprintEnd) <= 0) {
-                    throw new SprintOverlap("Sprint with id " + projectSprint.getId() + " is overlapping this " +
-                            "sprint!");
+                    throw new SprintTimeSlotNotAvailable();
                 }
             }
         }
