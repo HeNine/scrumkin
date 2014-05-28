@@ -32,7 +32,7 @@ public interface UserStoryManager {
             UserStoryBusinessValueZeroOrNegative;
 
     /**
-     * Check is user story is realized.
+     * Check if user story is realized.
      *
      * @param userStory User story to be checked
      * @return True if user story is realized, otherwise false
@@ -74,7 +74,7 @@ public interface UserStoryManager {
      * @param id   Story id
      * @param time Estimated time
      */
-    public void setStoryTime(int id, double time) throws UserStoryEstimatedTimeMustBePositive;
+    public void setStoryTime(int id, double time) throws UserStoryEstimatedTimeZeroOrNegative;
 
     /**
      * Update a story test
@@ -117,7 +117,7 @@ public interface UserStoryManager {
     public void updateStory(int id, String title, String story, PriorityEntity priority,
                             Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
-            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist;
+            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist, UserStoryRealizedException, UserStoryAssignedToSprint;
 
     /**
      * Gets acceptance tests by id
@@ -136,7 +136,23 @@ public interface UserStoryManager {
     public void addStoryComment(int id, String comment, int role);
 
     /**
-     * Returns all comments of a story in temporal order.
+     * Updates story comment
+     *
+     * @param id      Story comment id
+     * @param comment Comment text
+     * @param role    Commenter role
+     */
+    void updateStoryComment(int id, String comment, Integer role);
+
+    /**
+     * Delete story comment
+     *
+     * @param id Story comment id
+     */
+    void deleteStoryComment(int id);
+
+    /**
+     * Returns all comments of a story in temporal order
      *
      * @param id Story id
      * @return Ordered list of comments
