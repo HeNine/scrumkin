@@ -3,15 +3,20 @@ package com.scrumkin.ejb;
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.ProjectManager;
 import com.scrumkin.api.UserManager;
+import com.scrumkin.api.UserStoryManager;
 import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.*;
 
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 
 /**
@@ -27,6 +32,8 @@ public class ProjectManagerEJB implements ProjectManager {
     private GroupManager gm;
     @Inject
     private UserManager um;
+    @Inject
+    private UserStoryManager usm;
 
     @Override
     public void addProject(@NotNull String name, UserEntity productOwner, UserEntity scrumMaster,
@@ -106,7 +113,7 @@ public class ProjectManagerEJB implements ProjectManager {
         }
 
         int j = 0;
-        for(int userID : userIDs) {
+        for (int userID : userIDs) {
             Collection<GroupEntity> userGroups = new ArrayList<GroupEntity>();
 
             for (int userGroupID : userProjectGroupIDs[j]) {
@@ -225,7 +232,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
         try {
             UserEntity scrumMaster = getScrumMaster(project);
-            if(user.equals(scrumMaster)) {
+            if (user.equals(scrumMaster)) {
                 throw new ProductOwnerOrScrumMasterOnly();
             }
         } catch (ProjectHasNoScrumMasterException e) {
@@ -248,7 +255,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
         try {
             UserEntity productOwner = getProductOwner(project);
-            if(user.equals(productOwner)) {
+            if (user.equals(productOwner)) {
                 throw new ProductOwnerOrScrumMasterOnly();
             }
         } catch (ProjectHasNoProductOwnerException e) {
@@ -269,10 +276,9 @@ public class ProjectManagerEJB implements ProjectManager {
         GroupEntity developerGroup = getDeveloperGroup(project);
 
         UserEntity user = um.getUser(userID);
-        if(assign) {
+        if (assign) {
             gm.addUserToGroup(user, developerGroup);
-        }
-        else {
+        } else {
             gm.deleteUserFromGroup(user, developerGroup);
         }
     }
@@ -287,13 +293,59 @@ public class ProjectManagerEJB implements ProjectManager {
         return getProject(id).getSprints();
     }
 
+    @Override
+    public BurndownEntity getProjectBurndown(int id, Date date) {
+        ProjectEntity project = this.getProject(id);
+
+        List<BurndownEntity> burndowns = new LinkedList<>(project.getBurndowns());
+        Collections.sort(burndowns, new Comparator<BurndownEntity>() {
+            @Override
+            public int compare(BurndownEntity o1, BurndownEntity o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
+        Collections.reverse(burndowns);
+
+        for (BurndownEntity burndownEntity : burndowns) {
+            if (burndownEntity.getDate().equals(date)) {
+                return burndownEntity;
+            }
+        }
+
+        return null;
+    }
+
     private boolean projectNameIsUnique(String name) {
         TypedQuery<ProjectEntity> projectsQuery = em.createNamedQuery("ProjectEntity.getProjectByName",
                 ProjectEntity.class);
         projectsQuery.setParameter("name", name);
 
-
         return projectsQuery.getResultList().size() == 0;
     }
 
+    @Schedule(minute = "*/15")
+    public void createBurndownReport() {
+        TypedQuery<ProjectEntity> projectsQuery = em.createNamedQuery("ProjectEntity.getAllProjects",
+                ProjectEntity.class);
+        Collection<ProjectEntity> projects = projectsQuery.getResultList();
+
+        for (ProjectEntity project : projects) {
+            BurndownEntity burndown = new BurndownEntity();
+
+            for (UserStoryEntity userStoryEntity : project.getUserStories()) {
+                if (!usm.isUserStoryRealized(userStoryEntity)) {
+                    if (userStoryEntity.getTasks() == null || userStoryEntity.getTasks().isEmpty()) {
+                        burndown.setWorkRemaining(BigDecimal.valueOf(burndown.getWorkRemaining().doubleValue() +
+                                userStoryEntity.getEstimatedTime().doubleValue() * 6));
+                    } else {
+                        for (TaskEntity task : userStoryEntity.getTasks()) {
+                            burndown.setWorkRemaining(burndown.getWorkRemaining().add(task.getEstimatedTime()));
+                        }
+                    }
+                }
+            }
+
+            em.persist(burndown);
+        }
+    }
 }

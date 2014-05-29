@@ -13,17 +13,17 @@ import javax.persistence.*;
         @NamedQuery(name = "ProjectEntity.isUnique",
                 query = "SELECT CASE WHEN (count(p) = 0) THEN true ELSE false" +
                         " " +
-                "END FROM " +
-                "ProjectEntity p WHERE p.name = :name"),
+                        "END FROM " +
+                        "ProjectEntity p WHERE p.name = :name"),
         @NamedQuery(name = "ProjectEntity.exists", query = "SELECT CASE WHEN " +
                 "(count(p) <> 0) THEN true ELSE false END" +
                 " FROM " +
                 "ProjectEntity p WHERE p = :project"),
         @NamedQuery(name = "ProjectEntity.getProjectByName",
                 query = "SELECT p FROM ProjectEntity p " +
-                "WHERE p.name = :name"),
+                        "WHERE p.name = :name"),
         @NamedQuery(name = "ProjectEntity.getAllProjects",
-                query = "SELECT p FROM ProjectEntity p")
+                query = "SELECT p FROM ProjectEntity p"),
 })
 public class ProjectEntity {
     private int id;
@@ -31,6 +31,7 @@ public class ProjectEntity {
     private Collection<GroupEntity> groups;
     private Collection<SprintEntity> sprints;
     private Collection<UserStoryEntity> userStories;
+    private Collection<BurndownEntity> burndowns;
 
     @Id
     @Column(name = "id")
@@ -103,5 +104,14 @@ public class ProjectEntity {
 
     public void setUserStories(Collection<UserStoryEntity> userStories) {
         this.userStories = userStories;
+    }
+
+    @OneToMany(mappedBy = "project")
+    public Collection<BurndownEntity> getBurndowns() {
+        return burndowns;
+    }
+
+    public void setBurndowns(Collection<BurndownEntity> burndowns) {
+        this.burndowns = burndowns;
     }
 }
