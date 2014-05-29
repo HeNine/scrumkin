@@ -151,7 +151,10 @@ public class SprintManagerEJB implements SprintManager {
             if (sprintStartDate.before(currentDate)) {
                 throw new SprintStarted();
             }
+            sprint.getProject().getSprints().remove(sprint);
+
             em.remove(sprint);
+            em.persist(sprint.getProject());
         }
     }
 
