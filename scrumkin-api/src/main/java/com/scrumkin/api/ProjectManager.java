@@ -1,14 +1,18 @@
 package com.scrumkin.api;
 
-import java.sql.Date;
-import java.util.Collection;
+import com.scrumkin.api.exceptions.*;
+import com.scrumkin.jpa.*;
 
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
+import java.sql.Date;
+import java.util.Collection;
 
 import com.scrumkin.api.exceptions.*;
-import com.scrumkin.api.util.Burndown;
-import com.scrumkin.jpa.*;
+import com.scrumkin.jpa.ProjectEntity;
+import com.scrumkin.jpa.SprintEntity;
+import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.UserStoryEntity;
 
 /**
  * Used to manage projects.
@@ -30,19 +34,17 @@ public interface ProjectManager {
 
     /**
      * Updates project.
-     *
      * @param projectID           Project ID
      * @param name                Project Name
-     * @param userIDs             User IDs
+     * @param userIDs              User IDs
      * @param userProjectGroupIDs IDs of groups from project with id {@code projectID}, to which user with id from
-     *                            {@code userIDs} belongs to
+     * {@code userIDs} belongs to
      */
     void updateProject(int projectID, String name, int[] userIDs, int[][] userProjectGroupIDs) throws
             ProjectNameNotUniqueException, UserNotInProject;
 
     /**
      * Remove user from project (by removing him from his groups that belong to this project).
-     *
      * @param userId    User ID
      * @param projectId Project ID
      */
