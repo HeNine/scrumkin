@@ -137,8 +137,10 @@ public class TaskManagerEJB implements TaskManager {
         if (task.getAccepted()) {
             throw new TaskAccepted("Task " + id + " is accepted and therefore cannot be deleted!");
         }
+        task.getUserStory().getTasks().remove(task);
 
         em.remove(task);
+        em.persist(task.getUserStory());
     }
 
     @Override
