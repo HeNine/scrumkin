@@ -1,7 +1,5 @@
 package com.scrumkin.rs;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -114,30 +112,28 @@ public class UserStoryService {
     public void updateUserStory(UserStoryJSON userStoryJSON, @PathParam("id") int id,
                                 @Context HttpServletResponse response) {
 
-        List<AcceptenceTestEntity> acceptanceTests = new LinkedList<>();
-        for (int i : userStoryJSON.acceptenceTests) {
-            acceptanceTests.add(usm.getAcceptanceTest(i));
-        }
+//        if(userStoryJSON.acceptenceTests != null) {
+//            List<AcceptenceTestEntity> acceptanceTests = new LinkedList<>();
+//            for (int i : userStoryJSON.acceptenceTests) {
+//                acceptanceTests.add(usm.getAcceptanceTest(i));
+//            }
+//        }
 
         try {
             usm.updateStory(id, userStoryJSON.title, userStoryJSON.story, prm.getPriority(userStoryJSON.priority),
-                    userStoryJSON.bussinessValue, acceptanceTests);
+                    userStoryJSON.bussinessValue, null);
         } catch (UserStoryInvalidPriorityException | UserStoryTitleNotUniqueException |
-                UserStoryBusinessValueZeroOrNegative | UserStoryDoesNotExist e) {
+                UserStoryBusinessValueZeroOrNegative | UserStoryDoesNotExist | UserStoryRealizedException |
+                UserStoryAssignedToSprint e) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
             HelperClass.exceptionHandler(response, e.getMessage());
         }
 
         try {
             usm.setStoryTime(id, userStoryJSON.estimatedTime);
-        } catch (UserStoryEstimatedTimeMustBePositive userStoryEstimatedTimeMustBePositive) {
+        } catch (UserStoryEstimatedTimeZeroOrNegative userStoryEstimatedTimeMustBePositive) {
             response.setStatus(Response.Status.FORBIDDEN.getStatusCode());
-            try {
-                response.getOutputStream().println("User story estimated time must be positive");
-                response.getOutputStream().close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            HelperClass.exceptionHandler(response, "User story estimated time must not be zero or negative");
         }
     }
 
@@ -199,6 +195,18 @@ public class UserStoryService {
     @Path("/{id}/comments")
     public void addStoryComment(@PathParam("id") int id, StoryCommentJSON storyCommentJSON) {
         usm.addStoryComment(id, storyCommentJSON.comment, storyCommentJSON.role);
+    }
+
+    @PUT
+    @Path("/{id}/comments/{storyCommentId}")
+    public void editStoryComment(@PathParam("storyCommentId") int storyCommentId, StoryCommentJSON storyCommentJSON) {
+        usm.updateStoryComment(storyCommentId, storyCommentJSON.comment, storyCommentJSON.role);
+    }
+
+    @DELETE
+    @Path("/{id}/comments/{storyCommentId}")
+    public void deleteStoryComment(@PathParam("storyCommentId") int storyCommentId) {
+        usm.deleteStoryComment(storyCommentId);
     }
 }
 

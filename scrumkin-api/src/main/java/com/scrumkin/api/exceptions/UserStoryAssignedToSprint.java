@@ -3,15 +3,15 @@ package com.scrumkin.api.exceptions;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class SprintOverlap extends Exception {
+public class UserStoryAssignedToSprint extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public SprintOverlap() {
+	public UserStoryAssignedToSprint() {
 		super();
 	}
 
-	public SprintOverlap(String description) {
+	public UserStoryAssignedToSprint(String description) {
 		super(description);
 	}
 }

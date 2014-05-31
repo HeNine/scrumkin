@@ -114,16 +114,16 @@ public class ProjectManagerEJB implements ProjectManager {
         }
 
         int j = 0;
-        for (int userID : userIDs) {
-            Collection<GroupEntity> userGroups = new ArrayList<GroupEntity>();
+        for(int userID : userIDs) {
+            UserEntity user = um.getUser(userID);
+            Collection<GroupEntity> userGroups = user.getGroups();
 
             for (int userGroupID : userProjectGroupIDs[j]) {
                 GroupEntity userGroup = gm.getGroup(userGroupID);
-                userGroups.add(userGroup);
+                if(!userGroups.contains(userGroup)) {
+                    userGroups.add(userGroup);
+                }
             }
-
-            UserEntity user = um.getUser(userID);
-            user.setGroups(userGroups);
 
             em.persist(user);
             j++;
@@ -233,7 +233,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
         try {
             UserEntity scrumMaster = getScrumMaster(project);
-            if (user.equals(scrumMaster)) {
+            if(user.equals(scrumMaster)) {
                 throw new ProductOwnerOrScrumMasterOnly();
             }
         } catch (ProjectHasNoScrumMasterException e) {
@@ -256,7 +256,7 @@ public class ProjectManagerEJB implements ProjectManager {
 
         try {
             UserEntity productOwner = getProductOwner(project);
-            if (user.equals(productOwner)) {
+            if(user.equals(productOwner)) {
                 throw new ProductOwnerOrScrumMasterOnly();
             }
         } catch (ProjectHasNoProductOwnerException e) {
@@ -277,9 +277,10 @@ public class ProjectManagerEJB implements ProjectManager {
         GroupEntity developerGroup = getDeveloperGroup(project);
 
         UserEntity user = um.getUser(userID);
-        if (assign) {
+        if(assign) {
             gm.addUserToGroup(user, developerGroup);
-        } else {
+        }
+        else {
             gm.deleteUserFromGroup(user, developerGroup);
         }
     }

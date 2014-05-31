@@ -263,7 +263,7 @@ public class ProjectService {
     }
 
     @PUT
-    @Path("{id}/{projectName}")
+    @Path("{id}/name/{projectName}")
     public void updateProject(@PathParam("id") int id, @PathParam("projectName") String projectName,
                               Collection<UserJSON> userJSON, @Context HttpServletResponse response) {
 
