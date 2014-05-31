@@ -271,7 +271,7 @@ public class ProjectService {
         int[][] userGroups = new int[userJSON.size()][];
 
         Iterator<UserJSON> uIt = userJSON.iterator();
-        for (int i = 0; i < userJSON.size(); i++) {
+        for(int i = 0; i < userJSON.size(); i++) {
             UserJSON user = uIt.next();
             userIDs[i] = user.id;
             userGroups[i] = user.groups;
