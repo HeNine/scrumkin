@@ -11,6 +11,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
@@ -323,18 +324,34 @@ public class ProjectManagerEJB implements ProjectManager {
         return projectsQuery.getResultList().size() == 0;
     }
 
-    @Schedule(minute = "*/15")
+    @Schedule(minute = "*/1", hour = "*")
     public void createBurndownReport() {
         TypedQuery<ProjectEntity> projectsQuery = em.createNamedQuery("ProjectEntity.getAllProjects",
                 ProjectEntity.class);
         Collection<ProjectEntity> projects = projectsQuery.getResultList();
 
         for (ProjectEntity project : projects) {
-            BurndownEntity burndown = new BurndownEntity();
+
+            BurndownEntity burndown;
+            try {
+                TypedQuery<BurndownEntity> burndownQuery = em.createNamedQuery("BurndownEntity.getBurndownByDate",
+                        BurndownEntity.class);
+                burndownQuery.setParameter("date", new Date(System.currentTimeMillis()));
+                burndownQuery.setParameter("project_id", project.getId());
+
+                burndown = burndownQuery.getSingleResult();
+                burndown.setWorkRemaining(new BigDecimal(0));
+            } catch (NoResultException e) {
+                burndown = new BurndownEntity();
+                burndown.setProject(project);
+                burndown.setWorkRemaining(new BigDecimal(0));
+                burndown.setDate(new Date(System.currentTimeMillis()));
+            }
 
             for (UserStoryEntity userStoryEntity : project.getUserStories()) {
                 if (!usm.isUserStoryRealized(userStoryEntity)) {
-                    if (userStoryEntity.getTasks() == null || userStoryEntity.getTasks().isEmpty()) {
+                    if ((userStoryEntity.getEstimatedTime() != null) &&
+                            (userStoryEntity.getTasks() == null || userStoryEntity.getTasks().isEmpty())) {
                         burndown.setWorkRemaining(BigDecimal.valueOf(burndown.getWorkRemaining().doubleValue() +
                                 userStoryEntity.getEstimatedTime().doubleValue() * 6));
                     } else {

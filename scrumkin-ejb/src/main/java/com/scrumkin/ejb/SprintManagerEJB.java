@@ -140,6 +140,7 @@ public class SprintManagerEJB implements SprintManager {
         }
 
         em.persist(sprint);
+        em.persist(sprint.getProject());
     }
 
     @Override

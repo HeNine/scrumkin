@@ -1,14 +1,12 @@
 package com.scrumkin.api;
 
-import java.sql.Date;
-import java.util.Collection;
+import com.scrumkin.api.exceptions.*;
+import com.scrumkin.jpa.*;
 
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
-
-import com.scrumkin.api.exceptions.*;
-import com.scrumkin.api.util.Burndown;
-import com.scrumkin.jpa.*;
+import java.sql.Date;
+import java.util.Collection;
 
 /**
  * Used to manage projects.

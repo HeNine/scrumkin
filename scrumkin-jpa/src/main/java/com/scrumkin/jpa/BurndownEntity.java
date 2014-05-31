@@ -9,6 +9,10 @@ import java.sql.Date;
  */
 @Entity
 @Table(name = "burndowns", schema = "public", catalog = "scrumkin")
+@NamedQueries({
+        @NamedQuery(name = "BurndownEntity.getBurndownByDate", query = "SELECT b FROM BurndownEntity b WHERE b" +
+                ".project.id = :project_id AND b.date = :date")
+})
 public class BurndownEntity {
     private int id;
     private BigDecimal workRemaining;
@@ -17,6 +21,11 @@ public class BurndownEntity {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "burndowns_id_seq")
+    @SequenceGenerator(name = "burndowns_id_seq",
+            sequenceName = "burndowns_id_seq",
+            allocationSize = 1)
     public int getId() {
         return id;
     }
