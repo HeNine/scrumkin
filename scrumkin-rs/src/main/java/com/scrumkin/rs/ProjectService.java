@@ -6,10 +6,7 @@ import com.scrumkin.api.UserLoginManager;
 import com.scrumkin.api.UserManager;
 import com.scrumkin.api.exceptions.*;
 import com.scrumkin.jpa.*;
-import com.scrumkin.rs.json.ProjectJSON;
-import com.scrumkin.rs.json.SprintJSON;
-import com.scrumkin.rs.json.UserJSON;
-import com.scrumkin.rs.json.UserStoryJSON;
+import com.scrumkin.rs.json.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,6 +15,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.*;
 
 /**
@@ -128,6 +126,20 @@ public class ProjectService {
         project.developers = developers.toArray(new Integer[1]);
 
         return project;
+    }
+
+    @GET
+    @Path("{id}/burndown/{date : \\d{4}-\\d{2}-\\d{2}}")
+    public BurndownJSON getProjectBurndown(@PathParam("id") int id, @PathParam("date") Date date) {
+        BurndownJSON burndownJSON = new BurndownJSON();
+
+        BurndownEntity burndownEntity = pm.getProjectBurndown(id, date);
+        if (burndownEntity == null) {
+            return null;
+        }
+        burndownJSON.init(burndownEntity);
+
+        return burndownJSON;
     }
 
     @GET
@@ -259,7 +271,7 @@ public class ProjectService {
         int[][] userGroups = new int[userJSON.size()][];
 
         Iterator<UserJSON> uIt = userJSON.iterator();
-        for(int i = 0; i < userJSON.size(); i++) {
+        for (int i = 0; i < userJSON.size(); i++) {
             UserJSON user = uIt.next();
             userIDs[i] = user.id;
             userGroups[i] = user.groups;
