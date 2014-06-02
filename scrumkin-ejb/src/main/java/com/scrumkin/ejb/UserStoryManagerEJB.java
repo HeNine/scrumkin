@@ -44,7 +44,8 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
     @Override
     public void addTestToStory(AcceptenceTestEntity acceptenceTestEntity) {
-        em.persist(acceptenceTestEntity);
+        acceptenceTestEntity.getUserStory().getAcceptenceTests().add(acceptenceTestEntity);
+        em.persist(acceptenceTestEntity.getUserStory());
     }
 
     @Override
@@ -81,6 +82,16 @@ public class UserStoryManagerEJB implements UserStoryManager {
         acceptenceTestEntity.setAccepted(accepted);
 
         em.persist(acceptenceTestEntity);
+    }
+
+    @Override
+    public void deleteTest(int id) {
+        AcceptenceTestEntity test = getAcceptanceTest(id);
+
+        test.getUserStory().getAcceptenceTests().remove(test);
+        em.remove(test);
+
+        em.persist(test.getUserStory());
     }
 
     @Override

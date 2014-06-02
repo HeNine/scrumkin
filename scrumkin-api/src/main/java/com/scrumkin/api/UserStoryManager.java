@@ -94,6 +94,13 @@ public interface UserStoryManager {
     public void updateTestCompletion(int id, Boolean accepted);
 
     /**
+     * Deletes a test
+     *
+     * @param id test ID
+     */
+    public void deleteTest(int id);
+
+    /**
      * Delete the story
      *
      * @param id Story id
@@ -117,7 +124,8 @@ public interface UserStoryManager {
     public void updateStory(int id, String title, String story, PriorityEntity priority,
                             Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
             UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,
-            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist, UserStoryRealizedException, UserStoryAssignedToSprint;
+            UserStoryBusinessValueZeroOrNegative, UserStoryDoesNotExist, UserStoryRealizedException,
+            UserStoryAssignedToSprint;
 
     /**
      * Gets acceptance tests by id

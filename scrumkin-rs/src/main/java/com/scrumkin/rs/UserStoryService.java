@@ -166,6 +166,12 @@ public class UserStoryService {
         usm.updateTest(testId, test.test, test.accepted);
     }
 
+    @DELETE
+    @Path("/{id}/tests/{test_id}")
+    public void deleteTest(@PathParam("id") int id, @PathParam("test_id") int testId) {
+        usm.deleteTest(testId);
+    }
+
     @POST
     @Path("/{id}/tests")
     public void addTestsToStory(AcceptanceTestJSON acceptanceTestJSON, @PathParam("id") int id) {
