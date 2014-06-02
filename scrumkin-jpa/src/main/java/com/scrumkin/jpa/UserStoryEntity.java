@@ -111,7 +111,7 @@ public class UserStoryEntity {
         return result;
     }
 
-    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "userStory", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     public Collection<AcceptenceTestEntity> getAcceptenceTests() {
         return acceptenceTests;
     }

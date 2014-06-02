@@ -163,7 +163,7 @@ public class UserStoryService {
     @Path("/{id}/tests/{test_id}")
     public void updateAcceptanceTest(@PathParam("id") int id, @PathParam("test_id") int testId,
                                      AcceptanceTestJSON test) {
-        usm.updateTestCompletion(testId, test.accepted);
+        usm.updateTest(testId, test.test, test.accepted);
     }
 
     @POST

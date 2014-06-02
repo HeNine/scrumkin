@@ -55,7 +55,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
 
         UserStoryEntity userStoryEntity = getUserStory(id);
 
-        if(time != 0) {
+        if (time != 0) {
             userStoryEntity.setEstimatedTime(BigDecimal.valueOf(time));
         }
 
@@ -65,10 +65,14 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public void updateTest(int id, String test, Boolean accepted) {
         AcceptenceTestEntity acceptenceTestEntity = em.find(AcceptenceTestEntity.class, id);
-        acceptenceTestEntity.setAccepted(accepted);
-        acceptenceTestEntity.setTest(test);
+        if (accepted != null) {
+            acceptenceTestEntity.setAccepted(accepted);
+        }
+        if (test != null) {
+            acceptenceTestEntity.setTest(test);
+        }
 
-        em.persist(acceptenceTestEntity);
+        em.persist(acceptenceTestEntity.getUserStory());
     }
 
     @Override
@@ -90,7 +94,7 @@ public class UserStoryManagerEJB implements UserStoryManager {
     @Override
     public void updateStory(int id, String title, String story, PriorityEntity priority,
                             Integer businessValue, Collection<AcceptenceTestEntity> acceptanceTests) throws
-            UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException,  UserStoryBusinessValueZeroOrNegative,
+            UserStoryInvalidPriorityException, UserStoryTitleNotUniqueException, UserStoryBusinessValueZeroOrNegative,
             UserStoryDoesNotExist, UserStoryRealizedException, UserStoryAssignedToSprint {
 
         UserStoryEntity userStory = em.find(UserStoryEntity.class, id);
@@ -98,12 +102,12 @@ public class UserStoryManagerEJB implements UserStoryManager {
             throw new UserStoryDoesNotExist();
         }
 
-        if(isUserStoryRealized(userStory)) {
+        if (isUserStoryRealized(userStory)) {
             throw new UserStoryRealizedException();
         }
 
         if (title != null) {
-            if(userStory.getSprint() != null) {
+            if (userStory.getSprint() != null) {
                 throw new UserStoryAssignedToSprint("User story " + userStory.getTitle() + " cannot be edited because" +
                         " it is already assigned to a sprint.");
             }
@@ -160,11 +164,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
     public void updateStoryComment(int id, String comment, Integer role) {
         StoryCommentEntity storyCommentEntity = em.find(StoryCommentEntity.class, id);
 
-        if(comment != null) {
+        if (comment != null) {
             storyCommentEntity.setComment(comment);
         }
 
-        if(role != null) {
+        if (role != null) {
             storyCommentEntity.setRole(role);
         }
 
