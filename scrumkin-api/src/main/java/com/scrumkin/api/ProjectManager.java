@@ -39,6 +39,13 @@ public interface ProjectManager {
             ProjectNameNotUniqueException, UserNotInProject;
 
     /**
+     * Deletes project.
+     *
+     * @param id Project ID
+     */
+    void deleteProject(int id);
+
+    /**
      * Remove user from project (by removing him from his groups that belong to this project).
      *
      * @param userId    User ID

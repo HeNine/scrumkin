@@ -130,6 +130,13 @@ public class ProjectManagerEJB implements ProjectManager {
         }
     }
 
+    @Override
+    public void deleteProject(int id) {
+        ProjectEntity project = getProject(id);
+        if (project != null) {
+            em.remove(project);
+        }
+    }
 
     @Override
     public void deleteUserFromProject(int userId, int projectId) throws UserNotInProject {

@@ -285,4 +285,10 @@ public class ProjectService {
         }
     }
 
+    @DELETE
+    @Path("{id}")
+    public void deleteProject(@PathParam("id") int id) {
+        pm.deleteProject(id);
+    }
+
 }
