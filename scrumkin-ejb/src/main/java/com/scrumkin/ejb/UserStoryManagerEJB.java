@@ -98,7 +98,11 @@ public class UserStoryManagerEJB implements UserStoryManager {
     public void deleteStory(int id) {
         UserStoryEntity userStoryEntity = em.find(UserStoryEntity.class, id);
         if (userStoryEntity != null) {
+            userStoryEntity.getProject().getUserStories().remove(userStoryEntity);
+            userStoryEntity.getSprint().getUserStories().remove(userStoryEntity);
             em.remove(userStoryEntity);
+            em.persist(userStoryEntity.getProject());
+            em.persist(userStoryEntity.getSprint());
         }
     }
 
