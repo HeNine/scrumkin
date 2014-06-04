@@ -29,6 +29,7 @@ public class UserEntity {
     private String email;
     private Collection<TaskEntity> tasks;
     private Collection<GroupEntity> groups;
+    private Collection<UserGroupsEntity> userGroupsEntities;
 
     @Id
     @Column(name = "id")
@@ -130,5 +131,14 @@ public class UserEntity {
 
     public void setGroups(Collection<GroupEntity> groups) {
         this.groups = groups;
+    }
+
+    @OneToMany(mappedBy = "usersByUserId", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    public Collection<UserGroupsEntity> getUserGroupsEntities() {
+        return userGroupsEntities;
+    }
+
+    public void setUserGroupsEntities(Collection<UserGroupsEntity> userGroupsEntities) {
+        this.userGroupsEntities = userGroupsEntities;
     }
 }
