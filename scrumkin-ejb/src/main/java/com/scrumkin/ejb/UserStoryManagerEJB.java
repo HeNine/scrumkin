@@ -252,6 +252,8 @@ public class UserStoryManagerEJB implements UserStoryManager {
         userStory.setBussinessValue(businessValue);
         userStory.setAcceptenceTests(acceptanceTests);
 
+        project.getUserStories().add(userStory);
+
         em.persist(userStory);
         em.persist(project);
 
