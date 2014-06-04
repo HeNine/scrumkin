@@ -106,7 +106,7 @@ public class ProjectEntity {
         this.userStories = userStories;
     }
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST})
     public Collection<BurndownEntity> getBurndowns() {
         return burndowns;
     }

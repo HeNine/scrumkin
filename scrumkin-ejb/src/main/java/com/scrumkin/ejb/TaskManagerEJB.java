@@ -197,6 +197,9 @@ public class TaskManagerEJB implements TaskManager {
         }
 
         TaskEntity task = entry.getTask();
+
+        BigDecimal workRemainingDelta = task.getEstimatedTime().subtract(BigDecimal.valueOf(workRemaining));
+
         task.setWorkDone(task.getWorkDone().subtract(entry.getWorkDone()).add(BigDecimal.valueOf(workDone)));
         TypedQuery<TasksWorkDoneEntity> lastQuery = em.createNamedQuery("TasksWorkDoneEntity.getEntriesInOrder",
                 TasksWorkDoneEntity.class);
@@ -205,6 +208,14 @@ public class TaskManagerEJB implements TaskManager {
         if (results.size() == 0 || !results.get(0).getDate().after(entry.getDate())) {
             task.setEstimatedTime(BigDecimal.valueOf(workRemaining));
         }
+
+        TypedQuery<BurndownEntity> burndownEntityTypedQuery = em.createNamedQuery("BurndownEntity.getBurndownByDate",
+                BurndownEntity.class);
+        burndownEntityTypedQuery.setParameter("project_id", task.getUserStory().getProject().getId());
+        burndownEntityTypedQuery.setParameter("date", date);
+        BurndownEntity burndownEntity = burndownEntityTypedQuery.getSingleResult();
+        burndownEntity.setWorkRemaining(burndownEntity.getWorkRemaining().subtract(workRemainingDelta));
+        em.persist(burndownEntity.getProject());
 
         entry.setWorkDone(BigDecimal.valueOf(workDone));
         entry.setWorkRemaining(BigDecimal.valueOf(workRemaining));
