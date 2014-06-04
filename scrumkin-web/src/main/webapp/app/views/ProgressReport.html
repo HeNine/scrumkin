@@ -1,0 +1,47 @@
+
+<div class="container">
+
+    <div class="row">
+        <h4>Progress report </h4>
+    </div>
+
+    <div class="row">
+        
+        <ul class="nav nav-tabs">
+            <li 
+                ng-class="{active: activeTab=='burnDownChart'}"
+                ng-click="activeTab = 'burnDownChart'">
+                <a href="">Burn down chart</a>
+            </li>
+            
+            <!--<li 
+                ng-class="{active: activeTab=='discussion'}"
+                ng-click="activeTab = 'discussion'">
+                <a href="">Discussion</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='documentation'}"
+                ng-click="activeTab = 'documentation'">
+                <a href="">Documentation</a>
+            </li>-->
+        </ul>
+
+        
+        <div class="tab-content">
+            <div ng-switch="activeTab">
+                <div ng-switch-when="burnDownChart">
+                    <div ng-include="'app/partials/burnDownChart.html'"></div>
+                </div>
+                <!--<div ng-switch-when="discussion">
+                    <div ng-include="'app/partials/discussion.html'"></div>
+                </div>
+                <div ng-switch-when="documentation">
+                    <div ng-include="'app/partials/documentation.html'"></div>
+                </div>-->
+            </div>
+            
+        </div>
+    </div>
+</div>
+

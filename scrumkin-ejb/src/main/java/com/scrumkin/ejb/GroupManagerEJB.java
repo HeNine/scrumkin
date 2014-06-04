@@ -13,10 +13,7 @@ import javax.persistence.TypedQuery;
 
 import com.scrumkin.api.GroupManager;
 import com.scrumkin.api.exceptions.PermissionInvalidException;
-import com.scrumkin.jpa.GroupEntity;
-import com.scrumkin.jpa.PermissionEntity;
-import com.scrumkin.jpa.ProjectEntity;
-import com.scrumkin.jpa.UserEntity;
+import com.scrumkin.jpa.*;
 
 /**
  * Session Bean implementation class GroupManagerEJB
@@ -99,24 +96,53 @@ public class GroupManagerEJB implements GroupManager {
 
     @Override
     public void addUserToGroup(UserEntity user, GroupEntity group) {
-        if (user.getGroups().contains(group)) {
+        boolean isInGroup = false;
+        for (GroupEntity g : user.getGroups()) {
+            if (g.getId() == group.getId()) {
+                isInGroup = true;
+                break;
+            }
+        }
+        if (isInGroup) {
             return;
         }
 
         user.getGroups().add(group);
+        group.getUsers().add(user);
 
+        em.persist(group);
         em.persist(user);
     }
 
     @Override
     public void deleteUserFromGroup(UserEntity user, GroupEntity group) {
-        if (!user.getGroups().contains(group)) {
+//        if (!user.getGroups().contains(group)) {
+//            return;
+//        }
+        boolean isInGroup = false;
+        for (GroupEntity g : user.getGroups()) {
+            if (g.getId() == group.getId()) {
+                isInGroup = true;
+                break;
+            }
+        }
+        if (!isInGroup) {
             return;
         }
 
         user.getGroups().remove(group);
+        for (UserGroupsEntity uge : user.getUserGroupsEntities()) {
+            if (uge.getGroupsByGroupId().getId() == group.getId()) {
+                user.getUserGroupsEntities().remove(uge);
+                em.remove(uge);
+                break;
+            }
+        }
+        group.getUsers().remove(user);
 
+        em.persist(group);
         em.persist(user);
+        em.flush();
     }
 
     @Override

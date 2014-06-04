@@ -1,0 +1,97 @@
+
+<div class="container">
+
+    <div class="row">
+        <!-- ALERTS -->
+        <div ng-show='missingData' class="alert alert-danger alert-dismissable">
+            All fields are required!
+        </div>
+        
+        <div ng-show='emailAlreadyExists' class="alert alert-danger alert-dismissable">
+            Email already exist in database!
+        </div>
+        
+        <div ng-show='passMatch==false' class="alert alert-danger alert-dismissable">
+            The passwords do not match!
+        </div>
+        
+        <div class="row">
+            <div ng-show="newUserErr" class="alert alert-danger alert-dismissable">
+                A user with this username already exists!
+            </div>
+        </div>
+        
+        <div ng-show='emailOK==false' class="alert alert-danger alert-dismissable">
+            You have entered an invalid email!
+        </div>
+
+        <div ng-show='userSavedSuccess' class="alert alert-success alert-dismissable">
+            New user saved successfully!
+        </div>
+
+        <!-- New user
+        ================================================== -->
+        <div class="col-lg-12">
+            <form class="form-horizontal" role="form" id="newUserForm" ng-submit="saveNewUser()" >
+
+                <label for="uname" class="col-sm-3 control-label">Username: </label>
+                <div class="col-sm-9">
+                    <input ng-class="{'inputErr':usernameMissing}"  type="text" class="form-control" id="uname" name="uname" placeholder="Username" ng-model="newUserData.username" autofocus>
+
+                </div>
+
+                <label for="pass" class="col-sm-3 control-label">Password: </label>
+                <div class="col-sm-9">
+                    <input ng-class="{'inputErr':passMatch==false}"  type="password" class="form-control" id="pass" name="pass" placeholder="Password" ng-model="newUserData.password">
+                </div>
+                
+                <label for="passRe" class="col-sm-3 control-label">Re-type password: </label>
+                <div class="col-sm-9">
+                    <input ng-class="{'inputErr':passMatch==false}"  type="password" class="form-control" id="passRe" name="passRe" placeholder="Re-type password" ng-model="newUserData.passwordRe">
+                    <hr>
+                </div>
+
+                <!-- podatki o uporabniku
+                 ================================================== -->
+
+
+                <label for="name" class="col-sm-3 control-label">Name: </label>
+                <div class="col-sm-9">
+                    <input ng-class="{'inputErr':nameMissing}" type="text" class="form-control" id="name" name="name" placeholder="Name Surname" ng-model="newUserData.name">
+                </div>
+
+                <label for="email" class="col-sm-3 control-label">Email: </label>
+                <div class="col-sm-9">
+                    <input ng-class='{inputErr:emailOK==false}' type="text" class="form-control" id="email" name="email" placeholder="Email" ng-model="newUserData.email">
+                    <hr>
+                </div>
+
+
+                <label for="tipUporabnika" class="col-sm-3 control-label">User rights: </label>
+                <div class="col-sm-7">
+                    <select ng-class="{'inputErr':userTypeOK==false}" class="selectpicker show-tick form-control" id="tipUporabnika" ng-model="newUserData.usertype">
+                        <option value="">Choose user rights</option>
+                        <!--<option value="System Administrator">System Administrator</option>-->
+                        <option value="1">Administrator</option>
+                        <option value="2">Super User</option>
+                        <option value="3">User</option>
+                    </select>
+                </div>
+                <!--<div class="col-sm-2">    
+                    <label for="tipUporabnika" class="col-sm-3 control-label">{{newUserData.usertype}} </label>
+                </div>-->
+
+                <!-- GUMBI
+                 ================================================== -->     
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="newUserLoader" style="float: right">
+                        <button class="btn btn-success" style="float: right" type="submit"> Create user &nbsp;</button>                          
+                    </div>
+                </div>               
+            </form>
+        </div>                    
+    </div>
+
+</div>
+

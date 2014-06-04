@@ -1,0 +1,41 @@
+
+<div class="container">
+
+    <div class="row">
+        <h1 ng-show="activeSprintSelected"> Sprint backlog </h1>
+        <h4 ng-hide="activeSprintSelected" style="color: red"> There is no active sprint! Please select a project with an active sprint or create a new sprint! </h4>      
+        <h5 ng-show="sprintBacklogLoader" style="color: orangered">Loading all stories in sprint backlog... </h5>
+    </div>
+
+    <div class="row" ng-show="activeSprintSelected">
+        
+        <ul class="nav nav-tabs">            
+            <li 
+                ng-class="{active: activeTab=='userStories'}"
+                ng-click="activeTab = 'userStories'">
+                <a href="">User stories</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='newTask'}"
+                ng-click="activeTab = 'newTask'"
+                ng-show=" isScrumMaster || isTeamMember">
+                <a href="">New task</a>
+            </li>
+        </ul>
+
+        
+        <div class="tab-content">
+            <div ng-switch="activeTab">
+                <div ng-switch-when="userStories">
+                    <div ng-include="'app/partials/userStories.html'"></div>
+                </div>
+                <div ng-switch-when="newTask">
+                    <div ng-include="'app/partials/newTask.html'"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

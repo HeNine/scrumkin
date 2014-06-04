@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="row">
+        <h3> All finished stories on project: {{currentProjectName}}</h3>         
+    </div>
+
+    <div class="row" ng-init="getFinishedStoriesDB()">
+        
+        <div class="col-xs-12 well backlogWellLarge">
+            <div class="col-xs-12 well" ng-show="finishedStories.length==0">
+                No stories finished!
+            </div>
+            
+            <div class="col-xs-12 well" ng-repeat="storyF in finishedStories">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>Name: {{storyF.title}} &nbsp;&nbsp;<i class="glyphicon glyphicon-ok" style="color: green"></i></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <!--<p><strong>Finished on sprint:</strong> {{storyF.sprint}}</p>
+                        <hr>-->
+                        <p><strong>Priority:</strong> {{storyF.priorityText}}</p>
+                        <p><strong>Business value:</strong> {{storyF.bussinessValue}}</p>
+                        <p><strong>Estimated time:</strong> {{storyF.estimatedTime}} pt</p>
+                    </div>
+                    <div class="col-xs-7">
+                        <div class="row">
+                            <p><strong>Content:</strong> {{storyF.story}}</p>                            
+                            <!--<p><strong>Comments: </strong>
+                            <ul>
+                                <li style="color: teal" ng-repeat="comment in storyF.comments">
+                                    {{comment.comment}}
+                                </li>
+                            </ul>
+                            <hr>-->
+                        </div>
+                        <div class="row">
+                            <strong>Acceptance tests:</strong><br/>
+                            <span style="color: blue" ng-repeat="test in storyF.acceptenceTestsText"><i class="glyphicon glyphicon-pushpin" style="color: blue"></i> {{test}}<br/></span>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>

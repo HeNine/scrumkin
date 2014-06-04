@@ -1,0 +1,88 @@
+<script src="js/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="js/datepicker/locales/bootstrap-datepicker.sl.js" type="text/javascript"></script>
+
+<div class="container">
+
+    <div class="row">
+        <div ng-show="endDateErr || beginDateErr || decErr" class="alert alert-danger alert-dismissable">
+            The data you have entered are incomplete!
+        </div>            
+    </div>
+    
+    <div class="row">
+        <div ng-show="datesOK==false" class="alert alert-danger alert-dismissable">
+            The begin date has to be lower than the end date!
+        </div>            
+    </div>
+    
+    <div ng-show='sprintSaveSuccess' class="alert alert-success alert-dismissable">
+        New sprint saved!
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Create a new sprint </h3> 
+        </div>        
+    </div>
+
+    <div class="col-lg-12">
+        <form name="newSprintForm" class="form-horizontal" role="form" id="newSprintForm" ng-submit="saveNewSprint()" novalidate>
+
+            <div class="row">
+                <label class="col-sm-3 control-label">Begin date: </label>
+                <div class="col-sm-5">
+                    <div class="input-group date" >
+                        <input type="text" class="form-control" id="beginDate" ng-class="{'inputErr':beginDateErr}">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col-sm-3 control-label">End date: </label>
+                <div class="col-sm-5">
+                    <div class="input-group date" >
+                        <input type="text" class="form-control" id="endDate" ng-class="{'inputErr':endDateErr}">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="row">
+                <label class="col-sm-3 control-label">Set sprint velocity: </label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="newSprintData.sprintVelocity" ng-class="{'inputErr':decErr}">
+                        <span class="input-group-addon">pt</span>   
+                    </div>
+                </div>
+            </div>
+
+            <!-- GUMBI
+             ================================================== -->     
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <button class="btn btn-default" style="float: right" type="submit"> Create sprint &nbsp;</button>  
+                </div>
+            </div>               
+        </form>
+    </div>
+
+</div>
+
+<!-- SKRIPTA ZA NASTAVITEV KOLEDARJEV
+                ================================================== -->  
+<script type="text/javascript">
+    $('.input-group.date').datepicker({
+        format: "dd.mm.yyyy",
+        todayBtn: "linked",
+        language: "sl",
+        autoclose: true,
+        keyboardNavigation: true,
+        todayHighlight: true
+    });
+</script>

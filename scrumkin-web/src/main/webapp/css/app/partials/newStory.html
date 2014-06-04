@@ -1,0 +1,95 @@
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Create a new user story </h3> 
+        </div>        
+    </div>
+    <form class="form-signin" role="form" ng-submit="saveNewStory()">
+        <div class="row">        
+            <div class="col-xs-2">
+                <label> Choose project: </label>
+            </div>
+
+            <div class="col-xs-5">
+                <select class="selectpicker show-tick form-control" ng-model="selectedProject">                        
+                    <option value="{{projekt}}" ng-repeat="projekt in projects">
+                        {{projekt}}
+                    </option>
+                </select>
+
+            </div>
+            <div class="col-xs-3">
+                Izbran projekt: {{selectedProject}}
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">        
+            <div class="col-xs-2">
+                <label>Name of user story:  </label>
+            </div>        
+            <div class="col-xs-5">
+                <input type="text" class="form-control" placeholder="Name of user story" ng-model="newStory.storyName">
+            </div>
+
+            <div class="col-xs-3">
+                <select class="selectpicker show-tick form-control" ng-model="newStory.storyPriority">                        
+                    <option value="">Must have</option>
+                    <option value="">Should have</option>
+                    <option value="">Could have</option>
+                    <option value="">Won't have this time</option>
+                </select>
+            </div>            
+        </div>
+
+        <div class='row'>
+            <div class="col-xs-2">
+                <label>Business value:</label>
+            </div>
+
+            <div class="col-xs-1">
+                <input type="text" placeholder="1" class="form-control" ng-model="newStory.storyBusVal">
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-2">
+                <label>Content:  </label>
+            </div>
+            <div class="col-xs-10">
+                <textarea rows="10" class="form-control" placeholder="Write the content of user story" ng-model="newStory.storyContent"></textarea>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-2">
+                <label>Acceptance tests:  </label>
+            </div>
+
+            <div class='col-xs-10' >
+                <div class='row' data-ng-repeat="i in acceptanceTestsNumber">
+                    <div class='col-xs-11'>
+                        <input type='text' class='form-control'>
+                    </div>
+                </div>  
+                <button ng-click="addTestField()"><i class="glyphicon glyphicon-plus"></i></button>
+            </div>
+
+        </div>
+
+        <hr>    
+
+        <div class="row">
+            <div class="col-xs-12">
+                <button type="submit" class="btn btn-success" style="float: right"> Create </button>
+            </div>
+        </div>    
+    </form>
+</div>

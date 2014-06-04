@@ -114,13 +114,13 @@ public class ProjectManagerEJB implements ProjectManager {
         }
 
         int j = 0;
-        for(int userID : userIDs) {
+        for (int userID : userIDs) {
             UserEntity user = um.getUser(userID);
             Collection<GroupEntity> userGroups = user.getGroups();
 
             for (int userGroupID : userProjectGroupIDs[j]) {
                 GroupEntity userGroup = gm.getGroup(userGroupID);
-                if(!userGroups.contains(userGroup)) {
+                if (!userGroups.contains(userGroup)) {
                     userGroups.add(userGroup);
                 }
             }
@@ -268,10 +268,9 @@ public class ProjectManagerEJB implements ProjectManager {
         GroupEntity developerGroup = getDeveloperGroup(project);
 
         UserEntity user = um.getUser(userID);
-        if(assign) {
+        if (assign) {
             gm.addUserToGroup(user, developerGroup);
-        }
-        else {
+        } else {
             gm.deleteUserFromGroup(user, developerGroup);
         }
     }
@@ -281,11 +280,13 @@ public class ProjectManagerEJB implements ProjectManager {
         ProjectEntity project = getProject(projectID);
         GroupEntity developerGroup = getDeveloperGroup(project);
 
-        for(UserEntity user : developerGroup.getUsers()) {
+        List<UserEntity> groupUsers = new LinkedList<>(developerGroup.getUsers());
+
+        for (UserEntity user : groupUsers) {
             gm.deleteUserFromGroup(user, developerGroup);
         }
 
-        for(int userID : userIDs) {
+        for (int userID : userIDs) {
             gm.addUserToGroup(um.getUser(userID), developerGroup);
         }
     }

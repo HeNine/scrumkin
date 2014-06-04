@@ -1,0 +1,185 @@
+
+<div class="container" ng-init="getAssignedTasks()">
+
+    <div class="row" >
+        <div class="col-xs-12">
+            <h1 ng-show="activeSprintSelected && isPO == false"> My tasks</h1>
+            <h4 ng-hide="activeSprintSelected" style="color: red"> There is no active sprint! Please select a project with an active sprint or create a new sprint! </h4>      
+            <h4 ng-show="isPO" style="color: orange"> As a product owner, you have no assigned tasks! </h4>      
+        </div>
+    </div>
+
+
+    <div class="row" ng-show="activeSprintSelected && isPO == false">
+        <div class="col-xs-12" style="color: orange; font-size: 11px">
+            * Confirm acceptance of tasks, which Scrum Master has appointed you for.
+        </div>
+
+        <div class="col-xs-12">
+            <div ng-show="taskAcceptSuccess" class="alert alert-success">
+                Task has been accepted!
+            </div>
+
+            <div ng-show="errFinishingTask" class="alert alert-danger">
+                Error marking task as finished!
+            </div>
+            
+            <div ng-show="taskFinishedOK" class="alert alert-success">
+                Task successfully marked as finished!
+            </div>
+            
+            <div ng-show="errAcceptingTask" class="alert alert-success">
+                {{errAcceptingTask}}
+            </div>
+
+            <div ng-show="taskReleaseSuccess" class="alert alert-success">
+                Task has been released!
+            </div>
+
+            <div ng-show="errReleasingTask" class="alert alert-success">
+                {{errReleasingTask}}
+            </div>    
+        </div>
+
+    </div>
+
+    <div class="row" ng-show="showCurrentWorkingTask">
+        <div class="col-xs-12 well">
+            <label>You are currently working on this task:</label> {{globalWorkingTask['description']}} 
+            <a href="" ng-click="stopWork(globalWorkingTask)">Stop work</a>
+        </div>
+    </div>
+    
+    <div class="row" ng-show="assignedTasks.length == 0 && activeSprintSelected == true && isPO == false">
+        <div class="col-xs-12 well">
+            You have no assigned tasks!
+        </div>
+    </div>
+
+    <div class="row" ng-hide="assignedTasks.length == 0 || activeSprintSelected == false && isPO == false">    
+
+        <div class="col-xs-12 well" ng-repeat="story in taskStories"> <!-- repeat za vsako zgodbo -->                
+            <div class="row">
+                <div class="col-xs-12">
+                    <h4><strong>Story:</strong> {{story.title}} </h4>
+                </div>
+            </div>            
+
+            <div class="row">
+                <div class="col-xs-12">
+                    {{story.story}}
+                    <div ng-show="story.showComments">
+                        <hr>
+                        <p><strong>Comments: </strong>
+                        <ul>
+                            <li ng-class="{'poComment':comment.role==1, 'tmComment':comment.role==0}" ng-repeat="comment in story.comments">
+                                {{comment.comment}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row well">
+                <div class="col-xs-12" ng-repeat="task in story.assignedTasks"> <!-- repeat za taske te ene zgodbe!--> 
+                    <div class="row" ng-hide="task.hideReleasedTask">
+                        <div class="col-xs-3">
+                            &SmallCircle; 
+                            <span style="color: green" ng-show="task.isCompleted"> (Completed) </span>
+                            <label>{{task.description}}</label>
+                        </div>
+                        <div class="col-xs-5">
+                            <span><label>Work done:</label> {{task.workDone}} h</span>
+                            <span><label>Work remaining:</label> {{task.estimatedTime}} h</span>
+                        </div>
+                        <div class="col-xs-4">
+                            <a href="" ng-click="releaseTask(task)" ng-show="task.showRelease && isTeamMember">Release task |</a>
+                            <a href="" ng-click="editWorkHistory(task)" data-toggle="modal" data-target="#editWHModal" ng-show="task.showEditHistory && isTeamMember">Edit work history </a>
+                            <a href="" ng-click="acceptTask(task)" ng-show="task.showAccept && isTeamMember" style="color: orange">| Accept task *</a>
+                            <a href="" ng-click="startWork(task)" >| Start work</a>
+                            <!--<a href="" ng-click="markCompletedTask(task)" ng-show="!task.isCompleted && task.showEditHistory" style="color: green">| Mark as completed </a>-->
+                        </div>
+                    </div>                    
+                </div>                                    
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="editWHModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="margin-top: 5%">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Edit work history of task: <strong>{{editingTask.description}}</strong></h4>
+                </div>
+
+                <div class="modal-body">
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div ng-show="somethingWentWrong" class="alert alert-danger">
+                                Error updating work history!
+                            </div>                    
+                            <div ng-show="changesSaved" class="alert alert-success">
+                                Changes have been saved!
+                            </div>
+                            <div ng-show="historyOK==false" class="alert alert-danger">
+                                You need to enter a positive number, separated by "."
+                            </div>                            
+                        </div>
+                    </div>
+                  
+                    <div class="row">
+                        <div class="col-xs-6">
+                            Estimated time remaining: {{editingTask.estimatedTime}} h <br/>
+                            Work done: {{editingTask.workDone}} h
+                        </div>    
+                        <div class="col-xs-6">
+                            <button ng-show="showSaveButton" style="float: right; margin-right: 5px" type="button" class="btn btn-sm btn-success" ng-click="updateWorkHistoryModal(editingTask); showMsg=true">
+                                Save changes
+                                <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="taskHistoryLoader" style="float: right">
+                            </button>
+                            <button type="button" style="float: right" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>  
+                    
+                    <div class="row" style="border-top: 1px solid lightgrey; margin-top: 5px" ng-repeat="historyLine in taskHistoryArray">
+                        <div class="col-xs-4">
+                            <label> {{historyLine.date|date : date : 'dd.MM.YYYY'}}</label>
+                        </div>
+                        <div class="col-xs-4">
+                            Work done:
+                            <input ng-class="{'inputErr':historyLine.doneLineErr}" type="text" class="form-control" placeholder="1.3h" ng-change="changedLine(historyLine)" ng-model="historyLine.doneDB">
+                        </div>
+                        <div class="col-xs-4">
+                            Work remaining:
+                             <input ng-class="{'inputErr':historyLine.remainingLineErr}" type="text" class="form-control" placeholder="1.3h" ng-change="changedLine(historyLine)" ng-model="historyLine.remainingDB">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div ng-show="somethingWentWrong" class="alert alert-danger">
+                        Error updating work history!
+                    </div>                    
+                    <div ng-show="changesSaved" class="alert alert-success">
+                        Changes have been saved!
+                    </div>
+                    <div ng-show="historyOK==false" class="alert alert-danger">
+                        You need to enter a positive number, separated by "."
+                    </div>
+                    
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button ng-show="showSaveButton" type="button" class="btn btn-success" ng-click="updateWorkHistoryModal(editingTask); showMsg=true">
+                        Save changes
+                         <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="taskHistoryLoader" style="float: right">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

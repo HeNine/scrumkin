@@ -26,17 +26,24 @@
                         <img alt="scrumkin" src="img/title.png" width="150" height="90" />
                     </div>
                     <div class="col-sm-8">
-                        <div class="row">
-                            <div class="col-sm-4" ng-show="userLogged">
-                                <span>Current project: {{currentProjectName}} (ID: {{currentProjectID}}) </span>
+                        <div class="row" ng-show="userLogged">
+                            <div class="col-sm-6">
+                                <span>Current project: {{currentProjectName}} </span>
                                 <br/><a href="#ChooseProject">Change current project</a>
-                                <br/><span>Your role: {{currentProjectRole}} </span>                                
+                                <span ng-show="activeSprintExists==false"><br/>Active sprint: No active sprint </span> 
+                                <span ng-show="activeSprintExists"><br/>Active sprint: FROM: {{activeSprintStart| date : date : 'dd.MM.YYYY' }} TO: {{activeSprintEnd| date : date : 'dd.MM.YYYY'}} </span> 
                             </div>
                             <div class="col-sm-4">
-                                <span ng-show="userLogged">Logged in as: <label> {{userUname}}  </label></span>
+                                <span>Logged in as: {{userUname}} </span>
+                                <br/>Your roles: <br/>
+                                <ul>
+                                    <li ng-show="isTeamMember">Team Member</li>
+                                    <li ng-show="isScrumMaster">Scrum Master</li>
+                                    <li ng-show="isProductOwner">Product Owner</li>
+                                </ul>                                
                             </div>
-                            <div class="col-sm-4">
-                                <span ng-show="userLogged">Usertype: <label> {{usertypeDesc}}  </label></span>
+                            <div class="col-sm-2">
+                                <span>Usertype: {{usertypeDesc}} </span>
                             </div>
                         </div>
                     </div>
@@ -49,10 +56,10 @@
                         <li><a href="#ProjWall">Project wall</a></li>
                         <li><a href="#PBacklog">Product backlog</a></li>
                         <li><a href="#SBacklog">Sprint backlog</a></li>
-                        <li><a href="#Tasks">My tasks</a></li>
-                        <li><a href="#Progress">Progress report</a></li>
+                        <li><a href="#MyTasks">My tasks</a></li>
+                        <li><a href="#ProgressReport">Progress report</a></li>
                         <li ng-show="isAdmin"><a href="#AdminConsole" >Administration</a></li>                        
-                        <li ng-show="isScrumMaster"><a href="#ScrumMasterConsole">Manage project</a></li>
+                        <li ng-show="isScrumMaster || isProductOwner || isAdmin"><a href="#ScrumMasterConsole">Manage project</a></li>
                     </ul>
                 </div>
             </div>
@@ -81,6 +88,7 @@
         <script src="bootstrap/js/bootstrap.js" type="text/javascript"></script> <!-- Bootstrap file -->
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
         <script src="app/app.js" type="text/javascript"></script>     
+        <script src="js/Chart.js" type="text/javascript"></script>     
 
         <script src="app/controllers/ProjWall.js" type="text/javascript"></script>
         <script src="app/controllers/Login.js" type="text/javascript"></script>
@@ -90,6 +98,7 @@
         <script src="app/controllers/ChooseProject.js" type="text/javascript"></script>
         <script src="app/controllers/PBacklog.js" type="text/javascript"></script>
         <script src="app/controllers/SBacklog.js" type="text/javascript"></script>
-        
+        <script src="app/controllers/MyTasks.js" type="text/javascript"></script>
+        <script src="app/controllers/ProgressReport.js" type="text/javascript"></script>
     </body>
 </html>

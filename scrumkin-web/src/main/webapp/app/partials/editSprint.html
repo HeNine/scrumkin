@@ -1,0 +1,121 @@
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 ng-show="activeSprintSelected"> Add stories to active sprint: <strong>{{activeSprintStart| date : date : 'dd.MM.YYYY' }} - {{activeSprintEnd| date : date : 'dd.MM.YYYY'}}</strong> </h3><br/> 
+            <h4 ng-hide="activeSprintSelected" style="color: red"> There is no active sprint! Please select a project with an active sprint or create a new sprint! </h4> 
+            <h5 ng-show="editSprintStoryLoader" style="color: orangered">Loading all stories from product backlog... </h5>
+        </div>        
+    </div>
+
+    <form role="form" id="editSprintForm" ng-submit="confirmStoriesSummary()" >        
+        <div>            
+            <div ng-show="activeSprintSelected">
+                <div class="row">
+                    
+                    <div ng-show="updateSprintErr" class="alert alert-danger alert-dismissable">
+                        Error updating sprint: {{updateSprintErr}}
+                    </div>
+                    
+                    <div ng-show="updateSprintOK" class="alert alert-success alert-dismissable">
+                        Stories successfully added to sprint!
+                    </div>
+
+                    <div ng-show="storyNumErr" class="alert alert-danger alert-dismissable">
+                        You have not chosen any stories to add to sprint.
+                    </div>
+                    
+                    <div ng-show="showInactiveWarning" class="alert alert-danger alert-dismissable">
+                        You cannot add this story to sprint. A story must: <br/>
+                        - have a time estimate set <br/>
+                        - be unfinished <br/>
+                        - not already be on active sprint
+                    </div>
+                    
+                    <div class="col-xs-5 well" style="max-height: 450px; overflow-x: auto" ng-init="getAllStoriesOfProject()">
+                        <h4>Choose stories to add to sprint </h4> 
+
+                        <ul class="nav nav-pills nav-stacked">
+                            <li ng-repeat="story in allStoriesOfProjectDB">
+                                <a href="" ng-click="chooseStory(story)" ng-class="{'disabled':story.inactive}">
+                                    <i class="glyphicon glyphicon-arrow-right"></i> <strong>{{story.title}} </strong>
+                                    <br/>{{story.story}} 
+                                    <br/>Estimated time: {{story.estimatedTime}}
+                                    <br/>Priority: {{story.priorityText}}
+                                    <br/>On sprint: {{story.onSprint}}
+                                    <br/>Finished: <span ng-show="story.finished">Yes</span> <span ng-hide="story.finished">No</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-xs-1"></div>
+
+                    <div class="col-xs-6 well" style="max-height: 450px; overflow-x: auto">
+                        <div class='row'>
+                            <div class='col-xs-5'>
+                                <h4>Stories on sprint: </h4>
+                            </div>
+                            <div class='col-xs-7'>
+                                <a class="btn btn-default" style="float: right; margin-top: 0;" ng-click="clearStoriesList()"> Clear all stories </a>
+                            </div>   
+                        </div>
+
+                        <div class="row" ng-repeat="sc in storiesChosen">
+                            <div class="col-sm-11">
+                                <span style="color: teal"><strong>{{sc.title}}</strong> </span>
+                                <br/><span>{{sc.story}}</span>
+                                <br/><strong>Estimated time:</strong> {{sc.estimatedTime}}
+                                <br/><strong>Priority: </strong>{{sc.priorityText}}
+                            </div>
+
+                            <div class="col-sm-1">
+                                <button ng-click="removeStory(sc)"><i class="glyphicon glyphicon-remove"></i></button>
+                            </div>
+                            
+                            <div class="col-xs-12"></div>
+                                
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">            
+                        <button type="submit" class="btn btn-success" style="float:right; margin-top: 0px; margin-bottom: 3px">
+                            Save changes 
+                            <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="editSprintLoader">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!--<div class="row" ng-show="showConfirmed">
+        <hr>
+        <h4>Summary: </h4>
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <label>Sprint to update: {{activeSprintID}}</label>   
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12" ng-repeat="sc in storiesToAssign">
+                <h5>Assigning story: {{sc}}</h5>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">            
+                <button class="btn btn-success" ng-click="updateSprint()"> 
+                    Create 
+                    <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="editSprintLoader">
+                </button>
+            </div>
+        </div>
+    </div>-->
+</div>

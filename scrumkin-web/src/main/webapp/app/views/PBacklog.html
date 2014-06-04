@@ -1,0 +1,39 @@
+
+<div class="container">
+
+    <div class="row">
+        <h1> Product backlog </h1>
+        <h5 ng-show="productBacklogLoader" style="color: orangered">Loading all stories in project backlog... </h5>
+    </div>
+
+    <div class="row">
+        
+        <ul class="nav nav-tabs">            
+            <li 
+                ng-class="{active: activeTab=='unfinishedStories'}"
+                ng-click="activeTab = 'unfinishedStories'; removeWarningsUnfinishedStories()">
+                <a href="">Unfinished stories</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='finishedStories'}"
+                ng-click="activeTab = 'finishedStories'">
+                <a href="">Finished stories</a>
+            </li>
+        </ul>
+
+        
+        <div class="tab-content">
+            <div ng-switch="activeTab">
+                <div ng-switch-when="unfinishedStories">
+                    <div ng-include="'app/partials/unfinishedStories.html'"></div>
+                </div>
+                <div ng-switch-when="finishedStories">
+                    <div ng-include="'app/partials/finishedStories.html'"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

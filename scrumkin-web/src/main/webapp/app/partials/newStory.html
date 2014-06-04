@@ -1,0 +1,104 @@
+
+<div class="container">
+
+    <div class="row">
+        <div ng-show="missingData || noTests" class="alert alert-danger alert-dismissable">
+            All fields are required and at least 1 acceptance test should be given!
+        </div>
+    </div>
+    
+    <div class="row">
+        <div ng-show="testNotUnique" class="alert alert-danger alert-dismissable">
+            Acceptance tests have to be unique!
+        </div>
+    </div>
+    
+    <div class="row">
+        <div ng-show="storyErrFromBackend" class="alert alert-danger alert-dismissable">
+            {{storyErrFromBackend}}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div ng-show="storySavedOK" class="alert alert-success alert-dismissable">
+            Story saved successfully!
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Create a new user story on project: <strong>{{currentProjectName}}</strong> </h3> 
+        </div>        
+    </div>
+    <form class="form-signin" role="form" ng-submit="saveNewStory()">
+        
+        <div class="row">        
+            <div class="col-xs-2">
+                <label>Name of user story:  </label>
+            </div>        
+            <div class="col-xs-5">
+                <input type="text" class="form-control" placeholder="Name of user story" ng-model="newStory.storyName">
+            </div>
+
+            <div class="col-xs-3">
+                <select class="selectpicker show-tick form-control" ng-model="newStory.storyPriority">                        
+                    <option value="3">Must have</option>
+                    <option value="7">Should have</option>
+                    <option value="6">Could have</option>
+                    <option value="10">Won't have this time</option>
+                </select>
+            </div>            
+        </div>
+
+        <div class='row'>
+            <div class="col-xs-2">
+                <label>Business value:</label>
+            </div>
+
+            <div class="col-xs-4">
+                <input ng-class="{'inputErr':busValErr}" type="text" placeholder="1" class="form-control" ng-model="newStory.storyBusVal">
+                <span ng-show="busValErr"> Business value should be a number! </span>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-2">
+                <label>Content:  </label>
+            </div>
+            <div class="col-xs-10">
+                <textarea rows="10" class="form-control" placeholder="Write the content of user story" ng-model="newStory.storyContent"></textarea>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-2">
+                <label>Acceptance tests:  </label>
+            </div>
+
+            <div class='col-xs-10' >
+                <div class='row' data-ng-repeat="i in acceptanceTestsNumber">
+                    <div class='col-xs-11'>
+                        <input type='text' class='form-control acceptanceTests'>
+                    </div>
+                </div>  
+                <button ng-click="addTestField()"><i class="glyphicon glyphicon-plus"></i></button>
+            </div>
+
+        </div>
+
+        <hr>    
+
+        <div class="row">
+            <div class="col-xs-12">
+                <button type="submit" class="btn btn-success" style="float: right"> 
+                    Create story
+                    <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="newStoryLoader" style="float: right">
+                </button>                
+            </div>
+        </div>    
+    </form>
+</div>

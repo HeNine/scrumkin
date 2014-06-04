@@ -1,0 +1,56 @@
+
+<div class="container">
+
+    <div class="row">
+        <h1> Scrum Master Console </h1>
+    </div>
+
+    <div class="row">
+        
+        <ul class="nav nav-tabs">            
+            <li 
+                ng-class="{active: activeTab=='newSprint'}"
+                ng-click="activeTab = 'newSprint'">
+                <a href="">Add new sprint</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='newStory'}"
+                ng-click="activeTab = 'newStory'">
+                <a href="">Add new user story</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='editSprint'}"
+                ng-click="activeTab = 'editSprint'">
+                <a href="">Add stories to sprint</a>
+            </li>
+            
+            <!--<li 
+                ng-class="{active: activeTab=='editStory'}"
+                ng-click="activeTab = 'editStory'">
+                <a href="">Edit existing user story</a>
+            </li>-->
+        </ul>
+
+        
+        <div class="tab-content">
+            <div ng-switch="activeTab">
+                <div ng-switch-when="newStory">
+                    <div ng-include="'app/partials/newStory.html'"></div>
+                </div>
+                <div ng-switch-when="newSprint">
+                    <div ng-include="'app/partials/newSprint.html'"></div>
+                </div>
+                <div ng-switch-when="editStory">
+                    <div ng-include="'app/partials/editStory.html'"></div>
+                </div>
+                <div ng-switch-when="editSprint">
+                    <div ng-include="'app/partials/editSprint.html'"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+

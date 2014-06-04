@@ -1,0 +1,38 @@
+
+<div class="container">
+
+    <div class="row">
+        <h1>Administration </h1>
+    </div>
+
+    <div class="row">
+        
+        <ul class="nav nav-tabs">
+            <li 
+                ng-class="{active: activeTab=='newUser'}"
+                ng-click="activeTab = 'newUser'; removeNewUserMsg()">
+                <a href="">Add new user</a>
+            </li>
+            
+            <li 
+                ng-class="{active: activeTab=='newProject'}"
+                ng-click="activeTab = 'newProject'; removeNewProjectMsg()">
+                <a href="">Add new project</a>
+            </li>
+            
+        </ul>
+
+        
+        <div class="tab-content">
+            <div ng-switch="activeTab">
+                <div ng-switch-when="newUser">
+                    <div ng-include="'app/partials/newUser.html'"></div>
+                </div>
+                <div ng-switch-when="newProject">
+                    <div ng-include="'app/partials/newProject.html'"></div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+

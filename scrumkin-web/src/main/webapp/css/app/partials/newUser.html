@@ -1,0 +1,85 @@
+
+<div class="container">
+
+    <div class="row">
+        <!-- ALERTS -->
+        <div ng-show='missingData' class="alert alert-danger alert-dismissable">
+            All fields are required!
+        </div>
+        
+        <div ng-show='passMatch==false' class="alert alert-danger alert-dismissable">
+            The passwords to not match!
+        </div>
+        
+        <div ng-show='emailOK==false' class="alert alert-danger alert-dismissable">
+            You have entered an invalid email!
+        </div>
+
+        <div ng-show='userSavedSuccess' class="alert alert-success alert-dismissable">
+            New user inserted!
+        </div>
+
+        <!-- New user
+        ================================================== -->
+        <div class="col-lg-12">
+            <form class="form-horizontal" role="form" id="newUserForm" ng-submit="saveNewUser()" >
+
+                <label for="uname" class="col-sm-3 control-label">Username: </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="uname" name="uname" placeholder="Username" ng-model="newUserData.username" autofocus>
+
+                </div>
+
+                <label for="pass" class="col-sm-3 control-label">Password: </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="pass" name="pass" placeholder="Password" ng-model="newUserData.password">
+                </div>
+                
+                <label for="passRe" class="col-sm-3 control-label">Re-type password: </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="passRe" name="passRe" placeholder="Re-type password" ng-model="newUserData.passwordRe">
+                    <hr>
+                </div>
+
+                <!-- podatki o uporabniku
+                 ================================================== -->
+
+
+                <label for="name" class="col-sm-3 control-label">Name: </label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name Surname" ng-model="newUserData.name">
+                </div>
+
+                <label for="email" class="col-sm-3 control-label">Email: </label>
+                <div class="col-sm-9">
+                    <input ng-class='{inputErr:emailOK==false}' type="text" class="form-control" id="email" name="email" placeholder="Email" ng-model="newUserData.email">
+                    <hr>
+                </div>
+
+
+                <label for="tipUporabnika" class="col-sm-3 control-label">User rights: </label>
+                <div class="col-sm-7">
+                    <select class="selectpicker show-tick form-control" id="tipUporabnika" ng-model="newUserData.usertype">
+                        <option value="">Choose user rights</option>
+                        <!--<option value="System Administrator">System Administrator</option>-->
+                        <option value="Administrator">Administrator</option>
+                        <option value="User">User</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">    
+                    <label for="tipUporabnika" class="col-sm-3 control-label">{{newUserData.usertype}} </label>
+                </div>
+
+                <!-- GUMBI
+                 ================================================== -->     
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button class="btn btn-default" style="float: right" type="submit"> Create user &nbsp;</button>  
+                    </div>
+                </div>               
+            </form>
+        </div>                    
+    </div>
+
+</div>
+

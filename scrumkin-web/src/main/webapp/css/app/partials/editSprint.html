@@ -1,0 +1,112 @@
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3> Add stories to sprint </h3> 
+        </div>        
+    </div>
+
+    <form role="form" id="editSprintForm" ng-submit="confirmStoriesSummary()" >
+        <div class="row">
+            <div ng-show="false" class="alert alert-danger alert-dismissable">
+                You have not s.
+            </div>
+
+            <div class="col-xs-2">
+                <label>Choose a sprint: </label>
+            </div>
+
+            <div class="col-xs-5">
+                <select class="selectpicker show-tick form-control" ng-model="selectedSprint">                        
+                    <option value="{{sprint}}" ng-repeat="sprint in sprints">
+                        {{sprint}}
+                    </option>
+                </select>                    
+            </div>
+            
+            <div class="col-xs-3">
+                Selected sprint: {{selectedSprint}}
+            </div>
+        </div>
+        
+        <hr>
+        <div class="row">
+            
+            <div ng-show="false" class="alert alert-danger alert-dismissable">
+                You have not chosen any stories to add to sprint.
+            </div>
+
+            <div class="col-xs-5 well" style="max-height: 250px; overflow-x: auto">
+                <h4>Choose stories to add to sprint </h4> 
+
+                <ul class="nav nav-pills nav-stacked">
+                    <li ng-repeat="story in stories">
+                        <a href="" ng-click="chooseStory(story)">{{story}} <i class="glyphicon glyphicon-arrow-right"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-xs-1"></div>
+
+            <div class="col-xs-6 well" style="max-height: 250px; overflow-x: auto">
+                <div class='row'>
+                    <div class='col-xs-5'>
+                        <h4>Chosen stories: </h4>
+                    </div>
+                    <div class='col-xs-7'>
+                        <a class="btn btn-default" style="float: right; margin-top: 0;" ng-click="clearStoriesList()"> Clear all stories </a>
+                    </div>   
+                </div>
+
+                <div class="row" ng-repeat="sc in storiesChosen">
+                    <div class="col-sm-2">
+                        <label>{{sc}}</label>
+                    </div>
+
+                    <div class="col-sm-1">
+                        <button ng-click="removeStory(sc)"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12">            
+                <button type="submit" class="btn btn-default" style="float:right; margin-top: 0px; margin-bottom: 3px"> Confirm and show summary </button>
+            </div>
+        </div>
+    </form>
+    
+    <div class="row" ng-show="true">       <!-- TODO -->
+        <hr>
+        <h4>Summary: </h4>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <label>Sprint name: </label>   
+            </div>            
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h5>Selected stories: </h5>
+            </div>
+              
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-12" >
+                <label>User:</label>  <label> Role: </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">            
+                <button class="btn btn-success" ng-click="updateSprint()"> Create </button>
+            </div>
+        </div>
+    </div>
+    
+
+</div>

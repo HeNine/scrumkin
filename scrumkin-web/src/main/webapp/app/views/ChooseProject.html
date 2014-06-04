@@ -1,0 +1,33 @@
+
+<div class="container">
+
+    <div class="row">
+        <div ng-show="getUsersProjectsErr" class="alert alert-danger alert-dismissable">
+            {{getUsersProjectsErr}}
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Choose a project:</h1><br/>
+            <p>You have to select a project to work on, before continuing with your work.</p>
+        </div>        
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-5" ng-init="getAllUsersProjects()">
+            <select class="selectpicker show-tick form-control" ng-model="currProject">                        
+                <option value="{{projekt.id}}" ng-repeat="projekt in usersProjects">
+                    {{projekt.name}}
+                </option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-success btn-lg" ng-click="confirmProjectChoice()"> Confirm </button>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,41 @@
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>Edit user story </h3> 
+        </div>        
+    </div>
+
+    <div class="col-lg-12">
+    <!-- FORM -->
+    <!-- pass in the variable if our form is valid or invalid -->
+    <form class="form-horizontal" name="storyForm" ng-submit="submitForm(storyForm.$valid)" novalidate> <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
+
+        <div class="row">
+            <label class="col-sm-4 control-label">Choose story: </label>
+                <div class="col-sm-5">
+                    <select class="form-control" id="story" name="story" ng-options="story for story in stories" ng-model="selectedStory" required></select>
+                    <p ng-show="storyForm.story.$invalid && !storyForm.story.$pristine" class="help-block">Please choose an existing story.</p>
+                </div>
+        </div>
+        <br> 
+        <div class="row">
+            <label class="col-sm-4 control-label">Modify time estimate: </label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input type="number" step="any" class="form-control" id="number" name="number" ng-model="number" required>
+                        <span class="input-group-addon">pt</span>
+                    </div>
+                    <p ng-show="storyForm.number.$invalid && !storyForm.number.$pristine" class="help-block">Please modify time estimate.</p>
+                </div>
+        </div>        
+        <hr>
+        
+        
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" style="float: right" class="btn btn-primary" ng-disabled="storyForm.$invalid">Save changes</button>
+        
+    </form>
+    </div> 
+</div>

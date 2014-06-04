@@ -1,0 +1,123 @@
+
+<div class="container">
+    
+    <div class="row">
+        <div class="alert alert-danger alert-dismissable" ng-show="endDateErrEditSprint || beginDateErrEditSprint || velEditErr">
+            The data you have entered are either incorrect or incomplete!
+        </div>            
+    </div>
+
+    <div class="row">
+        <div class="alert alert-danger alert-dismissable" ng-show="datesOKEditSprint == false"> 
+            The begin date has to be lower than the end date!
+        </div>            
+    </div>
+    
+    <div class="row">
+        <div ng-show="errFromBackendEditSprint" class="alert alert-danger alert-dismissable">
+            {{errFromBackendEditSprint}}
+        </div>            
+    </div>
+
+    <div class="row">
+        <div class="alert alert-success alert-dismissable" ng-show="sprintEditSuccess">
+            Sprint successfully edited!
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="alert alert-success alert-dismissable" ng-show="deleteSprintSuccess">
+            Sprint successfully deleted!
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="alert alert-danger alert-dismissable" ng-show="deleteSprintErr">
+            Error deleting sprint!
+        </div>
+    </div>
+    
+    <div class="row" ng-init="getSprintsForEdit()">
+        <div class="col-xs-6">
+            <h4>Choose a sprint to edit: </h4>            
+            <select class="selectpicker show-tick form-control" ng-model="sprintID" ng-change="showEditSprintData(sprintID)" >                        
+                <option value="{{sprint.id}}" ng-repeat="sprint in sprintsForEdit">
+                    FROM: {{sprint.startDate| date : date : 'dd.MM.YYYY' }} TO: {{sprint.endDate| date : date : 'dd.MM.YYYY'}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <hr>
+    <div class="row" ng-show="showSprintData">
+        <div class="col-lg-12">
+            <form name="newSprintForm" class="form-horizontal" role="form" id="newSprintForm" ng-submit="saveSprintChanges()" novalidate>
+                <div class="row">
+                    <label class="col-sm-3 control-label">Begin date: </label>
+                    <div class="col-sm-5">
+                        <div class="input-group date" >
+                            <input type="text" class="form-control" id="beginDate" ng-class="{'inputErr':beginDateErrEditSprint}">
+                            <span class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-sm-3 control-label">End date: </label>
+                    <div class="col-sm-5">
+                        <div class="input-group date" >
+                            <input type="text" class="form-control" id="endDate" ng-class="{'inputErr':endDateErrEditSprint}">
+                            <span class="input-group-addon">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-sm-3 control-label">Set sprint velocity: </label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="sprintEditData.sprintVelocity" ng-class="{'inputErr':velEditErr}">
+                            <span class="input-group-addon">pt</span>   
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GUMBI
+                 ================================================== -->     
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <button class="btn btn-success" style="float: right; width: 150px " type="submit"> 
+                            <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="manageSprintsLoader">
+                            Save changes 
+                        </button>
+                    </div>
+                </div>               
+            </form>
+            <div class="form-group">
+                <div class="col-sm-6">                      
+                    <button class="btn btn-danger" style="float: right; width: 150px" ng-click="deleteSprint(sprintID); sprintID='0'"> 
+                        <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="deleteSprintLoader">
+                        Delete sprint
+                    </button>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+
+<!-- SKRIPTA ZA NASTAVITEV KOLEDARJEV
+                ================================================== -->  
+<script type="text/javascript">
+    $('.input-group.date').datepicker({
+        format: "dd.mm.yyyy",
+        todayBtn: "linked",
+        language: "sl",
+        autoclose: true,
+        keyboardNavigation: true,
+        todayHighlight: true
+    });
+</script>

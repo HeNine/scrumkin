@@ -1,0 +1,30 @@
+
+<div class="container">
+    <div class="row">
+        <div ng-show="loginError" class="alert alert-danger alert-dismissable">
+            {{loginError}}
+        </div>
+    </div>
+    
+    <div class="row loginRow">
+        <div class="col-sm-4 col-sm-offset-4" >
+            <form class="form-signin" role="form" ng-submit="processLoginForm()">
+                <h2 class="form-signin-heading">Log in</h2>
+
+                <input ng-class="{'inputErr':userOK==false}" type="text" id='uname' class="form-control" placeholder="Username" autofocus ng-model='loginFormData.uname'>
+                <input ng-class="{'inputErr':passOK==false}" type="password" class="form-control" placeholder="Password" ng-model='loginFormData.pass'>
+
+                <!--<label class="checkbox">
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>-->
+                
+
+                <button class="btn btn-primary btn-lg btn-block" type="submit">
+                    Log in
+                    <img src="./img/ajax-loader.gif" alt="Loading..." ng-show="loginLoader" style="float: right">
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+

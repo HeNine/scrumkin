@@ -1,0 +1,68 @@
+
+<div class="container" ng-init="getAllSprintsOfProject()">
+    
+    <div class="row" style="margin-top: 10px">
+        <div class="col-xs-4">
+            <strong>X-axis: </strong> days since project start ({{projectStartDate| date : date : 'dd.MM.YYYY'}})
+            <br/>
+            <strong>Y-axis: </strong> hours of work
+        </div>       
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+           <!--Graf <br/> {{xAxisDates}}<br/><br/>{{yAxis}}-->
+           <canvas id="myChart" width="1100" height="450"></canvas>           
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-12" style="margin-top: 10px; text-align: center">
+            <strong>Project status: </strong> <span style="color: teal; font-weight: bold">{{remainingH}}h</span> of work remaining / <span style="font-weight: bold; color: teal">{{doneH}}h</span> of work spent
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Sprint
+                    </th>
+                    <th>
+                        Estimated velocity
+                    </th>
+                    <th>
+                        Selected velocity
+                    </th>
+                    <th>
+                        Realized velocity
+                    </th>
+                    <th>
+                        Work input
+                    </th>
+                </tr>
+                
+                <tr ng-repeat="sprint in projectSprints">
+                    <td>
+                        <strong>From:</strong> {{sprint.startDate| date : date : 'dd.MM.YYYY'}} <strong>to:</strong> {{sprint.endDate| date : date : 'dd.MM.YYYY'}}
+                    </td>
+                    <td>
+                        {{sprint.velocity}} pt 
+                    </td>
+                    <td>
+                        TODO
+                    </td>
+                    <td>
+                        TODO
+                    </td>
+                    <td>
+                        TODO
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
