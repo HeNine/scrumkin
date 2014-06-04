@@ -277,6 +277,20 @@ public class ProjectManagerEJB implements ProjectManager {
     }
 
     @Override
+    public void setDevelopers(Collection<Integer> userIDs, int projectID) {
+        ProjectEntity project = getProject(projectID);
+        GroupEntity developerGroup = getDeveloperGroup(project);
+
+        for(UserEntity user : developerGroup.getUsers()) {
+            gm.deleteUserFromGroup(user, developerGroup);
+        }
+
+        for(int userID : userIDs) {
+            gm.addUserToGroup(um.getUser(userID), developerGroup);
+        }
+    }
+
+    @Override
     public Collection<UserStoryEntity> getProjectStories(int id) {
         return getProject(id).getUserStories();
     }

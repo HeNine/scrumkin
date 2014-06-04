@@ -7,6 +7,7 @@ import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Used to manage projects.
@@ -114,6 +115,14 @@ public interface ProjectManager {
      * @param projectID Project ID
      */
     void setDeveloper(int userID, int projectID, boolean assign);
+
+    /**
+     * Sets developers.
+     *
+     * @param userIDs   User IDs
+     * @param projectID Project ID
+     */
+    void setDevelopers(Collection<Integer> userIDs, int projectID);
 
     /**
      * Get all user stories in a project.
