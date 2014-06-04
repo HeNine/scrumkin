@@ -239,14 +239,6 @@ public class ProjectManagerEJB implements ProjectManager {
         UserEntity user = um.getUser(userID);
 
         try {
-            UserEntity scrumMaster = getScrumMaster(project);
-            if(user.equals(scrumMaster)) {
-                throw new ProductOwnerOrScrumMasterOnly();
-            }
-        } catch (ProjectHasNoScrumMasterException e) {
-        }
-
-        try {
             UserEntity productOwner = getProductOwner(project);
             gm.deleteUserFromGroup(productOwner, productOwnerGroup);
         } catch (ProjectHasNoProductOwnerException e) {
@@ -260,14 +252,6 @@ public class ProjectManagerEJB implements ProjectManager {
         ProjectEntity project = getProject(projectID);
         GroupEntity scrumMasterGroup = getScrumMasterGroup(project);
         UserEntity user = um.getUser(userID);
-
-        try {
-            UserEntity productOwner = getProductOwner(project);
-            if(user.equals(productOwner)) {
-                throw new ProductOwnerOrScrumMasterOnly();
-            }
-        } catch (ProjectHasNoProductOwnerException e) {
-        }
 
         try {
             UserEntity scrumMaster = getScrumMaster(project);
