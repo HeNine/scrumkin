@@ -256,6 +256,17 @@ public class ProjectService {
         pm.setDeveloper(user.id, id, true);
     }
 
+    @PUT
+    @Path("{id}/developers")
+    public void setDevelopers(@PathParam("id") int id, List<UserJSON> userJSONs) {
+        Collection<Integer> userIDS = new ArrayList<Integer>();
+        for(UserJSON user : userJSONs) {
+            userIDS.add(user.id);
+        }
+
+        pm.setDevelopers(userIDS, id);
+    }
+
     @DELETE
     @Path("{id}/developer/{userID}")
     public void removeDeveloper(@PathParam("id") int id, @PathParam("userID") int userID) {
